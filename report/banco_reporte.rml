@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<document filename="test.pdf">
+  <template pageSize="(595.0,842.0)" title="Test" author="Martin Simon" allowSplitting="20">
+    <pageTemplate id="first">
+      <!--<frame id="first" x1="57.0" y1="57.0" width="481" height="728"/>-->
+      <frame id="first" x1="57.0" y1="50.0" width="481" height="705"/>
+      <pageGraphics>
+        <setFont name="Courier-Bold" size="7"/>
+        <drawCentredString x="10cm" y="28.50cm">[[ o.cuenta_bancaria_id.company_id.name ]]</drawCentredString>
+        <drawCentredString x="10cm" y="28.20cm">Cifras expresadas en quetzales</drawCentredString>
+        <drawRightString x="20cm" y="28.50cm">Pag. No. <pageNumber/></drawRightString>
+        <drawString x="1cm" y="28.00cm">Libro de Bancos</drawString>
+        <drawString x="1cm" y="27.60cm">Banco: [[ o.cuenta_bancaria_id.name ]]</drawString>
+        <drawString x="1cm" y="27.20cm">Fecha Inicial: [[ formatLang(o.fecha_desde, date=True) ]] - Fecha Final: [[ formatLang(o.fecha_hasta, date=True) ]]</drawString>
+        <setFont name="Courier-Bold" size="8"/>
+        <drawString x="0.45cm" y="26.60cm">FECHA</drawString>
+        <drawString x="1.85cm" y="26.60cm">TIPO</drawString>
+        <drawString x="2.85cm" y="26.60cm">DOC.</drawString>
+        <drawString x="4.6cm" y="26.60cm">NOMBRE</drawString>
+        <drawString x="8.85cm" y="26.60cm">CONCEPTO</drawString>
+        <drawString x="15.0cm" y="26.60cm">CREDITO</drawString>
+        <drawString x="17.3cm" y="26.60cm">DEBITO</drawString>
+        <drawString x="19.5cm" y="26.60cm">SALDO</drawString>
+        <lines>
+          0.4cm 27cm 20.5cm 27cm
+          0.4cm 26.4cm 20.5cm 26.4cm
+        </lines>
+      </pageGraphics>
+    </pageTemplate>
+  </template>
+  <stylesheet>
+    <blockTableStyle id="Standard_Outline">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table2">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+      <blockTopPadding length="0.02cm"/>
+      <blockBottomPadding length="0.02cm"/>
+      <blockLeftPadding length="0.02cm"/>
+      <blockRightPadding length="0.02cm"/>
+      <lineStyle kind="LINEBELOW" colorName="black" start="-1,-1" stop="-1,-1" thickness="2"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table1">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+      <blockTopPadding length="0.02cm"/>
+      <blockBottomPadding length="0.02cm"/>
+      <blockLeftPadding length="0.02cm"/>
+      <blockRightPadding length="0.02cm"/>
+    </blockTableStyle>
+    <initialize>
+      <paraStyle name="all" alignment="justify"/>
+    </initialize>
+    <paraStyle name="P1" fontName="Courier" fontSize="7.0" leading="10"/>
+    <paraStyle name="Standard" fontName="Courier"/>
+    <paraStyle name="Heading" fontName="Courier" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Text_20_body" fontName="Courier" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="List" fontName="Courier" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="Caption" fontName="Courier" fontSize="12.0" leading="15" spaceBefore="6.0" spaceAfter="6.0"/>
+    <paraStyle name="Index" fontName="Courier"/>
+    <paraStyle name="Heading_20_1" fontName="Courier" fontSize="115%" leading="NaN" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Horizontal_20_Line" fontName="Courier" fontSize="6.0" leading="8" spaceBefore="0.0" spaceAfter="14.0"/>
+    <paraStyle name="Heading_20_3" fontName="Courier" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="0.0"/>
+    <paraStyle name="Heading_20_2" fontName="Courier" fontSize="12.0" leading="5" spaceBefore="2.0" spaceAfter="6.0"/>
+    <paraStyle name="Table_20_Contents" fontName="Courier"/>
+    <paraStyle name="Table_20_Heading" fontName="Courier" alignment="CENTER"/>
+  </stylesheet>
+  <images/>
+  <story>
+    <para style="P1">[[ repeatIn(objects, 'o') ]][[ setLang('en_US') ]]</para>
+      <blockTable colWidths="40.0,25.0,50.0,120.0,160.0,60.0,60.0,60.0" style="Table1">
+        <tr>
+          <td>
+            <para style="P1"></para>
+          </td>
+          <td>
+            <para style="P1"></para>
+          </td>
+          <td>
+            <para style="P1"></para>
+          </td>
+          <td>
+            <para style="P1">SALDO INICIAL</para>
+          </td>
+          <td>
+            <para style="P1"></para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT"></para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT"></para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang((lineas(o))[0]['balance']-(lineas(o))[0]['debito']+(lineas(o))[0]['credito']) ]]</para>
+          </td>
+        </tr>
+      </blockTable>
+    <section>
+      <para style="Standard">[[ repeatIn(lineas(o), 'l') ]]</para>
+      <blockTable colWidths="40.0,25.0,50.0,160.0,120.0,60.0,60.0,60.0" style="Table1">
+        <tr>
+          <td>
+            <para style="P1">[[ l['fecha'] ]]</para>
+          </td>
+          <td>
+            <para style="P1">[[ l['tipo'] ]]</para>
+          </td>
+          <td>
+            <para style="P1">[[ l['documento'][0:8] ]]</para>
+          </td>
+          <td>
+            <para style="P1">[[ l['nombre'][0:30] ]]</para>
+          </td>
+          <td>
+            <para style="P1">[[ l['concepto'][0:22] ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['debito']) ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['credito']) ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['balance']) ]]</para>
+          </td>
+        </tr>
+      </blockTable>
+    </section>
+    <blockTable colWidths="40.0,25.0,50.0,120.0,160.0,60.0,60.0,60.0" style="Table2">
+      <tr>
+        <td>
+          <para style="P1">Totales</para>
+        </td>
+        <td>
+          <para style="P1"></para>
+        </td>
+        <td>
+          <para style="P1"></para>
+        </td>
+        <td>
+          <para style="P1"></para>
+        </td>
+        <td>
+          <para style="P1"></para>
+        </td>
+        <td>
+          <para style="P1" alignment="RIGHT">[[ formatLang(totales['debito']) ]]</para>
+        </td>
+        <td>
+          <para style="P1" alignment="RIGHT">[[ formatLang(totales['credito']) ]]</para>
+        </td>
+        <td>
+          <para style="P1" alignment="RIGHT"></para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="P1"></para>
+        </td>
+        <td>
+          <para style="P1"></para>
+        </td>
+        <td>
+          <para style="P1"></para>
+        </td>
+        <td>
+          <para style="P1">Saldo Final</para>
+        </td>
+        <td>
+          <para style="P1"></para>
+        </td>
+        <td>
+          <para style="P1"></para>
+        </td>
+        <td>
+          <para style="P1"></para>
+        </td>
+        <td>
+          <para style="P1" alignment="RIGHT">[[ formatLang(balance_final(o)['balance']) ]]</para>
+        </td>
+      </tr>
+    </blockTable>
+  </story>
+</document>

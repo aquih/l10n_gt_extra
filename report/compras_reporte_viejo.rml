@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<document filename="test.pdf">
+  <template pageSize="(27.9cm,21.6cm)" title="Test" author="Martin Simon" allowSplitting="20">
+    <pageTemplate id="first">
+      <frame id="first" x1="0.5cm" y1="0.5cm" width="26.9cm" height="19.0cm"/>
+      <pageGraphics>
+        <setFont name="Courier-Bold" size="7"/>
+        <drawCentredString x="10cm" y="21.00cm">[[ objects[0].diarios_id[0].company_id.name ]]</drawCentredString>
+        <drawRightString x="20cm" y="21.00cm">Folio [[ folio(objects) ]]</drawRightString>
+        <drawString x="1cm" y="20.50cm">LIBRO DE COMPRAS Y SERVICIOS</drawString>
+        <drawString x="1cm" y="20.10cm">NOMBRE COMERCIAL: [[ objects[0].diarios_id[0].company_id.partner_id.name ]]</drawString>
+        <drawString x="1cm" y="20.70cm">NUMERO DE IDENTIFICACION TRIBUTARIA: [[ objects[0].diarios_id[0].company_id.partner_id.vat ]]</drawString>
+        <drawRightString x="20cm" y="19.30cm">REGISTRO DEL MES: [[ ', '.join([x.name for x in objects[0].periodos_id]) ]]</drawRightString>
+        <drawString x="1cm" y="19.30cm">DOMICILIO FISCAL: [[ objects[0].diarios_id[0].company_id.partner_id.address[0].street ]]</drawString>
+      </pageGraphics>
+    </pageTemplate>
+  </template>
+  <stylesheet>
+    <blockTableStyle id="Standard_Outline">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table2">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+      <lineStyle kind="LINEBELOW" colorName="black" start="-1,-1" stop="-1,-1" thickness="2"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table1">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+      <blockTopPadding length="0.02cm"/>
+      <blockBottomPadding length="0.02cm"/>
+      <blockLeftPadding length="0.02cm"/>
+      <blockRightPadding length="0.02cm"/>
+      <lineStyle kind="LINEBELOW" colorName="black" start="5,-1" stop="-1,-1"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table3">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+      <lineStyle kind="LINEBELOW" colorName="black" start="1,4" stop="-1,4"/>
+      <lineStyle kind="LINEBELOW" colorName="black" start="1,5" stop="-1,5" thickness="2"/>
+      <blockValign value="BOTTOM"/>
+      <blockTopPadding length="0.02cm"/>
+      <blockBottomPadding length="0.02cm"/>
+      <blockLeftPadding length="0.02cm"/>
+      <blockRightPadding length="0.02cm"/>
+    </blockTableStyle>
+    <initialize>
+      <paraStyle name="all" alignment="justify"/>
+    </initialize>
+    <paraStyle name="P1" fontName="Courier" fontSize="6.0" leading="9"/>
+    <paraStyle name="P2" fontName="Courier" fontSize="7.0" leading="13"/>
+    <paraStyle name="P3" fontName="Courier-Bold" fontSize="7.0" leading="13"/>
+    <paraStyle name="P4" fontName="Courier" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="P5" fontName="Courier" fontSize="8.0" leading="10"/>
+    <paraStyle name="P6" fontName="Courier" fontSize="7.0" leading="5" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="P7" fontName="Courier" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Standard" fontName="Times-Roman"/>
+    <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Text_20_body" fontName="Times-Roman" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="List" fontName="Times-Roman" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="Caption" fontName="Times-Roman" fontSize="12.0" leading="15" spaceBefore="6.0" spaceAfter="6.0"/>
+    <paraStyle name="Index" fontName="Times-Roman"/>
+    <paraStyle name="Heading_20_1" fontName="Helvetica-Bold" fontSize="115%" leading="NaN" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Heading_20_2" fontName="Helvetica-BoldOblique" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Heading_20_3" fontName="Helvetica-Bold" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Table_20_Contents" fontName="Times-Roman"/>
+    <paraStyle name="Table_20_Heading" fontName="Times-Roman" alignment="CENTER"/>
+  </stylesheet>
+  <images/>
+  <story>
+    <para style="P1">[[ repeatIn(objects, 'o') ]][[ setLang('es_GT') ]]</para>
+    <section>
+      <blockTable colWidths="35.0,60.0,60.0,93.0,55.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0" style="Table1" repeatRows="1">
+        <tr>
+          <td>
+            <para style="P1">TIPO</para>
+          </td>
+          <td>
+            <para style="P1">FECHA</para>
+          </td>
+          <td>
+            <para style="P1">NO DOC.</para>
+          </td>
+          <td>
+            <para style="P1">PROVEEDOR</para>
+          </td>
+          <td>
+            <para style="P1">NIT</para>
+          </td>
+          <td>
+            <para style="P1">COMP.</para>
+          </td>
+          <td>
+            <para style="P1">SERV.</para>
+          </td>
+          <td>
+            <para style="P1">COMP. EXE</para>
+          </td>
+          <td>
+            <para style="P1">SERV. EXE</para>
+          </td>
+          <td>
+            <para style="P1">COMB.</para>
+          </td>
+          <td>
+            <para style="P1">IMP.</para>
+          </td>
+          <td>
+            <para style="P1">IVA</para>
+          </td>
+          <td>
+            <para style="P1">TOTAL</para>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <para style="P1">[[  '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[repeatIn(lineas(o), 'l') ]] [[ 'FACT' if l['type'] == 'in_invoice' else 'NC' ]] [[ 'PEQ' if l['pequenio_contribuyente'] == True else '' ]]</para>
+          </td>
+          <td>
+            <para style="P1">[[ formatLang(l['date_invoice'], date=True) ]]</para>
+          </td>
+          <td>
+            <para style="P1">[[ l['reference'][0:14] ]]</para>
+          </td>
+          <td>
+            <para style="P1">[[ l['name'][0:18] ]]</para>
+          </td>
+          <td>
+            <para style="P1">[[ l['vat'] ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_base'] if (l['tipo_gasto'] == 'compra' and l['total_impuesto'] > 0) else 0) ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_base'] if (l['tipo_gasto'] == 'servicio' and l['total_impuesto'] > 0) else 0) ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_base'] if (l['tipo_gasto'] == 'compra' and l['total_impuesto'] == 0) else 0) ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_base'] if (l['tipo_gasto'] == 'servicio' and l['total_impuesto'] == 0) else 0) ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_base'] if l['tipo_gasto'] == 'combustible' else 0) ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_base'] if l['tipo_gasto'] == 'importacion' else 0) ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_impuesto']) ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_base']+l['total_impuesto']) ]]</para>
+          </td>
+        </tr>
+      </blockTable>
+    </section>
+    <para style="Standard">
+      <font color="white"> </font>
+    </para>
+    <blockTable colWidths="395.0,100.0" style="Table2">
+      <tr>
+        <td>
+          <para style="P1" alignment="RIGHT">Total de facturas de pequeños contribuyentes:</para>
+        </td>
+        <td>
+          <para style="P1" alignment="RIGHT">[[ formatLang(totales['pequenio_contribuyente']['total']) ]]</para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="P1" alignment="RIGHT">Cantidad de facturas: [[ len(lineas(o)) ]]  -  Total credito fiscal:</para>
+        </td>
+        <td>
+          <para style="P1" alignment="RIGHT">[[ formatLang(totales['compra']['iva']+totales['servicio']['iva']+totales['combustible']['iva']+totales['importacion']['iva']) ]]</para>
+        </td>
+      </tr>
+    </blockTable>
+    <para style="P6">Resumen:</para>
+    <blockTable colWidths="120.0,120.0,120.0,121.0" style="Table3">
+      <tr>
+        <td>
+          <para style="P2">
+            <font color="white"> </font>
+          </para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">NETO</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">IVA</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">TOTAL</para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="P2">COMPRAS</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['compra']['neto']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['compra']['iva']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['compra']['total']) ]]</para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="P2">SERVICIOS</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['servicio']['neto']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['servicio']['iva']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['servicio']['total']) ]]</para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="P2">COMBUSTIBLE</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['combustible']['neto']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['combustible']['iva']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['combustible']['total']) ]]</para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="P2">IMPORTACION</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['neto']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['iva']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['total']) ]]</para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="P3">TOTALES</para>
+        </td>
+        <td>
+          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['neto']+totales['servicio']['neto']+totales['combustible']['neto']+totales['importacion']['neto']) ]]</para>
+        </td>
+        <td>
+          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['iva']+totales['servicio']['iva']+totales['combustible']['iva']+totales['importacion']['iva']) ]]</para>
+        </td>
+        <td>
+          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['total']+totales['servicio']['total']+totales['combustible']['total']+totales['importacion']['total']) ]]</para>
+        </td>
+      </tr>
+    </blockTable>
+    <para style="Standard">
+      <font color="white"> </font>
+    </para>
+    <blockTable colWidths="400.0,80.0" style="Table3">
+      <tr>
+        <td>
+          <para style="P1">Monto total de las compras y servicios por las cuales procede derecho a credito fiscal:</para>
+        </td>
+        <td>
+          <para style="P1" alignment="RIGHT">[[ formatLang(totales['compra']['neto']+totales['servicio']['neto']+totales['combustible']['neto']+totales['importacion']['neto']) ]]</para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="P1">Monto total de las compras y servicios por las cuales no procede derecho a credito fiscal:</para>
+        </td>
+        <td>
+          <para style="P1" alignment="RIGHT">[[ formatLang(0) ]]</para>
+        </td>
+      </tr>
+    </blockTable>
+  </story>
+</document>
+

@@ -1,0 +1,95 @@
+<openerp>
+    <data>
+
+        <record id="asistente_compras_reporte" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.asistente_compras_reporte</field>
+            <field name="model">l10n_gt_extra.asistente_compras_reporte</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Seleccione diario y rango de fecha">
+                    <group col="8" colspan="4">
+                        <field name="empresa_id"/>
+                        <field name="impuesto_id" domain="[('name','=','IVA por Cobrar'), ('company_id','=',empresa_id)]"/>
+                        <field name="base_id" domain="[('name','=','Base Impositiva de Compras'), ('company_id','=',empresa_id)]"/>
+                        <field name="folio_inicial"/>
+                        <group col="4" colspan="8">
+                            <field name="diarios_id" nolabel="1"/>
+                            <field name="periodos_id" nolabel="1"/>
+                        </group>
+                        <group col="2" colspan="8">
+                            <button icon="gtk-cancel" special="cancel" string="Cancelar"/>
+                            <button icon="gtk-ok" name="reporte" string="Reporte" type="object"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="window_compras_reporte" name="Libro de compras" res_model="l10n_gt_extra.asistente_compras_reporte" src_model="account.journal" view_mode="form" target="new"/>
+
+        <menuitem icon="STOCK_PRINT" action="window_compras_reporte" id="menu_asistente_compras_reporte" parent="account.final_accounting_reports"/>
+
+        <report id="compras_reporte" model="l10n_gt_extra.asistente_compras_reporte" name="compras_reporte" rml="l10n_gt_extra/report/compras_reporte.rml" string="Libro de compras"/>
+
+        <record id="asistente_ventas_reporte" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.asistente_ventas_reporte</field>
+            <field name="model">l10n_gt_extra.asistente_ventas_reporte</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Seleccione diario y rango de fecha">
+                    <group col="8" colspan="4">
+                        <field name="empresa_id"/>
+                        <field name="impuesto_id" domain="[('name','=','IVA por Pagar')]"/>
+                        <field name="base_id" domain="[('name','=','Base Impositiva de Ventas')]"/>
+                        <field name="folio_inicial"/>
+                        <group col="4" colspan="8">
+                            <field name="diarios_id" nolabel="1" domain="[('type','in',['sale','sale_refund'])]"/>
+                            <field name="periodos_id" nolabel="1"/>
+                        </group>
+                        <group col="2" colspan="8">
+                            <button icon="gtk-cancel" special="cancel" string="Cancelar"/>
+                            <button icon="gtk-ok" name="reporte" string="Reporte" type="object"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="window_ventas_reporte" name="Libro de ventas" res_model="l10n_gt_extra.asistente_ventas_reporte" src_model="account.journal" view_mode="form" target="new"/>
+
+        <menuitem icon="STOCK_PRINT" action="window_ventas_reporte" id="menu_asistente_ventas_reporte" parent="account.final_accounting_reports"/>
+
+        <report id="ventas_reporte" model="l10n_gt_extra.asistente_ventas_reporte" name="ventas_reporte" rml="l10n_gt_extra/report/ventas_reporte.rml" string="Libro de ventas"/>
+
+        <report id="ventas_reporte_financiero" model="l10n_gt_extra.asistente_ventas_reporte" name="l10n_gt_extra.ventas_reporte_financiero" rml="l10n_gt_extra/report/ventas_reporte_financiero.rml" string="Libro de ventas financiero"/>
+
+        <record id="asistente_banco_reporte" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.asistente_banco_reporte</field>
+            <field name="model">l10n_gt_extra.asistente_banco_reporte</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Seleccione cuenta y rango de fecha">
+                    <group col="2" colspan="1">
+                        <field name="cuenta_bancaria_id" colspan="4"/>
+                        <field name="fecha_desde"/>
+                        <field name="fecha_hasta"/>
+                    </group>
+                    <field name="ejercicios_fiscales" nolabel="1"/>
+                    <group col="2" colspan="4">
+                        <button icon="gtk-cancel" special="cancel" string="Cancelar"/>
+                        <button icon="gtk-ok" name="reporte" string="Reporte" type="object"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="window_banco_reporte" name="Libro de banco" res_model="l10n_gt_extra.asistente_banco_reporte" src_model="account.account" view_mode="form" target="new"/>
+
+        <menuitem icon="STOCK_PRINT" action="window_banco_reporte" id="menu_asistente_banco_reporte" parent="account.final_accounting_reports"/>
+
+        <report id="banco_reporte" model="l10n_gt_extra.asistente_banco_reporte" name="banco_reporte" rml="l10n_gt_extra/report/banco_reporte.rml" string="Libro de banco"/>
+
+        <report id="partida" model="account.move" name="partida" rml="l10n_gt_extra/report/partida.rml" string="Partida"/>
+
+    </data>
+</openerp>
