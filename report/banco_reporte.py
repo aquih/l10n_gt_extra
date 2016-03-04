@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 
+from openerp.report import report_sxw
 import time
 import datetime
-from report import report_sxw
 
 class banco_reporte(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
@@ -27,7 +27,7 @@ class banco_reporte(report_sxw.rml_parse):
         if self.lineas:
             return self.lineas
 
-        self.cr.execute('select id from account_move_line where account_id = %s and date between %s and %s and move_id in ( select id from account_move where date between %s and %s )', (datos.cuenta_bancaria_id.id, datos.fecha_desde.val, datos.fecha_hasta.val, datos.fecha_desde.val, datos.fecha_hasta.val)) 
+        self.cr.execute('select id from account_move_line where account_id = %s and date between %s and %s and move_id in ( select id from account_move where date between %s and %s )', (datos.cuenta_bancaria_id.id, datos.fecha_desde.val, datos.fecha_hasta.val, datos.fecha_desde.val, datos.fecha_hasta.val))
         lineas_id = [x[0] for x in self.cr.fetchall()]
 
         lineas = []
@@ -68,7 +68,7 @@ class banco_reporte(report_sxw.rml_parse):
 
     def balance_final(self, datos):
         ctx = self.context.copy()
-        
+
         ctx['fiscalyear'] = ','.join([str(x.id) for x in datos.ejercicios_fiscales])
         ctx['date_from'] = '2000-01-01'
         ctx['date_to'] = datos.fecha_hasta.val

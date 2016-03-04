@@ -1,8 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-from osv import osv
-from osv import fields
-import time
+from openerp.osv import osv, fields
 
 class asistente_ventas_reporte(osv.osv_memory):
     _name = 'l10n_gt_extra.asistente_ventas_reporte'

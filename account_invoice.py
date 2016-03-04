@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-from osv import osv
-from osv import fields
+from openerp.osv import osv, fields
 
 class account_invoice(osv.osv):
     _inherit = "account.invoice"

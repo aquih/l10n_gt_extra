@@ -1,9 +1,8 @@
 # -*- encoding: utf-8 -*-
 
+from openerp.report import report_sxw
 import time
 import datetime
-from report import report_sxw
-import logging
 
 class ventas_reporte(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):

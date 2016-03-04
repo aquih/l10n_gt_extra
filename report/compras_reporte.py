@@ -1,9 +1,8 @@
 # -*- encoding: utf-8 -*-
 
+from openerp.report import report_sxw
 import time
 import datetime
-from openerp.report import report_sxw
-import logging
 
 class compras_reporte(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
@@ -134,8 +133,6 @@ class compras_reporte(report_sxw.rml_parse):
             for l in f.invoice_line:
                 precio = ( l.price_unit * (1-(l.discount or 0.0)/100.0) ) * tipo_cambio
                 r = self.pool.get('account.tax').compute_all(self.cr, self.uid, l.invoice_line_tax_id, precio, l.quantity, product=l.product_id, partner=l.invoice_id.partner_id)
-                logging.warn(linea['numero'])
-                logging.warn(r)
 
                 if len(l.invoice_line_tax_id) > 0:
                     linea['base'] += r['total']
@@ -149,7 +146,6 @@ class compras_reporte(report_sxw.rml_parse):
                     linea[f.tipo_gasto+'_exento'] += r['total']
 
             linea['total'] = linea['base']+linea['iva']
-            logging.warn(linea)
 
             if f.pequenio_contribuyente == True:
                 self.totales['pequenio_contribuyente']['exento'] += linea[f.tipo_gasto+'_exento']

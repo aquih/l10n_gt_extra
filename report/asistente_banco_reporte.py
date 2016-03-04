@@ -1,12 +1,8 @@
 # -*- encoding: utf-8 -*-
 
-from osv import osv
-from osv import fields
-from tools import config
-import decimal_precision as dp
+from openerp.osv import osv, fields
+import openerp.addons.decimal_precision as dp
 import time
-
-from tools import misc
 
 class asistente_banco_reporte(osv.osv_memory):
     _name = 'l10n_gt_extra.asistente_banco_reporte'
@@ -29,7 +25,7 @@ class asistente_banco_reporte(osv.osv_memory):
         for banco_reporte in self.browse(cr, uid, ids):
 
             ctx = context.copy()
-        
+
             ctx['fiscalyear'] = ','.join([str(x.id) for x in banco_reporte.ejercicios_fiscales])
             ctx['date_from'] = '2000-01-01'
             ctx['date_to'] = banco_reporte.fecha_hasta
@@ -38,7 +34,7 @@ class asistente_banco_reporte(osv.osv_memory):
 
             self.write(cr, uid, [banco_reporte.id], {'saldo': cuenta['balance']}, context=context)
 
-        return True 
+        return True
 
     _defaults = {
         'cuenta_bancaria_id': _revisar_cuenta,
