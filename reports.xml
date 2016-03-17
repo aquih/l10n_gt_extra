@@ -111,5 +111,40 @@
 
         <report id="partida" model="account.move" name="partida" rml="l10n_gt_extra/report/partida.rml" string="Partida"/>
 
+        <record id="asistente_diario_reporte" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.asistente_diario_reporte</field>
+            <field name="model">l10n_gt_extra.asistente_diario_reporte</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Seleccione diario y periodos">
+                    <group>
+                        <group>
+                            <field name="folio_inicial"/>
+                        </group>
+                    </group>
+                    <group>
+                        <separator colspan="4" string="Diarios"/>
+                        <field name="diarios_id" nolabel="1"/>
+                        <separator colspan="4" string="Periodos"/>
+                        <field name="periodos_id" nolabel="1"/>
+                    </group>
+                    <group>
+                        <group>
+                            <button icon="gtk-cancel" special="cancel" string="Cancelar"/>
+                        </group>
+                        <group>
+                            <button icon="gtk-ok" name="reporte" string="Reporte" type="object"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="window_diario_reporte" name="Libro diario" res_model="l10n_gt_extra.asistente_diario_reporte" src_model="account.journal" view_mode="form" target="new"/>
+
+        <menuitem icon="STOCK_PRINT" action="window_diario_reporte" id="menu_asistente_diario_reporte" parent="account.final_accounting_reports"/>
+
+        <report id="diario_reporte" model="l10n_gt_extra.asistente_diario_reporte" name="diario_reporte" rml="l10n_gt_extra/report/diario_reporte.rml" string="Libro diario"/>
+
     </data>
 </openerp>

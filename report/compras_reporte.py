@@ -9,7 +9,7 @@ class compras_reporte(report_sxw.rml_parse):
         super(compras_reporte, self).__init__(cr, uid, name, context=context)
         self.totales = {}
         self.folioActual = -1
-        self.lineasGuardas = []
+        self.lineasGuardadas = []
         self.localcontext.update( {
             'time': time,
             'datetime': datetime,
@@ -33,54 +33,10 @@ class compras_reporte(report_sxw.rml_parse):
 
         return self.folioActual
 
-    def lineas_viejo(self, datos):
-        self.totales['compra'] = {'neto':0,'iva':0,'total':0}
-        self.totales['servicio'] = {'neto':0,'iva':0,'total':0}
-        self.totales['importacion'] = {'neto':0,'iva':0,'total':0}
-        self.totales['combustible'] = {'neto':0,'iva':0,'total':0}
-        self.totales['pequenio_contribuyente'] = {'neto':0,'iva':0,'total':0}
-
-        self.cr.execute("select \
-                invoice.date_invoice, \
-                invoice.journal_id, \
-                invoice.tipo_gasto, \
-                invoice.reference, \
-                invoice.type, \
-                invoice.pequenio_contribuyente, \
-                partner.name, \
-                partner.vat, \
-                invoice.amount_total, \
-                sum(case when line.tax_code_id = %s then line.debit else 0 end) - sum(case when line.tax_code_id = %s then line.credit else 0 end) as total_impuesto, \
-                sum(case when line.tax_code_id = %s then line.debit else 0 end) - sum(case when line.tax_code_id = %s then line.credit else 0 end) as total_base \
-            from account_move_line line join account_invoice invoice on(line.move_id = invoice.move_id) \
-                join res_partner partner on(invoice.partner_id = partner.id) \
-            where invoice.state in ('open','paid') and \
-                invoice.journal_id in ("+','.join([str(d.id) for d in datos.diarios_id])+") and \
-                line.period_id in ("+','.join([str(p.id) for p in datos.periodos_id])+") \
-            group by invoice.date_invoice, invoice.journal_id, invoice.tipo_gasto, invoice.reference, invoice.type, invoice.pequenio_contribuyente, partner.name, partner.vat, invoice.amount_total \
-            order by invoice.type, date_invoice",
-            (datos.impuesto_id.id, datos.impuesto_id.id, datos.base_id.id, datos.base_id.id))
-
-        lineas = self.cr.dictfetchall()
-
-        for l in lineas:
-
-            if l['pequenio_contribuyente'] == True:
-                l['total_base'] = l['amount_total']
-                self.totales['pequenio_contribuyente']['neto'] += l['total_base']
-                self.totales['pequenio_contribuyente']['iva'] += l['total_impuesto']
-                self.totales['pequenio_contribuyente']['total'] += l['total_base']+l['total_impuesto']
-
-            self.totales[l['tipo_gasto']]['neto'] += l['total_base']
-            self.totales[l['tipo_gasto']]['iva'] += l['total_impuesto']
-            self.totales[l['tipo_gasto']]['total'] += l['total_base']+l['total_impuesto']
-
-        return lineas
-
     def lineas(self, datos):
 
-        if len(self.lineasGuardas) > 0:
-            return self.lineasGuardas
+        if len(self.lineasGuardadas) > 0:
+            return self.lineasGuardadas
 
         self.totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
         self.totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
@@ -110,7 +66,6 @@ class compras_reporte(report_sxw.rml_parse):
                 tipo = 'NC'
             if f.pequenio_contribuyente:
                 tipo += ' PEQ'
-                self.totales['pequenio_contribuyente']['total'] += 1
 
             linea = {
                 'tipo': tipo,
@@ -134,8 +89,8 @@ class compras_reporte(report_sxw.rml_parse):
                 precio = ( l.price_unit * (1-(l.discount or 0.0)/100.0) ) * tipo_cambio
                 r = self.pool.get('account.tax').compute_all(self.cr, self.uid, l.invoice_line_tax_id, precio, l.quantity, product=l.product_id, partner=l.invoice_id.partner_id)
 
+                linea['base'] += r['total']
                 if len(l.invoice_line_tax_id) > 0:
-                    linea['base'] += r['total']
                     linea[f.tipo_gasto] += r['total']
                     for i in r['taxes']:
                         if i['base_code_id'] == datos.base_id.id and i['tax_code_id'] == datos.impuesto_id.id:
@@ -160,7 +115,7 @@ class compras_reporte(report_sxw.rml_parse):
 
             lineas.append(linea)
 
-        self.lineasGuardas = lineas
+        self.lineasGuardadas = lineas
 
         return lineas
 
