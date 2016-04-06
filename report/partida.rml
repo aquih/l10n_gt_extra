@@ -13,19 +13,7 @@
     <blockTableStyle id="Table4">
       <blockAlignment value="LEFT"/>
       <blockValign value="TOP"/>
-      <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1"/>
-      <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0"/>
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1"/>
-      <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,0" stop="1,-1"/>
-      <lineStyle kind="LINEABOVE" colorName="#000000" start="1,0" stop="1,0"/>
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="1,-1" stop="1,-1"/>
-      <lineStyle kind="LINEBEFORE" colorName="#000000" start="2,0" stop="2,-1"/>
-      <lineStyle kind="LINEABOVE" colorName="#000000" start="2,0" stop="2,0"/>
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="2,-1" stop="2,-1"/>
-      <lineStyle kind="LINEBEFORE" colorName="#000000" start="3,0" stop="3,-1"/>
-      <lineStyle kind="LINEAFTER" colorName="#000000" start="3,0" stop="3,-1"/>
-      <lineStyle kind="LINEABOVE" colorName="#000000" start="3,0" stop="3,0"/>
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="3,-1" stop="3,-1"/>
+      <lineStyle kind="GRID" colorName="#000000"/>
     </blockTableStyle>
     <blockTableStyle id="Table5">
       <blockAlignment value="LEFT"/>
@@ -40,7 +28,7 @@
     <initialize>
       <paraStyle name="all" alignment="justify"/>
     </initialize>
-    <paraStyle name="P1" fontName="Times-Roman" fontSize="10.0" leading="13" alignment="RIGHT"/>
+    <paraStyle name="P1" fontName="Times-Roman" fontSize="8.0" leading="10" alignment="RIGHT"/>
     <paraStyle name="P2" fontName="Times-Roman" fontSize="2.0" leading="3"/>
     <paraStyle name="Standard" fontName="Times-Roman"/>
     <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
@@ -48,7 +36,7 @@
     <paraStyle name="List" fontName="Times-Roman" spaceBefore="0.0" spaceAfter="6.0"/>
     <paraStyle name="Caption" fontName="Times-Roman" fontSize="12.0" leading="15" spaceBefore="6.0" spaceAfter="6.0"/>
     <paraStyle name="Index" fontName="Times-Roman"/>
-    <paraStyle name="Table_20_Contents" fontName="Times-Roman" fontSize="10.0" leading="13"/>
+    <paraStyle name="Table_20_Contents" fontName="Times-Roman" fontSize="8.0" leading="10"/>
     <paraStyle name="Heading_20_1" fontName="Helvetica-Bold" fontSize="115%" leading="NaN" spaceBefore="12.0" spaceAfter="6.0"/>
     <paraStyle name="Heading_20_2" fontName="Helvetica-BoldOblique" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
     <paraStyle name="Heading_20_3" fontName="Helvetica-Bold" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
@@ -64,13 +52,16 @@
     <para style="Standard">
       <font color="white"> </font>
     </para>
-    <blockTable colWidths="77.0,250.0,88.0,68.0" style="Table4">
+    <blockTable colWidths="77.0,150.0,150.0,68.0,68.0" style="Table4">
       <tr>
         <td>
           <para style="Table_20_Contents" alignment="CENTER">Código</para>
         </td>
         <td>
           <para style="Table_20_Contents" alignment="CENTER">Cuenta</para>
+        </td>
+        <td>
+          <para style="Table_20_Contents" alignment="CENTER">Analitica</para>
         </td>
         <td>
           <para style="P1" alignment="CENTER">Debe</para>
@@ -83,13 +74,16 @@
     <para style="P2">
       <font color="white"> </font>
     </para>
-    <blockTable colWidths="77.0,250.0,88.0,68.0" style="Table5">
+    <blockTable colWidths="77.0,150.0,150.0,68.0,68.0" style="Table5">
       <tr>
         <td>
           <para style="Table_20_Contents">[[ repeatIn(lineas(o), 'l') ]][[ l.account_id.code ]]</para>
         </td>
         <td>
           <para style="Table_20_Contents">[[ l.account_id.name ]]</para>
+        </td>
+        <td>
+          <para style="Table_20_Contents">[[ l.analytic_account_id.complete_name ]]</para>
         </td>
         <td>
           <para style="P1">[[ formatLang(l.debit, monetary=True) ]]</para>
@@ -99,6 +93,9 @@
         </td>
       </tr>
       <tr>
+        <td>
+          <para style="Table_20_Contents"></para>
+        </td>
         <td>
           <para style="Table_20_Contents"></para>
         </td>
@@ -119,4 +116,3 @@
     <para style="Standard">Notas: [[ o.narration ]]</para>
   </story>
 </document>
-
