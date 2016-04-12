@@ -13,7 +13,6 @@
     <blockTableStyle id="Table4">
       <blockAlignment value="LEFT"/>
       <blockValign value="TOP"/>
-      <lineStyle kind="GRID" colorName="#000000"/>
     </blockTableStyle>
     <blockTableStyle id="Table5">
       <blockAlignment value="LEFT"/>
@@ -28,7 +27,7 @@
     <initialize>
       <paraStyle name="all" alignment="justify"/>
     </initialize>
-    <paraStyle name="P1" fontName="Times-Roman" fontSize="8.0" leading="10" alignment="RIGHT"/>
+    <paraStyle name="P1" fontName="Times-Roman" fontSize="10.0" leading="13" alignment="RIGHT"/>
     <paraStyle name="P2" fontName="Times-Roman" fontSize="2.0" leading="3"/>
     <paraStyle name="Standard" fontName="Times-Roman"/>
     <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
@@ -36,7 +35,7 @@
     <paraStyle name="List" fontName="Times-Roman" spaceBefore="0.0" spaceAfter="6.0"/>
     <paraStyle name="Caption" fontName="Times-Roman" fontSize="12.0" leading="15" spaceBefore="6.0" spaceAfter="6.0"/>
     <paraStyle name="Index" fontName="Times-Roman"/>
-    <paraStyle name="Table_20_Contents" fontName="Times-Roman" fontSize="8.0" leading="10"/>
+    <paraStyle name="Table_20_Contents" fontName="Times-Roman" fontSize="10.0" leading="13"/>
     <paraStyle name="Heading_20_1" fontName="Helvetica-Bold" fontSize="115%" leading="NaN" spaceBefore="12.0" spaceAfter="6.0"/>
     <paraStyle name="Heading_20_2" fontName="Helvetica-BoldOblique" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
     <paraStyle name="Heading_20_3" fontName="Helvetica-Bold" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
@@ -45,74 +44,62 @@
     <images/>
   </stylesheet>
   <story>
-    <para style="Heading_20_3">[[ repeatIn(objects, 'o' )]][[ setLang('en_US') ]]<font face="Times-Roman">[[ user.company_id.name ]]</font></para>
-    <para style="Standard">Partida No. [[ o.name ]]</para>
-    <para style="Standard">Fecha: [[ formatLang(o.date, date=True) ]], Periodo: [[ o.period_id.name ]]</para>
-    <para style="Standard">Ref: [[ o.ref ]]</para>
+    <para style="Heading_20_3">[[ repeatIn(objects, 'o' )]][[ setLang('en_ES') ]]<font face="Times-Roman">[[ user.company_id.name ]]</font></para>
+    <para style="Standard">Diario</para>
+    <para style="Standard">Folio [[ folio(objects) ]]</para>
     <para style="Standard">
-      <font color="white"> </font>
+      <font color="white">-</font>
     </para>
-    <blockTable colWidths="77.0,150.0,150.0,68.0,68.0" style="Table4">
-      <tr>
-        <td>
-          <para style="Table_20_Contents" alignment="CENTER">Código</para>
-        </td>
-        <td>
-          <para style="Table_20_Contents" alignment="CENTER">Cuenta</para>
-        </td>
-        <td>
-          <para style="Table_20_Contents" alignment="CENTER">Analitica</para>
-        </td>
-        <td>
-          <para style="P1" alignment="CENTER">Debe</para>
-        </td>
-        <td>
-          <para style="P1" alignment="CENTER">Haber</para>
-        </td>
-      </tr>
-    </blockTable>
+    <para style="Standard">
+      <font color="white">-</font>
+    </para>
+    <section>
+        <para style="Standard">[[ repeatIn(lineas(o), 'f') ]]Fecha: [[ formatLang(f['fecha'], date=True) ]]</para>
+        <blockTable colWidths="60.0,150.0,60.0,60.0,60.0,60.0" style="Table4">
+          <tr>
+            <td>
+              <para style="Table_20_Contents" alignment="CENTER">Código</para>
+            </td>
+            <td>
+              <para style="Table_20_Contents" alignment="CENTER">Cuenta</para>
+            </td>
+            <td>
+              <para style="P1" alignment="CENTER">Inicial</para>
+            </td>
+            <td>
+              <para style="P1" alignment="CENTER">Debe</para>
+            </td>
+            <td>
+              <para style="P1" alignment="CENTER">Haber</para>
+            </td>
+            <td>
+              <para style="P1" alignment="CENTER">Final</para>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <para style="Table_20_Contents">[[ repeatIn(f['lineas'], 'l') ]][[ l['code'] ]]</para>
+            </td>
+            <td>
+              <para style="Table_20_Contents">[[ l['name'] ]]</para>
+            </td>
+            <td>
+              <para style="P1">[[ formatLang(l['inicial'], monetary=True) ]]</para>
+            </td>
+            <td>
+              <para style="P1">[[ formatLang(l['debit'], monetary=True) ]]</para>
+            </td>
+            <td>
+              <para style="P1">[[ formatLang(l['credit'], monetary=True) ]]</para>
+            </td>
+            <td>
+              <para style="P1">[[ formatLang(l['final'], monetary=True) ]]</para>
+            </td>
+          </tr>
+        </blockTable>
+    </section>
     <para style="P2">
       <font color="white"> </font>
     </para>
-    <blockTable colWidths="77.0,150.0,150.0,68.0,68.0" style="Table5">
-      <tr>
-        <td>
-          <para style="Table_20_Contents">[[ repeatIn(lineas(o), 'l') ]][[ l.account_id.code ]]</para>
-        </td>
-        <td>
-          <para style="Table_20_Contents">[[ l.account_id.name ]]</para>
-        </td>
-        <td>
-          <para style="Table_20_Contents">[[ l.analytic_account_id.complete_name ]]</para>
-        </td>
-        <td>
-          <para style="P1">[[ formatLang(l.debit, monetary=True) ]]</para>
-        </td>
-        <td>
-          <para style="P1">[[ formatLang(l.credit, monetary=True) ]]</para>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <para style="Table_20_Contents"></para>
-        </td>
-        <td>
-          <para style="Table_20_Contents"></para>
-        </td>
-        <td>
-          <para style="Table_20_Contents">Totales</para>
-        </td>
-        <td>
-          <para style="P1">[[ formatLang(totales()['debito'], monetary=True) ]]</para>
-        </td>
-        <td>
-          <para style="P1">[[ formatLang(totales()['credito'], monetary=True) ]]</para>
-        </td>
-      </tr>
-    </blockTable>
-    <para style="P2">
-      <font color="white"> </font>
-    </para>
-    <para style="Standard">Notas: [[ o.narration ]]</para>
   </story>
 </document>
