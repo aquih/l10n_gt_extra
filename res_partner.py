@@ -34,5 +34,5 @@ class res_partner(osv.osv):
             return False
 
     _constraints = [
-        (_validar_nit, 'El NIT no es correcto', ['vat']),
+        #(_validar_nit, 'El NIT no es correcto', ['vat']),
     ]
