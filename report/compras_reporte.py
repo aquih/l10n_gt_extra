@@ -87,6 +87,9 @@ class compras_reporte(report_sxw.rml_parse):
 
             for l in f.invoice_line:
                 precio = ( l.price_unit * (1-(l.discount or 0.0)/100.0) ) * tipo_cambio
+                if tipo == 'NC':
+                    precio = precio * -1
+                    
                 r = self.pool.get('account.tax').compute_all(self.cr, self.uid, l.invoice_line_tax_id, precio, l.quantity, product=l.product_id, partner=l.invoice_id.partner_id)
 
                 linea['base'] += r['total']
