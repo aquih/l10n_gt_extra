@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from openerp.osv import osv, fields
+import logging
 
 class res_partner(osv.osv):
     _inherit = "res.partner"
@@ -8,10 +9,14 @@ class res_partner(osv.osv):
     def _validar_nit(self, cr, uid, ids, context=None):
         obj = self.browse(cr, uid, ids[0], context=context)
 
-        if obj.country_id and obj.country_id.id != 91:
+        if obj.vat == 'CF' or not obj.vat:
             return True
 
-        if obj.vat == 'CF':
+        partners_id = self.search(cr, uid, [('vat','=',obj.vat),('parent_id','!=',False)])
+        if len(partners_id) > 1:
+            return False
+
+        if obj.country_id and obj.country_id.id != 91:
             return True
 
         nit = obj.vat.replace('-','')
@@ -34,5 +39,5 @@ class res_partner(osv.osv):
             return False
 
     _constraints = [
-        (_validar_nit, 'El NIT no es correcto', ['vat']),
+        (_validar_nit, 'El NIT no es correcto o está duplicado', ['vat']),
     ]
