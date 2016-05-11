@@ -3,6 +3,7 @@
 from openerp.report import report_sxw
 import time
 import datetime
+import logging
 
 class compras_reporte(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
@@ -89,7 +90,7 @@ class compras_reporte(report_sxw.rml_parse):
                 precio = ( l.price_unit * (1-(l.discount or 0.0)/100.0) ) * tipo_cambio
                 if tipo == 'NC':
                     precio = precio * -1
-                    
+
                 r = self.pool.get('account.tax').compute_all(self.cr, self.uid, l.invoice_line_tax_id, precio, l.quantity, product=l.product_id, partner=l.invoice_id.partner_id)
 
                 linea['base'] += r['total']
@@ -104,15 +105,16 @@ class compras_reporte(report_sxw.rml_parse):
                     linea[f.tipo_gasto+'_exento'] += r['total']
 
             linea['total'] = linea['base']+linea['iva']
+            logging.warn(linea)
 
             if f.pequenio_contribuyente == True:
                 self.totales['pequenio_contribuyente']['exento'] += linea[f.tipo_gasto+'_exento']
-                self.totales['pequenio_contribuyente']['neto'] += linea['base']
+                self.totales['pequenio_contribuyente']['neto'] += linea['base'] - linea[f.tipo_gasto+'_exento']
                 self.totales['pequenio_contribuyente']['iva'] += linea['iva']
                 self.totales['pequenio_contribuyente']['total'] += linea['total']
 
             self.totales[f.tipo_gasto]['exento'] += linea[f.tipo_gasto+'_exento']
-            self.totales[f.tipo_gasto]['neto'] += linea['base']
+            self.totales[f.tipo_gasto]['neto'] += linea['base'] - linea[f.tipo_gasto+'_exento']
             self.totales[f.tipo_gasto]['iva'] += linea['iva']
             self.totales[f.tipo_gasto]['total'] += linea['total']
 
