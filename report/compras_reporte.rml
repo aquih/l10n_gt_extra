@@ -70,7 +70,7 @@
   </stylesheet>
   <images/>
   <story>
-    <para style="P1">[[ repeatIn(objects, 'o') ]][[ setLang('es_GT') ]]</para>
+    <para style="P1">[[ repeatIn(objects, 'o') ]][[ setLang(user.lang) ]]</para>
     <section>
       <blockTable colWidths="35.0,60.0,60.0,93.0,55.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0" style="Table1" repeatRows="1">
         <tr>

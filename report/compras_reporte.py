@@ -109,12 +109,12 @@ class compras_reporte(report_sxw.rml_parse):
 
             if f.pequenio_contribuyente == True:
                 self.totales['pequenio_contribuyente']['exento'] += linea[f.tipo_gasto+'_exento']
-                self.totales['pequenio_contribuyente']['neto'] += linea['base'] - linea[f.tipo_gasto+'_exento']
+                self.totales['pequenio_contribuyente']['neto'] += linea[f.tipo_gasto]
                 self.totales['pequenio_contribuyente']['iva'] += linea['iva']
                 self.totales['pequenio_contribuyente']['total'] += linea['total']
 
             self.totales[f.tipo_gasto]['exento'] += linea[f.tipo_gasto+'_exento']
-            self.totales[f.tipo_gasto]['neto'] += linea['base'] - linea[f.tipo_gasto+'_exento']
+            self.totales[f.tipo_gasto]['neto'] += linea[f.tipo_gasto]
             self.totales[f.tipo_gasto]['iva'] += linea['iva']
             self.totales[f.tipo_gasto]['total'] += linea['total']
 
