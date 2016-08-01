@@ -121,10 +121,15 @@
                         <group>
                             <field name="folio_inicial"/>
                         </group>
+                        <group>
+                            <field name="tipo"/>
+                        </group>
                     </group>
                     <group>
                         <separator colspan="4" string="Diarios"/>
                         <field name="diarios_id" nolabel="1"/>
+                        <separator colspan="4" string="Diarios resumidos"/>
+                        <field name="diarios_resumidos_id" nolabel="1"/>
                         <separator colspan="4" string="Periodos"/>
                         <field name="periodos_id" nolabel="1"/>
                     </group>
