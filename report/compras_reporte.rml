@@ -172,7 +172,7 @@
           <para style="P1" alignment="RIGHT">Total de facturas de pequeños contribuyentes:</para>
         </td>
         <td>
-          <para style="P1" alignment="RIGHT">[[ formatLang(totales['pequenio_contribuyente']['total']) ]]</para>
+          <para style="P1" alignment="RIGHT">[[ formatLang(totales['pequenio_contribuyente']['exento']) ]]</para>
         </td>
       </tr>
       <tr>
