@@ -119,7 +119,7 @@
         </tr>
         <tr>
           <td>
-            <para style="P1">[[  '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[repeatIn(lineas(o), 'l') ]] [[ l['tipo'] ]]</para>
+            <para style="P1">[[ '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[repeatIn(lineas(o), 'l') ]] [[ l['tipo'] ]]</para>
           </td>
           <td>
             <para style="P1">[[ formatLang(l['fecha'], date=True) ]]</para>
