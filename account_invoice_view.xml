@@ -8,13 +8,11 @@
            <field name="type">form</field>
            <field name="inherit_id" ref="account.invoice_supplier_form"/>
            <field name="arch" type="xml">
-               <field name="move_id" position="after"> 
+               <field name="move_id" position="after">
                    <field name="tipo_gasto"/>
-                   <field name="pequenio_contribuyente"/>
                </field>
            </field>
        </record>
-
 
        <record id="l10n_gt_view_invoice_form" model="ir.ui.view">
            <field name="name">l10n_gt_extra.view_invoice_form</field>
@@ -23,7 +21,7 @@
            <field name="type">form</field>
            <field name="inherit_id" ref="account.invoice_form"/>
            <field name="arch" type="xml">
-               <field name="move_id" position="after"> 
+               <field name="move_id" position="after">
                    <field name="tipo_gasto"/>
                </field>
            </field>

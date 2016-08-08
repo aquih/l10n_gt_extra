@@ -21,13 +21,13 @@
 ##############################################################################
 
 import partida
-import asistente_compras_reporte
-import compras_reporte
-import asistente_ventas_reporte
-import ventas_reporte
 import asistente_banco_reporte
 import banco_reporte
-import asistente_diario_reporte
-import diario_reporte
+# import asistente_compras_reporte
+# import compras_reporte
+# import asistente_ventas_reporte
+# import ventas_reporte
+# import asistente_diario_reporte
+# import diario_reporte
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

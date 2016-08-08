@@ -10,7 +10,8 @@ class asistente_ventas_reporte(osv.osv_memory):
         'impuesto_id': fields.many2one('account.tax.code', 'Impuesto', required=True),
         'base_id': fields.many2one('account.tax.code', 'Base', required=True),
         'folio_inicial': fields.integer('Folio inicial', required=True),
-        'periodos_id': fields.many2many('account.period', 'ventas_periodo_rel', 'ventas_id', 'periodo_id', 'Periodos', required=True),
+        'fecha_desde': fields.date('Fecha inicial', required=True),
+        'fecha_hasta': fields.date('Fecha final', required=True),
     }
 
     def _revisar_diario(self, cr, uid, context):

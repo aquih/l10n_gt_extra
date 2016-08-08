@@ -179,7 +179,7 @@
           <para style="P1"></para>
         </td>
         <td>
-          <para style="P1" alignment="RIGHT">[[ formatLang(balance_final(o)['balance']) ]]</para>
+          <para style="P1" alignment="RIGHT">[[ formatLang(balance_inicial(o)['balance'] + totales['debito'] - totales['credito']) ]]</para>
         </td>
       </tr>
     </blockTable>

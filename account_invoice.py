@@ -18,11 +18,9 @@ class account_invoice(osv.osv):
 
     _columns = {
         'tipo_gasto': fields.selection((('compra', 'Compra/Bien'), ('servicio', 'Servicio'), ('importacion', 'Importación/Exportación'), ('combustible', 'Combustible'), ('mixto', 'Mixto')), 'Tipo de Gasto', required=True),
-        'pequenio_contribuyente': fields.boolean('Pequeño contribuyente'),
         'numero_factura': fields.function(_numero_factura, type='char', method=True, string='Numero Factura'),
     }
 
     _defaults = {
         'tipo_gasto': lambda *a: 'compra',
     }
-account_invoice()
