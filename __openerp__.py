@@ -27,8 +27,9 @@
     'description': """ Rerporte requeridos por la SAT y otra funcionalidad extra para llevar un contabilidad en Guatemala. """,
     'author': 'José Rodrigo Fernández Menegazzo',
     'website': 'http://solucionesprisma.com/',
-    'depends': ['l10n_gt'],
+    'depends': ['l10n_gt','account_tax_python','account_cancel'],
     'data': [
+        'l10n_gt_extra_base.xml',
         'account_invoice_view.xml',
         'res_partner_view.xml',
         'reports.xml',
