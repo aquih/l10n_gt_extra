@@ -71,7 +71,7 @@ class compras_reporte(report_sxw.rml_parse):
             linea = {
                 'tipo': tipo,
                 'fecha': f.date_invoice,
-                'numero': f.reference or f.supplier_invoice_number or '',
+                'numero': f.supplier_invoice_number or f.reference or '',
                 'proveedor': f.partner_id,
                 'compra': 0,
                 'compra_exento': 0,

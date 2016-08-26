@@ -2,17 +2,16 @@
 <document filename="test.pdf">
   <template pageSize="(27.9cm,21.6cm)" title="Test" author="Martin Simon" allowSplitting="20">
     <pageTemplate id="first">
-      <frame id="first" x1="57.0" y1="30.0" width="665" height="481"/>
+      <frame id="first" x1="0.5cm" y1="0.5cm" width="26.9cm" height="19.0cm"/>
       <pageGraphics>
-        <setFont name="Courier-Bold" size="7"/>
-        <drawCentredString x="10cm" y="21.00cm">[[ objects[0].diarios_id[0].company_id.name ]]</drawCentredString>
-        <drawRightString x="20cm" y="21.00cm">Folio [[ folio(objects) ]]</drawRightString>
-        <drawString x="1cm" y="20.50cm">LIBRO DE VENTAS Y SERVICIOS</drawString>
-        <drawString x="1cm" y="20.10cm">NOMBRE COMERCIAL: [[ objects[0].diarios_id[0].company_id.partner_id.name ]]</drawString>
+        <setFont name="Courier-Bold" size="9"/>
+        <drawCentredString x="13cm" y="21.00cm">[[ objects[0].diarios_id[0].company_id.name ]]</drawCentredString>
+        <drawRightString x="23cm" y="21.00cm">Folio [[ folio(objects) ]]</drawRightString>
         <drawString x="1cm" y="20.70cm">NUMERO DE IDENTIFICACION TRIBUTARIA: [[ objects[0].diarios_id[0].company_id.partner_id.vat ]]</drawString>
+        <drawString x="1cm" y="20.40cm">LIBRO DE VENTAS Y SERVICIOS</drawString>
+        <drawString x="1cm" y="20.10cm">NOMBRE COMERCIAL: [[ objects[0].diarios_id[0].company_id.partner_id.name ]]</drawString>
+        <drawString x="1cm" y="19.70cm">DOMICILIO FISCAL: [[ objects[0].diarios_id[0].company_id.partner_id.street ]]</drawString>
         <drawRightString x="20cm" y="19.30cm">REGISTRO DEL MES: [[ ', '.join([x.name for x in objects[0].periodos_id]) ]]</drawRightString>
-        <drawString x="1cm" y="19.30cm">DOMICILIO FISCAL: [[ objects[0].diarios_id[0].company_id.partner_id.street ]]</drawString>
-        <setFont name="Courier-Bold" size="7"/>
       </pageGraphics>
     </pageTemplate>
   </template>
