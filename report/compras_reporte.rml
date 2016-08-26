@@ -70,7 +70,7 @@
   </stylesheet>
   <images/>
   <story>
-    <para style="P1">[[ repeatIn(objects, 'o') ]][[ setLang('es_GT') ]]</para>
+    <para style="P1">[[ repeatIn(objects, 'o') ]][[ setLang(user.lang) ]]</para>
     <section>
       <blockTable colWidths="35.0,60.0,60.0,93.0,55.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0" style="Table1" repeatRows="1">
         <tr>
@@ -119,7 +119,7 @@
         </tr>
         <tr>
           <td>
-            <para style="P1">[[  '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[repeatIn(lineas(o), 'l') ]] [[ l['tipo'] ]]</para>
+            <para style="P1">[[ '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[repeatIn(lineas(o), 'l') ]] [[ l['tipo'] ]]</para>
           </td>
           <td>
             <para style="P1">[[ formatLang(l['fecha'], date=True) ]]</para>
@@ -172,7 +172,7 @@
           <para style="P1" alignment="RIGHT">Total de facturas de pequeños contribuyentes:</para>
         </td>
         <td>
-          <para style="P1" alignment="RIGHT">[[ formatLang(totales['pequenio_contribuyente']['total']) ]]</para>
+          <para style="P1" alignment="RIGHT">[[ formatLang(totales['pequenio_contribuyente']['exento']) ]]</para>
         </td>
       </tr>
       <tr>

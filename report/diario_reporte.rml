@@ -1,105 +1,188 @@
 <?xml version="1.0"?>
 <document filename="test.pdf">
-  <template pageSize="(595.0,842.0)" title="Test" author="Martin Simon" allowSplitting="20">
-    <pageTemplate id="first">
-      <frame id="first" x1="57.0" y1="57.0" width="481" height="738"/>
-    </pageTemplate>
-  </template>
-  <stylesheet>
-    <blockTableStyle id="Standard_Outline">
-      <blockAlignment value="LEFT"/>
-      <blockValign value="TOP"/>
-    </blockTableStyle>
-    <blockTableStyle id="Table4">
-      <blockAlignment value="LEFT"/>
-      <blockValign value="TOP"/>
-    </blockTableStyle>
-    <blockTableStyle id="Table5">
-      <blockAlignment value="LEFT"/>
-      <blockValign value="TOP"/>
-      <blockTopPadding length="0.02cm"/>
-      <blockBottomPadding length="0.02cm"/>
-      <blockLeftPadding length="0.02cm"/>
-      <blockRightPadding length="0.02cm"/>
-      <lineStyle kind="LINEABOVE" colorName="black" start="-2,-1" stop="-1,-1"/>
-      <lineStyle kind="LINEBELOW" colorName="black" start="-2,-1" stop="-1,-1" thickness="2"/>
-    </blockTableStyle>
-    <initialize>
-      <paraStyle name="all" alignment="justify"/>
-    </initialize>
-    <paraStyle name="P1" fontName="Times-Roman" fontSize="10.0" leading="13" alignment="RIGHT"/>
-    <paraStyle name="P2" fontName="Times-Roman" fontSize="2.0" leading="3"/>
-    <paraStyle name="Standard" fontName="Times-Roman"/>
-    <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
-    <paraStyle name="Text_20_body" fontName="Times-Roman" spaceBefore="0.0" spaceAfter="6.0"/>
-    <paraStyle name="List" fontName="Times-Roman" spaceBefore="0.0" spaceAfter="6.0"/>
-    <paraStyle name="Caption" fontName="Times-Roman" fontSize="12.0" leading="15" spaceBefore="6.0" spaceAfter="6.0"/>
-    <paraStyle name="Index" fontName="Times-Roman"/>
-    <paraStyle name="Table_20_Contents" fontName="Times-Roman" fontSize="10.0" leading="13"/>
-    <paraStyle name="Heading_20_1" fontName="Helvetica-Bold" fontSize="115%" leading="NaN" spaceBefore="12.0" spaceAfter="6.0"/>
-    <paraStyle name="Heading_20_2" fontName="Helvetica-BoldOblique" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
-    <paraStyle name="Heading_20_3" fontName="Helvetica-Bold" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
-    <paraStyle name="Drawing" fontName="Times-Roman" fontSize="10.0" leading="13" spaceBefore="6.0" spaceAfter="6.0"/>
-    <paraStyle name="Table_20_Heading" fontName="Times-Roman" fontSize="10.0" leading="13" alignment="CENTER"/>
-    <images/>
-  </stylesheet>
-  <story>
-    <para style="Heading_20_3">[[ repeatIn(objects, 'o' )]][[ setLang('en_ES') ]]<font face="Times-Roman">[[ user.company_id.name ]]</font></para>
-    <para style="Standard">Diario</para>
-    <para style="Standard">Folio [[ folio(objects) ]]</para>
-    <para style="Standard">
-      <font color="white">-</font>
-    </para>
-    <para style="Standard">
-      <font color="white">-</font>
-    </para>
-    <section>
-        <para style="Standard">[[ repeatIn(lineas(o), 'f') ]]Fecha: [[ formatLang(f['fecha'], date=True) ]]</para>
-        <blockTable colWidths="60.0,150.0,60.0,60.0,60.0,60.0" style="Table4">
-          <tr>
-            <td>
-              <para style="Table_20_Contents" alignment="CENTER">Código</para>
-            </td>
-            <td>
-              <para style="Table_20_Contents" alignment="CENTER">Cuenta</para>
-            </td>
-            <td>
-              <para style="P1" alignment="CENTER">Inicial</para>
-            </td>
-            <td>
-              <para style="P1" alignment="CENTER">Debe</para>
-            </td>
-            <td>
-              <para style="P1" alignment="CENTER">Haber</para>
-            </td>
-            <td>
-              <para style="P1" alignment="CENTER">Final</para>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <para style="Table_20_Contents">[[ repeatIn(f['lineas'], 'l') ]][[ l['code'] ]]</para>
-            </td>
-            <td>
-              <para style="Table_20_Contents">[[ l['name'] ]]</para>
-            </td>
-            <td>
-              <para style="P1">[[ formatLang(l['inicial'], monetary=True) ]]</para>
-            </td>
-            <td>
-              <para style="P1">[[ formatLang(l['debit'], monetary=True) ]]</para>
-            </td>
-            <td>
-              <para style="P1">[[ formatLang(l['credit'], monetary=True) ]]</para>
-            </td>
-            <td>
-              <para style="P1">[[ formatLang(l['final'], monetary=True) ]]</para>
-            </td>
-          </tr>
-        </blockTable>
-    </section>
-    <para style="P2">
-      <font color="white"> </font>
-    </para>
-  </story>
+    <template pageSize="(595.0,842.0)" title="Test" author="Martin Simon" allowSplitting="20">
+        <pageTemplate id="first">
+            <frame id="first" x1="57.0" y1="57.0" width="481" height="738"/>
+            <pageGraphics>
+              <setFont name="Times-Bold" size="13"/>
+              <drawRightString x="20cm" y="28.50cm">Folio [[ folio(objects) ]]</drawRightString>
+              <drawCentredString x="10cm" y="28.50cm">[[ user.company_id.name ]]</drawCentredString>
+              <drawCentredString x="10cm" y="28.00cm">[[ 'Libro Diario' if objects[0].tipo == 'diario' else 'Libro Mayor General' ]]</drawCentredString>
+              <drawCentredString x="10cm" y="27.50cm">Períodos: [[ ','.join(x.name for x in objects[0].periodos_id) ]]</drawCentredString>
+            </pageGraphics>
+        </pageTemplate>
+    </template>
+    <stylesheet>
+        <blockTableStyle id="Standard_Outline">
+            <blockAlignment value="LEFT"/>
+            <blockValign value="TOP"/>
+        </blockTableStyle>
+        <blockTableStyle id="Table4">
+            <blockAlignment value="LEFT"/>
+            <blockValign value="TOP"/>
+            <lineStyle kind="LINEBELOW" colorName="black" start="0,-1" stop="-1,-1" thickness="1"/>
+        </blockTableStyle>
+        <blockTableStyle id="Table5">
+            <blockAlignment value="LEFT"/>
+            <blockValign value="TOP"/>
+            <blockTopPadding length="0.02cm"/>
+            <blockBottomPadding length="0.02cm"/>
+            <blockLeftPadding length="0.02cm"/>
+            <blockRightPadding length="0.02cm"/>
+            <lineStyle kind="LINEABOVE" colorName="black" start="-2,-1" stop="-1,-1"/>
+            <lineStyle kind="LINEBELOW" colorName="black" start="-2,-1" stop="-1,-1" thickness="2"/>
+        </blockTableStyle>
+        <initialize>
+            <paraStyle name="all" alignment="justify"/>
+        </initialize>
+        <paraStyle name="P1" fontName="Times-Roman" fontSize="10.0" leading="11" alignment="RIGHT"/>
+        <paraStyle name="P2" fontName="Times-Roman" fontSize="2.0" leading="3"/>
+        <paraStyle name="Standard" fontName="Helvetica"/>
+        <paraStyle name="Category1" fontName="Helvetica-Bold" fontSize="10.0" leading="13"/>
+        <paraStyle name="Category2" fontName="Helvetica-BoldOblique" fontSize="10.0" leading="14"/>
+        <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+        <paraStyle name="Text_20_body" fontName="Times-Roman" spaceBefore="0.0" spaceAfter="6.0"/>
+        <paraStyle name="List" fontName="Times-Roman" spaceBefore="0.0" spaceAfter="6.0"/>
+        <paraStyle name="Caption" fontName="Times-Roman" fontSize="12.0" leading="15" spaceBefore="6.0" spaceAfter="6.0"/>
+        <paraStyle name="Index" fontName="Times-Roman"/>
+        <paraStyle name="Table_20_Contents" fontName="Times-Roman" fontSize="10.0" leading="11"/>
+        <paraStyle name="Heading_20_1" fontName="Helvetica-Bold" fontSize="115%" leading="NaN" spaceBefore="12.0" spaceAfter="6.0"/>
+        <paraStyle name="Heading_20_2" fontName="Helvetica-BoldOblique" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+        <paraStyle name="Heading_20_3" fontName="Helvetica-Bold" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+        <paraStyle name="Drawing" fontName="Times-Roman" fontSize="10.0" leading="13" spaceBefore="6.0" spaceAfter="6.0"/>
+        <paraStyle name="Table_20_Heading" fontName="Times-Roman" fontSize="10.0" leading="13" alignment="CENTER"/>
+        <images/>
+    </stylesheet>
+    <story>
+        <para style="Heading_20_3">[[ repeatIn(objects, 'o' )]][[ setLang(user.lang) ]]</para>
+        <para style="Standard">
+            <font color="white">-</font>
+        </para>
+        <section>
+            <para style="Category1">[[ repeatIn(lineas(o), 'd') ]]</para>
+            <section>
+                <para style="Category2">[[ repeatIn(d['lineas'], 'f') ]] [[ 'Fecha' if o.tipo == 'diario' else 'Cuenta' ]] : [[ formatLang(f['llave'], date=True) if o.tipo == 'diario' else f['llave'] ]]</para>
+                <blockTable colWidths="60.0,60.0,150.0,60.0,60.0" style="Table4">
+                    <tr>
+                        <td>
+                            <para style="Table_20_Contents" alignment="CENTER">[[ '' if o.tipo == 'diario' else removeParentNode('blockTable') ]]Fecha</para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents" alignment="CENTER">Código</para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents" alignment="CENTER">Cuenta</para>
+                        </td>
+                        <td>
+                            <para style="P1" alignment="CENTER">Debe</para>
+                        </td>
+                        <td>
+                            <para style="P1" alignment="CENTER">Haber</para>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <para style="Table_20_Contents">[[ repeatIn(f['lineas_detalladas'], 'l') ]][[ l['date'] ]]</para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents">[[ l['code'] ]]</para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents">[[ l['name'] ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(l['debit'], monetary=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(l['credit'], monetary=True) ]]</para>
+                        </td>
+                    </tr>
+                </blockTable>
+
+                <blockTable colWidths="60.0,60.0,120.0,60.0,60.0,60.0,60.0,40.0" style="Table4">
+                    <tr>
+                        <td>
+                            <para style="Table_20_Contents"></para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents"></para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents">Totales</para>
+                        </td>
+                        <td>
+                            <para style="P1">0</para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(f['total_debe'], monetary=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(f['total_haber'], monetary=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(f['total_debe']-f['total_haber'], monetary=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1"></para>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <para style="Table_20_Contents" alignment="CENTER">[[ '' if o.tipo == 'mayor' else removeParentNode('blockTable') ]]No. Poliza</para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents" alignment="CENTER">Fecha</para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents" alignment="CENTER">Descripcion</para>
+                        </td>
+                        <td>
+                            <para style="P1" alignment="CENTER"></para>
+                        </td>
+                        <td>
+                            <para style="P1" alignment="CENTER">Debe</para>
+                        </td>
+                        <td>
+                            <para style="P1" alignment="CENTER">Haber</para>
+                        </td>
+                        <td>
+                            <para style="P1" alignment="CENTER"></para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents" alignment="CENTER">Doc</para>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <para style="Table_20_Contents">[[ repeatIn(f['lineas_detalladas'], 'l') ]][[ l['number'] ]]</para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents">[[ formatLang(l['date'], date=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents">[[ l['descr'] ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1"></para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(l['debit'], monetary=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(l['credit'], monetary=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1"></para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents">[[ l['doc'] ]]</para>
+                        </td>
+                    </tr>
+                </blockTable>
+            </section>
+        </section>
+        <para style="P2">
+            <font color="white"> </font>
+        </para>
+    </story>
 </document>
