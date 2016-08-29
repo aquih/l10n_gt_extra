@@ -10,6 +10,7 @@ class asistente_ventas_reporte(osv.osv_memory):
         'impuesto_id': fields.many2one('account.tax.code', 'Impuesto', required=True),
         'base_id': fields.many2one('account.tax.code', 'Base', required=True),
         'folio_inicial': fields.integer('Folio inicial', required=True),
+        'resumido': fields.boolean('Resumido'),
         'periodos_id': fields.many2many('account.period', 'ventas_periodo_rel', 'ventas_id', 'periodo_id', 'Periodos', required=True),
     }
 

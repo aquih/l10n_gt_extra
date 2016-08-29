@@ -51,6 +51,7 @@
                         <group>
                             <field name="empresa_id"/>
                             <field name="folio_inicial"/>
+                            <field name="resumido"/>
                         </group>
                         <group>
                             <field name="impuesto_id" domain="[('name','=','IVA por Pagar')]"/>

@@ -122,6 +122,26 @@ class ventas_reporte(report_sxw.rml_parse):
                 self.totales['nd']['iva'] += l['total_impuesto']
                 self.totales['nd']['total'] += l['total_base']+l['total_impuesto']
 
+        if datos.resumido:
+            lineas_resumidas = {}
+            for l in lineas:
+                llave = l['tipo_doc']+l['date_invoice']
+                if llave not in lineas_resumidas:
+                    lineas_resumidas[llave] = dict(l)
+                    lineas_resumidas[llave]['name'] = 'Varios'
+                    lineas_resumidas[llave]['vat'] = 'Varios'
+                    lineas_resumidas[llave]['facturas'] = [l['number']]
+                else:
+                    lineas_resumidas[llave]['total_base'] += l['total_base']
+                    lineas_resumidas[llave]['total_impuesto'] += l['total_impuesto']
+                    lineas_resumidas[llave]['facturas'].append(l['number'])
+
+            for l in lineas_resumidas.values():
+                l['number'] = l['facturas'][0] + ' al ' + l['facturas'][-1]
+
+            # lineas = lineas_resumidas.values()
+            lineas = sorted(lineas_resumidas.values(), key=lambda x: l['tipo_doc']+l['date_invoice'])
+
         self.temp_lineas = lineas
         return lineas
 
