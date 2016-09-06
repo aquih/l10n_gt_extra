@@ -2,13 +2,13 @@
 <document filename="test.pdf">
     <template pageSize="(595.0,842.0)" title="Test" author="Martin Simon" allowSplitting="20">
         <pageTemplate id="first">
-            <frame id="first" x1="57.0" y1="57.0" width="481" height="738"/>
+            <frame id="first" x1="57.0" y1="57.0" width="481" height="720"/>
             <pageGraphics>
               <setFont name="Times-Bold" size="13"/>
               <drawRightString x="20cm" y="28.50cm">Folio [[ folio(objects) ]]</drawRightString>
               <drawCentredString x="10cm" y="28.50cm">[[ user.company_id.name ]]</drawCentredString>
-              <drawCentredString x="10cm" y="28.00cm">[[ 'Libro Diario' if objects[0].tipo == 'diario' else 'Libro Mayor General' ]]</drawCentredString>
-              <drawCentredString x="10cm" y="27.50cm">Períodos: [[ ','.join(x.name for x in objects[0].periodos_id) ]]</drawCentredString>
+              <drawCentredString x="10cm" y="28.00cm">[[ 'Libro Diario' if objects[0].tipo == 'diario' else 'Libro Diario Mayor General' ]]</drawCentredString>
+              <drawCentredString x="10cm" y="27.50cm">[[ ','.join(x.code for x in objects[0].periodos_id) ]]</drawCentredString>
             </pageGraphics>
         </pageTemplate>
     </template>
@@ -99,7 +99,7 @@
                     </tr>
                 </blockTable>
 
-                <blockTable colWidths="60.0,60.0,120.0,60.0,60.0,60.0,60.0,40.0" style="Table4">
+                <blockTable colWidths="110.0,60.0,110.0,50.0,50.0,50.0,50.0,40.0" style="Table4">
                     <tr>
                         <td>
                             <para style="Table_20_Contents"></para>

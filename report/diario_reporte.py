@@ -37,7 +37,7 @@ class diario_reporte(report_sxw.rml_parse):
             diarios[diario.id] = {'diario': diario.name, 'lineas': []}
 
             self.cr.execute("\
-                select l.period_id as number, l.ref as descr, j.code as doc, l.date, a.code, a.name, a.code||' '||a.name as full_name, l.debit as debit, l.credit as credit \
+                select m.name as number, l.ref as descr, j.code as doc, l.date, a.code, a.name, a.code||' '||a.name as full_name, l.debit as debit, l.credit as credit \
                 from account_move_line l join account_move m on(l.move_id = m.id) \
                     join account_account a on(l.account_id = a.id) \
                     join account_journal j on(l.journal_id = j.id) \
@@ -69,7 +69,7 @@ class diario_reporte(report_sxw.rml_parse):
             diarios[diario.id] = {'diario': diario.name, 'lineas': []}
 
             self.cr.execute("\
-                select l.period_id as number, j.name as descr, j.code as doc, l.date, a.code, a.name, a.code||' '||a.name as full_name, sum(l.debit) as debit, sum(l.credit) as credit \
+                select 'Varios' as number, j.name as descr, j.code as doc, l.date, a.code, a.name, a.code||' '||a.name as full_name, sum(l.debit) as debit, sum(l.credit) as credit \
                 from account_move_line l join account_move m on(l.move_id = m.id) \
                     join account_account a on(l.account_id = a.id) \
                     join account_journal j on(l.journal_id = j.id) \

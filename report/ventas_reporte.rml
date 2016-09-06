@@ -105,7 +105,7 @@
           </tr>
         <tr>
           <td>
-            <para style="P1">[[  '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[ repeatIn(lineas(o), 'l') ]][[ l['tipo_doc'] ]] [[ 'ANU' if l['state'] == 'cancel' else '' ]]</para>
+            <para style="P1">[[ '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[ repeatIn(lineas(o), 'l') ]][[ l['tipo_doc'] ]] [[ 'ANU' if l['state'] == 'cancel' else '' ]]</para>
           </td>
           <td>
             <para style="P1">[[ formatLang(l['date_invoice'], date=True) ]]</para>

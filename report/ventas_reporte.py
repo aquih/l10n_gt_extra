@@ -3,6 +3,7 @@
 from openerp.report import report_sxw
 import time
 import datetime
+import logging
 
 class ventas_reporte(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
@@ -65,7 +66,7 @@ class ventas_reporte(report_sxw.rml_parse):
                 invoice.journal_id in ("+','.join([str(d.id) for d in datos.diarios_id])+") and \
                 invoice.period_id in ("+','.join([str(p.id) for p in datos.periodos_id])+") \
             group by invoice.id, invoice.date_invoice, invoice.journal_id, invoice.tipo_gasto, coalesce(invoice.number, invoice.internal_number), invoice.type, partner.name, partner.vat, invoice.state, invoice.amount_untaxed, invoice.state \
-            order by type, number",
+            order by type, date_invoice, number",
             (datos.impuesto_id.id, datos.impuesto_id.id, datos.base_id.id, datos.base_id.id))
 
         lineas = self.cr.dictfetchall()
@@ -125,6 +126,8 @@ class ventas_reporte(report_sxw.rml_parse):
         if datos.resumido:
             lineas_resumidas = {}
             for l in lineas:
+                l['state'] = 'open'
+                l['tipo_gasto'] = 'compra' 
                 llave = l['tipo_doc']+l['date_invoice']
                 if llave not in lineas_resumidas:
                     lineas_resumidas[llave] = dict(l)
@@ -138,9 +141,12 @@ class ventas_reporte(report_sxw.rml_parse):
 
             for l in lineas_resumidas.values():
                 l['number'] = l['facturas'][0] + ' al ' + l['facturas'][-1]
+                logging.warn(l['tipo_doc']+l['date_invoice'])
+
+            logging.warn(sorted(lineas_resumidas.values(), key=lambda l: l['tipo_doc']+l['date_invoice']))
 
             # lineas = lineas_resumidas.values()
-            lineas = sorted(lineas_resumidas.values(), key=lambda x: l['tipo_doc']+l['date_invoice'])
+            lineas = sorted(lineas_resumidas.values(), key=lambda l: l['tipo_doc']+l['date_invoice'])
 
         self.temp_lineas = lineas
         return lineas
