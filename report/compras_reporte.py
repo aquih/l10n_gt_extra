@@ -23,7 +23,6 @@ class compras_reporte(report_sxw.rml_parse):
         self.uid = uid
 
     def folio(self, datos):
-
         if self.folioActual < 0:
             if datos[0].folio_inicial <= 0:
                 self.folioActual = 1
@@ -46,9 +45,11 @@ class compras_reporte(report_sxw.rml_parse):
         self.totales['pequenio_contribuyente'] = {'exento':0,'neto':0,'iva':0,'total':0}
 
         journal_ids = [x.id for x in datos.diarios_id]
-        period_ids = [x.id for x in datos.periodos_id]
         facturas = self.pool.get('account.invoice').search(self.cr, self.uid, [
-            ('state','in',['open','paid']), ('journal_id','in',journal_ids), ('period_id','in',period_ids)
+            ('state','in',['open','paid']),
+            ('journal_id','in',journal_ids),
+            ('date_invoice','<=',datos.fecha_desde),
+            ('date_invoice','>=',datos.fecha_hasta),
         ], order='date_invoice')
 
         lineas = []
@@ -86,25 +87,25 @@ class compras_reporte(report_sxw.rml_parse):
                 'total': 0
             }
 
-            for l in f.invoice_line:
+            for l in f.invoice_line_ids:
                 precio = ( l.price_unit * (1-(l.discount or 0.0)/100.0) ) * tipo_cambio
                 if tipo == 'NC':
                     precio = precio * -1
 
                 r = self.pool.get('account.tax').compute_all(self.cr, self.uid, l.invoice_line_tax_id, precio, l.quantity, product=l.product_id, partner=l.invoice_id.partner_id)
 
-                linea['base'] += r['total']
-                if len(l.invoice_line_tax_id) > 0:
-                    linea[f.tipo_gasto] += r['total']
+                linea['base'] += r['total_included']
+                if len(l.invoice_line_tax_ids) > 0:
+                    linea[f.tipo_gasto] += r['total_included']
                     for i in r['taxes']:
-                        if i['base_code_id'] == datos.base_id.id and i['tax_code_id'] == datos.impuesto_id.id:
+                        if i['id'] == datos.impuesto_id.id:
                             linea['iva'] += i['amount']
                         elif i['amount'] > 0:
                             linea[f.tipo_gasto+'_exento'] += i['amount']
                 else:
-                    linea[f.tipo_gasto+'_exento'] += r['total']
+                    linea[f.tipo_gasto+'_exento'] += r['total_included']
 
-            linea['total'] = linea[f.tipo_gasto]+linea['iva']
+            linea['total'] = linea[f.tipo_gasto] + linea['iva']
 
             if f.pequenio_contribuyente:
                 self.totales['pequenio_contribuyente']['exento'] += linea[f.tipo_gasto+'_exento']

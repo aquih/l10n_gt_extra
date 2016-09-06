@@ -27,7 +27,7 @@
            </field>
        </record>
 
-       <record id="l10n_gt_view_invoice_tree" model="ir.ui.view">
+       <!-- <record id="l10n_gt_view_invoice_tree" model="ir.ui.view">
            <field name="name">l10n_gt_extra.veiw_invoice_tree</field>
            <field name="model">account.invoice</field>
            <field name="inherit_id" ref="account.invoice_tree"/>
@@ -37,7 +37,7 @@
                    <field name="numero_factura"/>
                </field>
            </field>
-       </record>
+       </record> -->
 
     </data>
 </openerp>

@@ -18,10 +18,10 @@ class partida(report_sxw.rml_parse):
         self.cr = cr
 
     def lineas(self, datos):
-        for l in datos.line_id:
+        for l in datos.line_ids:
             self.totales['debito'] += l.debit
             self.totales['credito'] += l.credit
-        return sorted(datos.line_id, key=lambda x: x.debit, reverse=True)
+        return sorted(datos.line_ids, key=lambda x: x.debit, reverse=True)
 
     def totales(self):
         return self.totales

@@ -59,6 +59,6 @@ class res_partner(osv.osv):
     }
 
     _constraints = [
-        (_validar_duplicado, 'El NIT ya existe.', ['vat']),
-        (_validar_nit, 'El NIT no es correcto', ['vat']),
+    #    (_validar_duplicado, 'El NIT ya existe.', ['vat']),
+    #    (_validar_nit, 'El NIT no es correcto', ['vat']),
     ]
