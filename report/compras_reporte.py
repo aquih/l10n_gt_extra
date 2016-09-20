@@ -69,6 +69,7 @@ class compras_reporte(report_sxw.rml_parse):
                 tipo += ' PEQ'
 
             linea = {
+                'estado': f.state,
                 'tipo': tipo,
                 'fecha': f.date_invoice,
                 'numero': f.supplier_invoice_number or f.reference or '',

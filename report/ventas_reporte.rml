@@ -70,7 +70,7 @@
   <story>
     <para style="P1">[[ repeatIn(objects, 'o') ]]</para>
     <section>
-      <blockTable colWidths="40.0,55.0,110.0,200.0,50.0,50.0,50.0,50.0,50.0,50.0" style="Table1">
+      <blockTable colWidths="40.0,55.0,110.0,200.0,50.0,50.0,50.0,50.0,50.0,50.0" style="Table1" repeatRows="1">
           <tr>
             <td>
               <para style="P1">TIPO</para>
@@ -105,34 +105,34 @@
           </tr>
         <tr>
           <td>
-            <para style="P1">[[ '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[ repeatIn(lineas(o), 'l') ]][[ l['tipo_doc'] ]] [[ 'ANU' if l['state'] == 'cancel' else '' ]]</para>
+            <para style="P1">[[ '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[ repeatIn(lineas(o), 'l') ]][[ l['tipo'] ]] [[ 'ANU' if l['estado'] == 'cancel' else '' ]]</para>
           </td>
           <td>
-            <para style="P1">[[ formatLang(l['date_invoice'], date=True) ]]</para>
+            <para style="P1">[[ formatLang(l['fecha'], date=True) ]]</para>
           </td>
           <td>
-            <para style="P1" alignment="CENTER">[[ l['number'] ]]</para>
+            <para style="P1" alignment="CENTER">[[ l['numero'] ]]</para>
           </td>
           <td>
-            <para style="P1">[[ l['name'] ]]</para>
+            <para style="P1">[[ l['cliente'] ]]</para>
           </td>
           <td>
-            <para style="P1">[[ l['vat'] ]]</para>
+            <para style="P1">[[ l['nit'] ]]</para>
           </td>
           <td>
-            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_base'] if l['tipo_gasto'] == 'exento' else 0) ]]</para>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['compra_exento']+l['servicio_exento']+l['combustible_exento']+l['importacion_exento']) ]]</para>
           </td>
           <td>
-            <para style="P1" alignment="RIGHT">[[ formatLang( ( l['total_base'] if l['tipo_gasto'] in ['compra', 'combustible', 'importacion'] else 0 ) + l['mixto_producto']) ]]</para>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['compra']+l['combustible']+l['importacion']) ]]</para>
           </td>
           <td>
-            <para style="P1" alignment="RIGHT">[[ formatLang( ( l['total_base'] if l['tipo_gasto'] == 'servicio' else 0 ) + l['mixto_servicio'] ) ]]</para>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['servicio']) ]]</para>
           </td>
           <td>
-            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_impuesto']) ]]</para>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['iva']) ]]</para>
           </td>
           <td>
-            <para style="P1" alignment="RIGHT">[[ formatLang(l['total_base']+l['total_impuesto']) ]]</para>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['total']) ]]</para>
           </td>
         </tr>
       </blockTable>
@@ -151,12 +151,15 @@
       </tr>
     </blockTable>
     <para style="P6">Resumen:</para>
-    <blockTable colWidths="120.0,120.0,120.0,120.0" style="Table3">
+    <blockTable colWidths="120.0,120.0,120.0,120.0,120.0" style="Table3">
       <tr>
         <td>
           <para style="P2">
             <font color="white"> </font>
           </para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">EXENTO</para>
         </td>
         <td>
           <para style="P2" alignment="RIGHT">NETO</para>
@@ -170,35 +173,27 @@
       </tr>
       <tr>
         <td>
-          <para style="P2">EXENTOS</para>
-        </td>
-        <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['exento']['neto']) ]]</para>
-        </td>
-        <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['exento']['iva']) ]]</para>
-        </td>
-        <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['exento']['total']) ]]</para>
-        </td>
-      </tr>
-      <tr>
-        <td>
           <para style="P2">BIENES</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['compra']['neto'] + totales['combustible']['neto'] + totales['importacion']['neto']) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['compra']['exento']) ]]</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['compra']['iva'] + totales['combustible']['iva'] + totales['importacion']['iva']) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['compra']['neto']) ]]</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['compra']['total'] + totales['combustible']['total'] + totales['importacion']['total']) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['compra']['iva']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['compra']['total']) ]]</para>
         </td>
       </tr>
       <tr>
         <td>
           <para style="P2">SERVICIOS</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['servicio']['exento']) ]]</para>
         </td>
         <td>
           <para style="P2" alignment="RIGHT">[[ formatLang(totales['servicio']['neto']) ]]</para>
@@ -212,30 +207,36 @@
       </tr>
       <tr>
         <td>
-          <para style="P2">NC</para>
+          <para style="P2">COMBUSTIBLE</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['nc']['neto']) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['combustible']['exento']) ]]</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['nc']['iva']) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['combustible']['neto']) ]]</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['nc']['total']) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['combustible']['iva']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['combustible']['total']) ]]</para>
         </td>
       </tr>
       <tr>
         <td>
-          <para style="P2">ND</para>
+          <para style="P2">EXPORTACIONES</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['nd']['neto']) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(0) ]]</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['nd']['iva']) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['neto']) ]]</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['nd']['total']) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['iva']) ]]</para>
+        </td>
+        <td>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['total']) ]]</para>
         </td>
       </tr>
       <tr>
@@ -243,13 +244,16 @@
           <para style="P3">TOTALES</para>
         </td>
         <td>
-          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['neto']+totales['servicio']['neto']+totales['combustible']['neto']+totales['importacion']['neto']+totales['exento']['neto']+totales['nc']['neto']+totales['nd']['neto']) ]]</para>
+          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['exento']+totales['servicio']['exento']+totales['combustible']['exento']+0) ]]</para>
         </td>
         <td>
-          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['iva']+totales['servicio']['iva']+totales['combustible']['iva']+totales['importacion']['iva']+totales['exento']['iva']+totales['nc']['iva']+totales['nd']['iva']) ]]</para>
+          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['neto']+totales['servicio']['neto']+totales['combustible']['neto']+totales['importacion']['neto']) ]]</para>
         </td>
         <td>
-          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['total']+totales['servicio']['total']+totales['combustible']['total']+totales['importacion']['total']+totales['exento']['total']+totales['nc']['total']+totales['nd']['total']) ]]</para>
+          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['iva']+totales['servicio']['iva']+totales['combustible']['iva']+totales['importacion']['iva']) ]]</para>
+        </td>
+        <td>
+          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['total']+totales['servicio']['total']+totales['combustible']['total']+totales['importacion']['total']) ]]</para>
         </td>
       </tr>
     </blockTable>

@@ -261,7 +261,7 @@
           <para style="P2">IMPORTACION</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">0</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(0) ]]</para>
         </td>
         <td>
           <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['neto']) ]]</para>
