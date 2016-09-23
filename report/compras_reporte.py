@@ -48,9 +48,10 @@ class compras_reporte(report_sxw.rml_parse):
         facturas = self.pool.get('account.invoice').search(self.cr, self.uid, [
             ('state','in',['open','paid']),
             ('journal_id','in',journal_ids),
-            ('date_invoice','<=',datos.fecha_desde),
-            ('date_invoice','>=',datos.fecha_hasta),
+            ('date_invoice','<=',datos.fecha_hasta),
+            ('date_invoice','>=',datos.fecha_desde),
         ], order='date_invoice')
+        logging.warn(facturas)
 
         lineas = []
         for f in self.pool.get('account.invoice').browse(self.cr, self.uid, facturas):
@@ -58,7 +59,7 @@ class compras_reporte(report_sxw.rml_parse):
             tipo_cambio = 1
             if f.currency_id.id != f.company_id.currency_id.id:
                 total = 0
-                for l in f.move_id.line_id:
+                for l in f.move_id.line_ids:
                     if l.account_id.id == f.account_id.id:
                         total += l.credit - l.debit
                 tipo_cambio = total / f.amount_total
@@ -66,13 +67,14 @@ class compras_reporte(report_sxw.rml_parse):
             tipo = 'FACT'
             if f.type != 'in_invoice':
                 tipo = 'NC'
-            if f.pequenio_contribuyente:
+            if f.partner_id.pequenio_contribuyente:
                 tipo += ' PEQ'
 
             linea = {
+                'estado': f.state,
                 'tipo': tipo,
                 'fecha': f.date_invoice,
-                'numero': f.reference or f.supplier_invoice_number or '',
+                'numero': f.reference or '',
                 'proveedor': f.partner_id,
                 'compra': 0,
                 'compra_exento': 0,
@@ -92,7 +94,8 @@ class compras_reporte(report_sxw.rml_parse):
                 if tipo == 'NC':
                     precio = precio * -1
 
-                r = self.pool.get('account.tax').compute_all(self.cr, self.uid, l.invoice_line_tax_id, precio, l.quantity, product=l.product_id, partner=l.invoice_id.partner_id)
+                tax_ids = [x.id for x in l.invoice_line_tax_ids]
+                r = self.pool.get('account.tax').compute_all(self.cr, self.uid, tax_ids, precio, currency_id=f.currency_id.id, quantity=l.quantity, product_id=l.product_id.id, partner_id=f.partner_id.id)
 
                 linea['base'] += r['total_included']
                 if len(l.invoice_line_tax_ids) > 0:
@@ -107,7 +110,7 @@ class compras_reporte(report_sxw.rml_parse):
 
             linea['total'] = linea[f.tipo_gasto] + linea['iva']
 
-            if f.pequenio_contribuyente:
+            if f.partner_id.pequenio_contribuyente:
                 self.totales['pequenio_contribuyente']['exento'] += linea[f.tipo_gasto+'_exento']
                 self.totales['pequenio_contribuyente']['neto'] += linea[f.tipo_gasto]
                 self.totales['pequenio_contribuyente']['iva'] += linea['iva']

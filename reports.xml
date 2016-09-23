@@ -40,9 +40,9 @@
                     <group>
                         <group>
                             <field name="folio_inicial"/>
+                            <field name="impuesto_id"/>
                         </group>
                         <group>
-                            <field name="impuesto_id"/>
                             <field name="fecha_desde"/>
                             <field name="fecha_hasta"/>
                         </group>
@@ -64,7 +64,7 @@
         <menuitem icon="STOCK_PRINT" action="window_compras_reporte" id="menu_asistente_compras_reporte" parent="account.menu_finance_legal_statement"/>
         <report id="compras_reporte" model="l10n_gt_extra.asistente_compras_reporte" name="compras_reporte" rml="l10n_gt_extra/report/compras_reporte.rml" string="Libro de compras"/>
 
-        <!-- <record id="asistente_ventas_reporte" model="ir.ui.view">
+        <record id="asistente_ventas_reporte" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_ventas_reporte</field>
             <field name="model">l10n_gt_extra.asistente_ventas_reporte</field>
             <field name="type">form</field>
@@ -72,39 +72,33 @@
                 <form string="Seleccione diario peridodos">
                     <group>
                         <group>
-                            <field name="empresa_id"/>
                             <field name="folio_inicial"/>
+                            <field name="impuesto_id"/>
+                            <field name="resumido"/>
                         </group>
                         <group>
-                            <field name="impuesto_id" domain="[('name','=','IVA por Pagar')]"/>
-                            <field name="base_id" domain="[('name','=','Base Impositiva de Ventas')]"/>
+                            <field name="fecha_desde"/>
+                            <field name="fecha_hasta"/>
                         </group>
                     </group>
                     <group>
                         <separator colspan="4" string="Diarios"/>
                         <field name="diarios_id" nolabel="1" domain="[('type','in',['sale','sale_refund'])]"/>
-                        <separator colspan="4" string="Periodos"/>
-                        <field name="periodos_id" nolabel="1"/>
                     </group>
-                    <group>
-                        <group>
-                            <button icon="gtk-cancel" special="cancel" string="Cancelar"/>
-                        </group>
-                        <group>
-                            <button icon="gtk-ok" name="reporte" string="Reporte" type="object"/>
-                        </group>
-                    </group>
+                    <footer>
+                        <button name="reporte" string="Reporte" type="object" class="oe_highlight"/>
+                        o
+                        <button special="cancel" string="Cancel" class="oe_link"/>
+                    </footer>
                 </form>
             </field>
         </record>
 
         <act_window id="window_ventas_reporte" name="Libro de ventas" res_model="l10n_gt_extra.asistente_ventas_reporte" src_model="account.journal" view_mode="form" target="new"/>
-
-        <menuitem icon="STOCK_PRINT" action="window_ventas_reporte" id="menu_asistente_ventas_reporte" parent="account.final_accounting_reports"/>
-
+        <menuitem icon="STOCK_PRINT" action="window_ventas_reporte" id="menu_asistente_ventas_reporte" parent="account.menu_finance_legal_statement"/>
         <report id="ventas_reporte" model="l10n_gt_extra.asistente_ventas_reporte" name="ventas_reporte" rml="l10n_gt_extra/report/ventas_reporte.rml" string="Libro de ventas"/>
 
-        <report id="ventas_reporte_financiero" model="l10n_gt_extra.asistente_ventas_reporte" name="l10n_gt_extra.ventas_reporte_financiero" rml="l10n_gt_extra/report/ventas_reporte_financiero.rml" string="Libro de ventas financiero"/>
+        <!-- <report id="ventas_reporte_financiero" model="l10n_gt_extra.asistente_ventas_reporte" name="l10n_gt_extra.ventas_reporte_financiero" rml="l10n_gt_extra/report/ventas_reporte_financiero.rml" string="Libro de ventas financiero"/>
 
         <record id="asistente_diario_reporte" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_diario_reporte</field>

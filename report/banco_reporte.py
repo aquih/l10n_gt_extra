@@ -9,7 +9,7 @@ class banco_reporte(report_sxw.rml_parse):
         self.totales = {'debito':0, 'credito':0}
         self.localcontext.update( {
             'datetime': datetime,
-            'lineas': self.agrupar_lineas,
+            'lineas': self.lineas,
             'balance_inicial': self.balance_inicial,
             'totales': self.totales,
         })
@@ -17,18 +17,18 @@ class banco_reporte(report_sxw.rml_parse):
         self.context = context
         self.cr = cr
 
-    def agrupar_lineas(self, datos):
+    def lineas(self, datos):
+
         #
         # Solo ejecutar una vez este metodo
         #
         if self.lineas:
             return self.lineas
 
-        self.cr.execute('select id from account_move_line where account_id = %s and date between %s and %s', (datos.cuenta_bancaria_id.id, datos.fecha_desde, datos.fecha_hasta))
-        lineas_id = [x[0] for x in self.cr.fetchall()]
+        lineas_id = self.pool.get('account.move.line').search(self.cr, self.uid, [('account_id','=',datos.cuenta_bancaria_id.id),('date','>=',datos.fecha_desde),('date','<=',datos.fecha_hasta)], context=self.context)
 
         lineas = []
-        for linea in self.pool.get('account.move.line').browse(self.cr, self.uid, lineas_id):
+        for linea in self.pool.get('account.move.line').browse(self.cr, self.uid, lineas_id, context=self.context):
             detalle = {
                 'fecha-iso': linea.date,
                 'fecha': datetime.datetime.strptime(linea.date, '%Y-%m-%d').strftime('%d%m%y'),
@@ -37,15 +37,16 @@ class banco_reporte(report_sxw.rml_parse):
                 'concepto': (linea.ref if linea.ref else '')+linea.name,
                 'debito': linea.debit,
                 'credito': linea.credit,
+                'balance': 0,
                 'tipo': ''
             }
 
             lineas.append(detalle)
 
-        balance = self.balance_inicial(datos)['balance']
+        balance = self.balance_inicial(datos)['balance'] or 0
         for linea in lineas:
 
-            balance = linea['balance'] + linea['debito'] - linea['credito']
+            balance = balance + linea['debito'] - linea['credito']
             linea['balance'] = balance
 
             self.totales['debito'] += linea['debito']

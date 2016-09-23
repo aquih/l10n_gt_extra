@@ -83,7 +83,7 @@
           <para style="Table_20_Contents">[[ l.account_id.name ]]</para>
         </td>
         <td>
-          <para style="Table_20_Contents">[[ l.analytic_account_id.complete_name ]]</para>
+          <para style="Table_20_Contents">[[ l.analytic_account_id and l.analytic_account_id.name_get()[0][1] or '' ]]</para>
         </td>
         <td>
           <para style="P1">[[ formatLang(l.debit, monetary=True) ]]</para>
