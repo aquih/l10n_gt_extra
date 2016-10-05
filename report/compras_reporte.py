@@ -69,9 +69,10 @@ class compras_reporte(report_sxw.rml_parse):
                 tipo += ' PEQ'
 
             linea = {
+                'estado': f.state,
                 'tipo': tipo,
                 'fecha': f.date_invoice,
-                'numero': f.reference or f.supplier_invoice_number or '',
+                'numero': f.supplier_invoice_number or f.reference or '',
                 'proveedor': f.partner_id,
                 'compra': 0,
                 'compra_exento': 0,
@@ -104,17 +105,16 @@ class compras_reporte(report_sxw.rml_parse):
                 else:
                     linea[f.tipo_gasto+'_exento'] += r['total']
 
-            linea['total'] = linea['base']+linea['iva']
-            logging.warn(linea)
+            linea['total'] = linea[f.tipo_gasto]+linea['iva']
 
-            if f.pequenio_contribuyente == True:
+            if f.pequenio_contribuyente:
                 self.totales['pequenio_contribuyente']['exento'] += linea[f.tipo_gasto+'_exento']
-                self.totales['pequenio_contribuyente']['neto'] += linea['base'] - linea[f.tipo_gasto+'_exento']
+                self.totales['pequenio_contribuyente']['neto'] += linea[f.tipo_gasto]
                 self.totales['pequenio_contribuyente']['iva'] += linea['iva']
                 self.totales['pequenio_contribuyente']['total'] += linea['total']
 
             self.totales[f.tipo_gasto]['exento'] += linea[f.tipo_gasto+'_exento']
-            self.totales[f.tipo_gasto]['neto'] += linea['base'] - linea[f.tipo_gasto+'_exento']
+            self.totales[f.tipo_gasto]['neto'] += linea[f.tipo_gasto]
             self.totales[f.tipo_gasto]['iva'] += linea['iva']
             self.totales[f.tipo_gasto]['total'] += linea['total']
 

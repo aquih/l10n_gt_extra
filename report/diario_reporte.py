@@ -30,27 +30,73 @@ class diario_reporte(report_sxw.rml_parse):
 
     def lineas(self, datos):
         periodos_id = ','.join([str(x.id) for x in datos.periodos_id])
-        diarios_id = ','.join([str(x.id) for x in datos.diarios_id])
-        self.cr.execute("\
-            select l.date, a.code, a.name, sum(l.debit) as debit, sum(l.credit) as credit \
-            from account_move_line l join account_move m on(l.move_id = m.id) \
-                join account_account a on(l.account_id = a.id) \
-            where m.state = 'posted' and l.journal_id in ("+diarios_id+") and l.period_id in ("+periodos_id+")\
-            group by l.date, a.code, a.name order by l.date, a.code")
+        diarios = {}
 
-        lineas = self.cr.dictfetchall()
-        lineas_fecha = {}
+        for diario in datos.diarios_id:
 
-        for l in lineas:
-            if l['date'] not in lineas_fecha:
-                lineas_fecha[l['date']] = {'fecha': l['date'], 'lineas': []}
+            diarios[diario.id] = {'diario': diario.name, 'lineas': []}
 
-            l['inicial'] = 0
-            l['final'] = l['inicial']+l['debit']-l['credit']
+            self.cr.execute("\
+                select m.name as number, l.ref as descr, j.code as doc, l.date, a.code, a.name, a.code||' '||a.name as full_name, l.debit as debit, l.credit as credit \
+                from account_move_line l join account_move m on(l.move_id = m.id) \
+                    join account_account a on(l.account_id = a.id) \
+                    join account_journal j on(l.journal_id = j.id) \
+                where m.state = 'posted' and l.journal_id = "+str(diario.id)+" and l.period_id in ("+periodos_id+") \
+                order by l.date, a.code")
 
-            lineas_fecha[l['date']]['lineas'].append(l)
+            lineas = self.cr.dictfetchall()
+            lineas_agrupadas = {}
 
-        return lineas_fecha.values()
+            llave = 'date'
+            if datos.tipo == 'mayor':
+                llave = 'full_name'
+
+            for l in lineas:
+
+                if l[llave] not in lineas_agrupadas:
+                    lineas_agrupadas[l[llave]] = {'llave': l[llave], 'lineas_detalladas': [], 'total_debe': 0, 'total_haber': 0}
+                lineas_agrupadas[l[llave]]['lineas_detalladas'].append(l)
+
+            for la in lineas_agrupadas.values():
+                for l in la['lineas_detalladas']:
+                    la['total_debe'] += l['debit']
+                    la['total_haber'] += l['credit']
+
+            diarios[diario.id]['lineas'] = sorted(lineas_agrupadas.values(), key=lambda x: x['llave'])
+
+        for diario in datos.diarios_resumidos_id:
+
+            diarios[diario.id] = {'diario': diario.name, 'lineas': []}
+
+            self.cr.execute("\
+                select 'Varios' as number, j.name as descr, j.code as doc, l.date, a.code, a.name, a.code||' '||a.name as full_name, sum(l.debit) as debit, sum(l.credit) as credit \
+                from account_move_line l join account_move m on(l.move_id = m.id) \
+                    join account_account a on(l.account_id = a.id) \
+                    join account_journal j on(l.journal_id = j.id) \
+                where m.state = 'posted' and l.journal_id = "+str(diario.id)+" and l.period_id in ("+periodos_id+")\
+                group by l.period_id, j.name, j.code, l.date, a.code, a.name order by l.date, a.code")
+
+            lineas = self.cr.dictfetchall()
+            lineas_agrupadas = {}
+
+            llave = 'date'
+            if datos.tipo == 'mayor':
+                llave = 'full_name'
+
+            for l in lineas:
+
+                if l[llave] not in lineas_agrupadas:
+                    lineas_agrupadas[l[llave]] = {'llave': l[llave], 'lineas_detalladas': [], 'total_debe': 0, 'total_haber': 0}
+                lineas_agrupadas[l[llave]]['lineas_detalladas'].append(l)
+
+            for la in lineas_agrupadas.values():
+                for l in la['lineas_detalladas']:
+                    la['total_debe'] += l['debit']
+                    la['total_haber'] += l['credit']
+
+            diarios[diario.id]['lineas'] = sorted(lineas_agrupadas.values(), key=lambda x: x['llave'])
+
+        return diarios.values()
 
     def totales(self):
         return self.totales

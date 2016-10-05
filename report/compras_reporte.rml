@@ -4,14 +4,14 @@
     <pageTemplate id="first">
       <frame id="first" x1="0.5cm" y1="0.5cm" width="26.9cm" height="19.0cm"/>
       <pageGraphics>
-        <setFont name="Courier-Bold" size="7"/>
-        <drawCentredString x="10cm" y="21.00cm">[[ objects[0].diarios_id[0].company_id.name ]]</drawCentredString>
-        <drawRightString x="20cm" y="21.00cm">Folio [[ folio(objects) ]]</drawRightString>
-        <drawString x="1cm" y="20.50cm">LIBRO DE COMPRAS Y SERVICIOS</drawString>
-        <drawString x="1cm" y="20.10cm">NOMBRE COMERCIAL: [[ objects[0].diarios_id[0].company_id.partner_id.name ]]</drawString>
+        <setFont name="Courier-Bold" size="9"/>
+        <drawCentredString x="13cm" y="21.00cm">[[ objects[0].diarios_id[0].company_id.name ]]</drawCentredString>
+        <drawRightString x="23cm" y="21.00cm">Folio [[ folio(objects) ]]</drawRightString>
         <drawString x="1cm" y="20.70cm">NUMERO DE IDENTIFICACION TRIBUTARIA: [[ objects[0].diarios_id[0].company_id.partner_id.vat ]]</drawString>
+        <drawString x="1cm" y="20.40cm">LIBRO DE COMPRAS Y SERVICIOS</drawString>
+        <drawString x="1cm" y="20.10cm">NOMBRE COMERCIAL: [[ objects[0].diarios_id[0].company_id.partner_id.name ]]</drawString>
+        <drawString x="1cm" y="19.70cm">DOMICILIO FISCAL: [[ objects[0].diarios_id[0].company_id.partner_id.street ]]</drawString>
         <drawRightString x="20cm" y="19.30cm">REGISTRO DEL MES: [[ ', '.join([x.name for x in objects[0].periodos_id]) ]]</drawRightString>
-        <drawString x="1cm" y="19.30cm">DOMICILIO FISCAL: [[ objects[0].diarios_id[0].company_id.partner_id.street ]]</drawString>
       </pageGraphics>
     </pageTemplate>
   </template>
@@ -70,7 +70,7 @@
   </stylesheet>
   <images/>
   <story>
-    <para style="P1">[[ repeatIn(objects, 'o') ]][[ setLang('es_GT') ]]</para>
+    <para style="P1">[[ repeatIn(objects, 'o') ]][[ setLang(user.lang) ]]</para>
     <section>
       <blockTable colWidths="35.0,60.0,60.0,93.0,55.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0,45.0" style="Table1" repeatRows="1">
         <tr>
@@ -119,7 +119,7 @@
         </tr>
         <tr>
           <td>
-            <para style="P1">[[  '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[repeatIn(lineas(o), 'l') ]] [[ l['tipo'] ]]</para>
+            <para style="P1">[[ '' if len(lineas(o)) > 0 else removeParentNode('blockTable') ]][[repeatIn(lineas(o), 'l') ]] [[ l['tipo'] ]]</para>
           </td>
           <td>
             <para style="P1">[[ formatLang(l['fecha'], date=True) ]]</para>
@@ -172,7 +172,7 @@
           <para style="P1" alignment="RIGHT">Total de facturas de pequeños contribuyentes:</para>
         </td>
         <td>
-          <para style="P1" alignment="RIGHT">[[ formatLang(totales['pequenio_contribuyente']['total']) ]]</para>
+          <para style="P1" alignment="RIGHT">[[ formatLang(totales['pequenio_contribuyente']['exento']) ]]</para>
         </td>
       </tr>
       <tr>
@@ -261,7 +261,7 @@
           <para style="P2">IMPORTACION</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['exento']) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(0) ]]</para>
         </td>
         <td>
           <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['neto']) ]]</para>
@@ -278,7 +278,7 @@
           <para style="P3">TOTALES</para>
         </td>
         <td>
-          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['exento']+totales['servicio']['exento']+totales['combustible']['exento']+totales['importacion']['exento']) ]]</para>
+          <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['exento']+totales['servicio']['exento']+totales['combustible']['exento']+0) ]]</para>
         </td>
         <td>
           <para style="P3" alignment="RIGHT">[[ formatLang(totales['compra']['neto']+totales['servicio']['neto']+totales['combustible']['neto']+totales['importacion']['neto']) ]]</para>
