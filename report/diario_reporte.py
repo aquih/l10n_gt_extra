@@ -11,13 +11,13 @@ class diario_reporte(report_sxw.rml_parse):
             'datetime': datetime,
             'lineas': self.lineas,
             'folio': self.folio,
+            'saldo_inicial': self.saldo_inicial,
         }),
         self.folioActual = -1
         self.context = context
         self.cr = cr
 
     def folio(self, datos):
-
         if self.folioActual < 0:
             if datos[0].folio_inicial <= 0:
                 self.folioActual = 1
@@ -28,6 +28,34 @@ class diario_reporte(report_sxw.rml_parse):
 
         return self.folioActual
 
+    def saldo_inicial(self, datos, cuenta):
+        periodo_inicial = datos.periodos_id[0]
+        periodos = []
+
+        # Obtengo todos los periodos antes del inicial
+        for p in periodo_inicial.fiscalyear_id.period_ids:
+            if p.id == periodo_inicial.id:
+                break
+            periodos.append(p)
+
+        # Si no hay periodos, el saldo inicial es cero por que es el inicio del
+        # periodo fiscal.
+        if len(periodos) == 0:
+            return 0
+
+        periodos_id = ','.join([str(x.id) for x in periodos])
+
+        self.cr.execute("\
+            select coalesce(sum(l.debit) - sum(l.credit), 0) as saldo \
+            from account_move_line l join account_move m on(l.move_id = m.id) \
+                join account_account a on(l.account_id = a.id) \
+            where m.state = 'posted' and \
+            a.id = "+str(cuenta)+" and \
+            l.period_id in ("+periodos_id+")")
+
+        result = self.cr.dictfetchall()
+        return result[0]['saldo']
+
     def lineas(self, datos):
         periodos_id = ','.join([str(x.id) for x in datos.periodos_id])
         diarios = {}
@@ -37,7 +65,7 @@ class diario_reporte(report_sxw.rml_parse):
             diarios[diario.id] = {'diario': diario.name, 'lineas': []}
 
             self.cr.execute("\
-                select m.name as number, l.ref as descr, j.code as doc, l.date, a.code, a.name, a.code||' '||a.name as full_name, l.debit as debit, l.credit as credit \
+                select m.name as number, l.ref as descr, j.code as doc, l.date, a.code, a.id as account_id, a.name, a.code||' '||a.name as full_name, l.debit as debit, l.credit as credit \
                 from account_move_line l join account_move m on(l.move_id = m.id) \
                     join account_account a on(l.account_id = a.id) \
                     join account_journal j on(l.journal_id = j.id) \
@@ -69,12 +97,12 @@ class diario_reporte(report_sxw.rml_parse):
             diarios[diario.id] = {'diario': diario.name, 'lineas': []}
 
             self.cr.execute("\
-                select 'Varios' as number, j.name as descr, j.code as doc, l.date, a.code, a.name, a.code||' '||a.name as full_name, sum(l.debit) as debit, sum(l.credit) as credit \
+                select 'Varios' as number, j.name as descr, j.code as doc, l.date, a.code, a.id as account_id, a.name, a.code||' '||a.name as full_name, sum(l.debit) as debit, sum(l.credit) as credit \
                 from account_move_line l join account_move m on(l.move_id = m.id) \
                     join account_account a on(l.account_id = a.id) \
                     join account_journal j on(l.journal_id = j.id) \
                 where m.state = 'posted' and l.journal_id = "+str(diario.id)+" and l.period_id in ("+periodos_id+")\
-                group by l.period_id, j.name, j.code, l.date, a.code, a.name order by l.date, a.code")
+                group by l.period_id, j.name, j.code, l.date, a.code, a.id, a.name order by l.date, a.code")
 
             lineas = self.cr.dictfetchall()
             lineas_agrupadas = {}
