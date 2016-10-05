@@ -55,7 +55,7 @@
     </para>
     <section>
         <para style="Standard">[[ repeatIn(lineas(o), 'f') ]]Fecha: [[ formatLang(f['fecha'], date=True) ]]</para>
-        <blockTable colWidths="60.0,150.0,60.0,60.0,60.0,60.0" style="Table4">
+        <blockTable colWidths="120.0,150.0,60.0,60.0,60.0,60.0" style="Table4">
           <tr>
             <td>
               <para style="Table_20_Contents" alignment="CENTER">Código</para>
