@@ -102,7 +102,7 @@
                 <blockTable colWidths="110.0,60.0,110.0,50.0,50.0,50.0,50.0,40.0" style="Table4">
                     <tr>
                         <td>
-                            <para style="Table_20_Contents"></para>
+                            <para style="Table_20_Contents">[[ '' if o.tipo == 'mayor' else removeParentNode('blockTable') ]]</para>
                         </td>
                         <td>
                             <para style="Table_20_Contents"></para>
@@ -111,7 +111,7 @@
                             <para style="Table_20_Contents">Totales</para>
                         </td>
                         <td>
-                            <para style="P1">0</para>
+                            <para style="P1">[[ formatLang(saldo_inicial(o, f['lineas_detalladas'][0]['account_id']), monetary=True) ]]</para>
                         </td>
                         <td>
                             <para style="P1">[[ formatLang(f['total_debe'], monetary=True) ]]</para>
@@ -120,7 +120,7 @@
                             <para style="P1">[[ formatLang(f['total_haber'], monetary=True) ]]</para>
                         </td>
                         <td>
-                            <para style="P1">[[ formatLang(f['total_debe']-f['total_haber'], monetary=True) ]]</para>
+                            <para style="P1">[[ formatLang(saldo_inicial(o, f['lineas_detalladas'][0]['account_id']) + f['total_debe'] - f['total_haber'], monetary=True) ]]</para>
                         </td>
                         <td>
                             <para style="P1"></para>
@@ -128,7 +128,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <para style="Table_20_Contents" alignment="CENTER">[[ '' if o.tipo == 'mayor' else removeParentNode('blockTable') ]]No. Poliza</para>
+                            <para style="Table_20_Contents" alignment="CENTER">No. Poliza</para>
                         </td>
                         <td>
                             <para style="Table_20_Contents" alignment="CENTER">Fecha</para>
