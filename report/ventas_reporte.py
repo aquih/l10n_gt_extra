@@ -156,6 +156,7 @@ class ventas_reporte(report_sxw.rml_parse):
         if self.temp_lineas:
             return self.temp_lineas
 
+        self.totales['num_facturas'] = 0
         self.totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
         self.totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
         self.totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
@@ -169,6 +170,7 @@ class ventas_reporte(report_sxw.rml_parse):
 
         lineas = []
         for f in self.pool.get('account.invoice').browse(self.cr, self.uid, facturas):
+            self.totales['num_facturas'] += 1
 
             tipo_cambio = 1
             if f.currency_id.id != f.company_id.currency_id.id:
