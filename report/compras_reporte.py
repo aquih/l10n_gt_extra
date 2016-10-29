@@ -105,7 +105,9 @@ class compras_reporte(report_sxw.rml_parse):
                 else:
                     linea[f.tipo_gasto+'_exento'] += r['total']
 
-            linea['total'] = linea[f.tipo_gasto]+linea['iva']
+            linea['total'] = linea[f.tipo_gasto] + linea['iva']
+            if f.pequenio_contribuyente:
+                linea['total'] = linea[f.tipo_gasto+'_exento']
 
             if f.pequenio_contribuyente:
                 self.totales['pequenio_contribuyente']['exento'] += linea[f.tipo_gasto+'_exento']
