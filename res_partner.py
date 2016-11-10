@@ -44,6 +44,13 @@ class res_partner(osv.osv):
 
     def _nit_duplicado(self, cr, uid, ids, context=None):
         obj = self.browse(cr, uid, ids[0], context=context)
+        
+        if obj.vat == 'CF' or not obj.vat:
+            return True
+
+        if obj.country_id and obj.country_id.id != 91:
+            return True
+
         if not obj.parent_id:
             repetidos = self.search(cr, uid, [('vat','=',obj.vat), ('id','!=',obj.id), ('parent_id','!=',False)],context=context)
             if len(repetidos) > 0:
