@@ -68,7 +68,7 @@
   </stylesheet>
   <images/>
   <story>
-    <para style="P1">[[ repeatIn(objects, 'o') ]]</para>
+    <para style="P1">[[ setLang(user.lang) ]][[ repeatIn(objects, 'o') ]]</para>
     <section>
       <blockTable colWidths="40.0,55.0,110.0,200.0,50.0,50.0,50.0,50.0,50.0,50.0" style="Table1" repeatRows="1">
           <tr>
@@ -143,7 +143,7 @@
     <blockTable colWidths="395.0,80.0" style="Table2">
       <tr>
         <td>
-          <para style="P1" alignment="RIGHT">Cantidad de facturas: [[ len(lineas(o)) ]]  -  Total debito fiscal:</para>
+          <para style="P1" alignment="RIGHT">Cantidad de facturas: [[ totales['num_facturas'] ]]  -  Total debito fiscal:</para>
         </td>
         <td>
           <para style="P1" alignment="RIGHT">[[ formatLang(totales['compra']['iva']+totales['servicio']['iva']+totales['combustible']['iva']+totales['importacion']['iva']) ]]</para>

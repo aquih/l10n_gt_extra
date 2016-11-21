@@ -38,6 +38,7 @@ class ventas_reporte(report_sxw.rml_parse):
         if self.temp_lineas:
             return self.temp_lineas
 
+        self.totales['num_facturas'] = 0
         self.totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
         self.totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
         self.totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
@@ -53,6 +54,7 @@ class ventas_reporte(report_sxw.rml_parse):
 
         lineas = []
         for f in self.pool.get('account.invoice').browse(self.cr, self.uid, facturas):
+            self.totales['num_facturas'] += 1
 
             tipo_cambio = 1
             if f.currency_id.id != f.company_id.currency_id.id:
@@ -105,45 +107,28 @@ class ventas_reporte(report_sxw.rml_parse):
                     else:
                         tipo_linea = 'servicio'
 
-                tax_ids = [x.id for x in l.invoice_line_tax_ids]
-                r = self.pool.get('account.tax').compute_all(self.cr, self.uid, tax_ids, precio, currency_id=f.currency_id.id, quantity=l.quantity, product_id=l.product_id.id, partner_id=f.partner_id.id)
+                r = l.invoice_line_tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
-                linea['base'] += r['total_included']
+                linea['base'] += r['base']
+                self.totales[tipo_linea]['total'] += r['base']
                 if len(l.invoice_line_tax_ids) > 0:
-                    linea[tipo_linea] += r['total_included']
+                    linea[tipo_linea] += r['base']
+                    self.totales[tipo_linea]['neto'] += r['base']
                     for i in r['taxes']:
                         if i['id'] == datos.impuesto_id.id:
                             linea['iva'] += i['amount']
+                            self.totales[tipo_linea]['iva'] += i['amount']
+                            self.totales[tipo_linea]['total'] += i['amount']
                         elif i['amount'] > 0:
                             linea[f.tipo_gasto+'_exento'] += i['amount']
+                            self.totales[tipo_linea]['exento'] += r['base']
                 else:
-                    linea[tipo_linea+'_exento'] += r['total_included']
+                    linea[tipo_linea+'_exento'] += r['base']
+                    self.totales[tipo_linea]['exento'] += r['base']
 
-            linea['total'] = linea['compra']+linea['servicio']+linea['combustible']+linea['importacion']+linea['iva']
-
-            self.totales['compra']['exento'] += linea['compra'+'_exento']
-            self.totales['compra']['neto'] += linea['compra']
-            if linea['compra'] != 0:
-                self.totales['compra']['iva'] += linea['iva']
-                self.totales['compra']['total'] += linea['total']
-
-            self.totales['servicio']['exento'] += linea['servicio'+'_exento']
-            self.totales['servicio']['neto'] += linea['servicio']
-            if linea['servicio'] != 0:
-                self.totales['servicio']['iva'] += linea['iva']
-                self.totales['servicio']['total'] += linea['total']
-
-            self.totales['combustible']['exento'] += linea['combustible'+'_exento']
-            self.totales['combustible']['neto'] += linea['combustible']
-            if linea['combustible'] != 0:
-                self.totales['combustible']['iva'] += linea['iva']
-                self.totales['combustible']['total'] += linea['total']
-
-            self.totales['importacion']['exento'] += linea['importacion'+'_exento']
-            self.totales['importacion']['neto'] += linea['importacion']
-            if linea['importacion'] != 0:
-                self.totales['importacion']['iva'] += linea['iva']
-                self.totales['importacion']['total'] += linea['total']
+                linea['total'] = linea[tipo_linea]+linea['iva']
+                if linea['total'] == 0:
+                    linea['total'] = linea[tipo_linea+'_exento']
 
             lineas.append(linea)
 
@@ -172,13 +157,13 @@ class ventas_reporte(report_sxw.rml_parse):
                     lineas_resumidas[llave]['facturas'].append(l['numero'])
 
             for l in lineas_resumidas.values():
+                facturas = sorted(l['facturas'])
                 l['numero'] = l['facturas'][0] + ' al ' + l['facturas'][-1]
 
             lineas = sorted(lineas_resumidas.values(), key=lambda l: l['tipo']+l['fecha'])
 
         self.temp_lineas = lineas
         return lineas
-
 
 report_sxw.report_sxw('report.ventas_reporte', 'l10n_gt_extra.asistente_ventas_reporte', 'addons/l10n_gt_extra/report/ventas_reporte.rml', parser=ventas_reporte, header=False)
 
