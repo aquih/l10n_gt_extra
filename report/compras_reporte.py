@@ -48,8 +48,8 @@ class compras_reporte(report_sxw.rml_parse):
         facturas = self.pool.get('account.invoice').search(self.cr, self.uid, [
             ('state','in',['open','paid']),
             ('journal_id','in',journal_ids),
-            ('date_invoice','<=',datos.fecha_hasta),
-            ('date_invoice','>=',datos.fecha_desde),
+            ('date','<=',datos.fecha_hasta),
+            ('date','>=',datos.fecha_desde),
         ], order='date_invoice')
         logging.warn(facturas)
 
@@ -97,16 +97,16 @@ class compras_reporte(report_sxw.rml_parse):
                 tax_ids = [x.id for x in l.invoice_line_tax_ids]
                 r = self.pool.get('account.tax').compute_all(self.cr, self.uid, tax_ids, precio, currency_id=f.currency_id.id, quantity=l.quantity, product_id=l.product_id.id, partner_id=f.partner_id.id)
 
-                linea['base'] += r['total_included']
+                linea['base'] += r['base']
                 if len(l.invoice_line_tax_ids) > 0:
-                    linea[f.tipo_gasto] += r['total_included']
+                    linea[f.tipo_gasto] += r['base']
                     for i in r['taxes']:
                         if i['id'] == datos.impuesto_id.id:
                             linea['iva'] += i['amount']
                         elif i['amount'] > 0:
                             linea[f.tipo_gasto+'_exento'] += i['amount']
                 else:
-                    linea[f.tipo_gasto+'_exento'] += r['total_included']
+                    linea[f.tipo_gasto+'_exento'] += r['base']
 
             linea['total'] = linea[f.tipo_gasto] + linea['iva']
 

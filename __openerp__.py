@@ -31,6 +31,7 @@
     'data': [
         'l10n_gt_extra_base.xml',
         'account_invoice_view.xml',
+        'account_payment_view.xml',
         'res_partner_view.xml',
         'reports.xml',
     ],

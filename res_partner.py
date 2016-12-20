@@ -12,10 +12,6 @@ class res_partner(osv.osv):
         if obj.vat == 'CF' or not obj.vat:
             return True
 
-        partners_id = self.search(cr, uid, [('vat','=',obj.vat),('parent_id','!=',False)])
-        if len(partners_id) > 1:
-            return False
-
         if obj.country_id and obj.country_id.id != 91:
             return True
 

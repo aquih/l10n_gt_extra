@@ -128,7 +128,7 @@
             <para style="P1">[[ l['numero'][0:14] ]]</para>
           </td>
           <td>
-            <para style="P1">[[ l['proveedor'].name[0:18] ]]</para>
+            <para style="P1">[[ l['proveedor'].name ]]</para>
           </td>
           <td>
             <para style="P1">[[ l['proveedor'].vat ]]</para>

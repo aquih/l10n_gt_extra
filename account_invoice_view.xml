@@ -23,6 +23,7 @@
            <field name="arch" type="xml">
                <field name="move_id" position="after">
                    <field name="tipo_gasto"/>
+                   <field name="numero_viejo"/>
                </field>
            </field>
        </record>

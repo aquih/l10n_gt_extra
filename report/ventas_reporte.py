@@ -75,7 +75,7 @@ class ventas_reporte(report_sxw.rml_parse):
                 'estado': f.state,
                 'tipo': tipo,
                 'fecha': f.date_invoice,
-                'numero': f.number or '',
+                'numero': f.number or f.numero_viejo or '-',
                 'cliente': f.partner_id.name,
                 'nit': f.partner_id.vat,
                 'compra': 0,
@@ -121,7 +121,7 @@ class ventas_reporte(report_sxw.rml_parse):
                             self.totales[tipo_linea]['total'] += i['amount']
                         elif i['amount'] > 0:
                             linea[f.tipo_gasto+'_exento'] += i['amount']
-                            self.totales[tipo_linea]['exento'] += r['base']
+                            self.totales[tipo_linea]['exento'] += i['amount']
                 else:
                     linea[tipo_linea+'_exento'] += r['base']
                     self.totales[tipo_linea]['exento'] += r['base']

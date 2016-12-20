@@ -70,7 +70,7 @@
   <story>
     <para style="P1">[[ setLang(user.lang) ]][[ repeatIn(objects, 'o') ]]</para>
     <section>
-      <blockTable colWidths="40.0,55.0,110.0,200.0,50.0,50.0,50.0,50.0,50.0,50.0" style="Table1" repeatRows="1">
+      <blockTable colWidths="40.0,55.0,100.0,160.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0" style="Table1" repeatRows="1">
           <tr>
             <td>
               <para style="P1">TIPO</para>
@@ -97,6 +97,9 @@
               <para style="P1">SERV.</para>
             </td>
             <td>
+              <para style="P1">EXP.</para>
+            </td>
+            <td>
               <para style="P1">IVA</para>
             </td>
             <td>
@@ -120,13 +123,16 @@
             <para style="P1">[[ l['nit'] ]]</para>
           </td>
           <td>
-            <para style="P1" alignment="RIGHT">[[ formatLang(l['compra_exento']+l['servicio_exento']+l['combustible_exento']+l['importacion_exento']) ]]</para>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['compra_exento']+l['servicio_exento']+l['combustible_exento']) ]]</para>
           </td>
           <td>
-            <para style="P1" alignment="RIGHT">[[ formatLang(l['compra']+l['combustible']+l['importacion']) ]]</para>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['compra']+l['combustible']) ]]</para>
           </td>
           <td>
             <para style="P1" alignment="RIGHT">[[ formatLang(l['servicio']) ]]</para>
+          </td>
+          <td>
+            <para style="P1" alignment="RIGHT">[[ formatLang(l['importacion']+l['importacion_exento']) ]]</para>
           </td>
           <td>
             <para style="P1" alignment="RIGHT">[[ formatLang(l['iva']) ]]</para>
@@ -227,7 +233,7 @@
           <para style="P2">EXPORTACIONES</para>
         </td>
         <td>
-          <para style="P2" alignment="RIGHT">[[ formatLang(0) ]]</para>
+          <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['exento']) ]]</para>
         </td>
         <td>
           <para style="P2" alignment="RIGHT">[[ formatLang(totales['importacion']['neto']) ]]</para>

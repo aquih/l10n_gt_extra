@@ -21,6 +21,7 @@
 ##############################################################################
 
 import account_invoice
+import account_payment
 import res_partner
 import report
 
