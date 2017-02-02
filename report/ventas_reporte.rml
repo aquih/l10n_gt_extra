@@ -10,7 +10,7 @@
                 <drawString x="1cm" y="20.70cm">NUMERO DE IDENTIFICACION TRIBUTARIA: [[ objects[0].diarios_id[0].company_id.partner_id.vat ]]</drawString>
                 <drawString x="1cm" y="20.40cm">LIBRO DE VENTAS Y SERVICIOS</drawString>
                 <drawString x="1cm" y="20.10cm">NOMBRE COMERCIAL: [[ objects[0].diarios_id[0].company_id.partner_id.name ]]</drawString>
-                <drawString x="1cm" y="19.70cm">DOMICILIO FISCAL: [[ objects[0].diarios_id[0].company_id.partner_id.street ]]</drawString>
+                <drawString x="1cm" y="19.70cm">DOMICILIO FISCAL: [[ (objects[0].diarios_id[0].direccion and objects[0].diarios_id[0].direccion.street) or objects[0].diarios_id[0].company_id.partner_id.street ]]</drawString>
                 <drawRightString x="20cm" y="19.30cm">REGISTRO DEL MES: [[ ', '.join([x.name for x in objects[0].periodos_id]) ]]</drawRightString>
             </pageGraphics>
         </pageTemplate>
