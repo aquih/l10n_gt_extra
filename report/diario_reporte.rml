@@ -20,7 +20,7 @@
         <blockTableStyle id="Table4">
             <blockAlignment value="LEFT"/>
             <blockValign value="TOP"/>
-            <lineStyle kind="LINEBELOW" colorName="black" start="0,-1" stop="-1,-1" thickness="1"/>
+            <lineStyle kind="LINEBELOW" colorName="black" start="0,-2" stop="-1,-2" thickness="1"/>
         </blockTableStyle>
         <blockTableStyle id="Table5">
             <blockAlignment value="LEFT"/>
@@ -59,7 +59,7 @@
             <font color="white">-</font>
         </para>
         <section>
-            <para style="Category1">[[ repeatIn(lineas(o), 'd') ]]</para>
+            <para style="Category1">[[ repeatIn(lineas(o), 'd') ]][[ 'Diario : ' + d['diario'] if len(d['lineas']) > 0 else '']]</para>
             <section>
                 <para style="Category2">[[ repeatIn(d['lineas'], 'f') ]] [[ 'Fecha' if o.tipo == 'diario' else 'Cuenta' ]] : [[ formatLang(f['llave'], date=True) if o.tipo == 'diario' else f['llave'] ]]</para>
                 <blockTable colWidths="60.0,60.0,150.0,60.0,60.0" style="Table4">
@@ -97,12 +97,9 @@
                             <para style="P1">[[ formatLang(l['credit'], monetary=True) ]]</para>
                         </td>
                     </tr>
-                </blockTable>
-
-                <blockTable colWidths="110.0,60.0,110.0,50.0,50.0,50.0,50.0,40.0" style="Table4">
                     <tr>
                         <td>
-                            <para style="Table_20_Contents">[[ '' if o.tipo == 'mayor' else removeParentNode('blockTable') ]]</para>
+                            <para style="Table_20_Contents"></para>
                         </td>
                         <td>
                             <para style="Table_20_Contents"></para>
@@ -111,24 +108,18 @@
                             <para style="Table_20_Contents">Totales</para>
                         </td>
                         <td>
-                            <para style="P1">[[ formatLang(saldo_inicial(o, f['lineas_detalladas'][0]['account_id']), monetary=True) ]]</para>
-                        </td>
-                        <td>
                             <para style="P1">[[ formatLang(f['total_debe'], monetary=True) ]]</para>
                         </td>
                         <td>
                             <para style="P1">[[ formatLang(f['total_haber'], monetary=True) ]]</para>
                         </td>
-                        <td>
-                            <para style="P1">[[ formatLang(saldo_inicial(o, f['lineas_detalladas'][0]['account_id']) + f['total_debe'] - f['total_haber'], monetary=True) ]]</para>
-                        </td>
-                        <td>
-                            <para style="P1"></para>
-                        </td>
                     </tr>
+                </blockTable>
+
+                <blockTable colWidths="110.0,60.0,110.0,50.0,50.0,50.0,50.0,40.0" style="Table4">
                     <tr>
                         <td>
-                            <para style="Table_20_Contents" alignment="CENTER">No. Poliza</para>
+                            <para style="Table_20_Contents" alignment="CENTER">[[ '' if o.tipo == 'mayor' else removeParentNode('blockTable') ]]No. Poliza</para>
                         </td>
                         <td>
                             <para style="Table_20_Contents" alignment="CENTER">Fecha</para>
@@ -176,6 +167,32 @@
                         </td>
                         <td>
                             <para style="Table_20_Contents">[[ l['doc'] ]]</para>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <para style="Table_20_Contents"></para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents">Totales</para>
+                        </td>
+                        <td>
+                            <para style="Table_20_Contents">Inicial:</para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(saldo_inicial(o, f['lineas_detalladas'][0]['account_id']), monetary=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(f['total_debe'], monetary=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(f['total_haber'], monetary=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="P1">Saldo:</para>
+                        </td>
+                        <td>
+                            <para style="P1">[[ formatLang(saldo_inicial(o, f['lineas_detalladas'][0]['account_id']) + f['total_debe'] - f['total_haber'], monetary=True) ]]</para>
                         </td>
                     </tr>
                 </blockTable>
