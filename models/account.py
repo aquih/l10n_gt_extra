@@ -13,7 +13,7 @@ class AccountInvoice(models.Model):
     def action_cancel(self):
         for rec in self:
             rec.numero_viejo = rec.name
-        return super(account_invoice, self).action_cancel()
+        return super(AccountInvoice, self).action_cancel()
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
