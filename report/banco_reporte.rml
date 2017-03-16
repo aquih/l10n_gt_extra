@@ -69,8 +69,8 @@
     </stylesheet>
     <images/>
     <story>
-        <para style="P1">[[ repeatIn(objects, 'o') ]][[ setLang('en_US') ]]</para>
-        <blockTable colWidths="40.0,75.0,160.0,120.0,60.0,60.0,60.0" style="Table1" repeatRows="1">
+        <para style="P1">[[ repeatIn(objects, 'o') ]][[ setLang(user.lang) ]]</para>
+        <blockTable colWidths="45.0,75.0,140.0,110.0,60.0,60.0,60.0" style="Table1" repeatRows="1">
             <tr>
                 <td>
                     <para style="Heading">Fecha</para>
@@ -119,10 +119,10 @@
             </tr>
             <tr>
                 <td>
-                    <para style="P1">[[ repeatIn(lineas(o), 'l') ]][[ l['fecha'] ]]</para>
+                    <para style="P1">[[ repeatIn(lineas(o), 'l') ]][[ formatLang(l['fecha-iso'], date=True) ]]</para>
                 </td>
                 <td>
-                    <para style="P1">[[ l['documento'][0:8] ]]</para>
+                    <para style="P1">[[ l['documento'] ]]</para>
                 </td>
                 <td>
                     <para style="P1">[[ l['nombre'][0:30] ]]</para>

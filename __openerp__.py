@@ -30,13 +30,11 @@
     'depends': ['l10n_gt','account_tax_python','account_cancel'],
     'data': [
         'l10n_gt_extra_base.xml',
-        'account_invoice_view.xml',
-        'account_payment_view.xml',
+        'account_view.xml',
         'res_partner_view.xml',
         'reports.xml',
     ],
     'demo': [],
     'installable': True,
-    'images': ['images/config_chart_l10n_gt.jpeg','images/l10n_gt_chart.jpeg'],
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

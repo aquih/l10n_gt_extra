@@ -7,7 +7,6 @@ class asistente_diario_reporte(osv.osv_memory):
     _columns = {
         'folio_inicial': fields.integer('Folio inicial', required=True),
         'diarios_id': fields.many2many('account.journal', 'diario_diario_rel', 'reporte_id', 'diario_id', 'Diarios'),
-        'diarios_resumidos_id': fields.many2many('account.journal', 'diario_diario_resumido_rel', 'reporte_id', 'diario_id', 'Diarios resumidos'),
         'fecha_desde': fields.date('Fecha inicial', required=True),
         'fecha_hasta': fields.date('Fecha final', required=True),
         'tipo': fields.selection([ ('diario','Diario'), ('mayor','Mayor') ], string='Tipo', required=True),

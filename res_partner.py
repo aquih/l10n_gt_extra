@@ -1,21 +1,19 @@
 # -*- encoding: utf-8 -*-
 
-from openerp.osv import osv, fields
-import logging
+from openerp import models, fields, api, _
+from openerp.exceptions import UserError, ValidationError
 
-class res_partner(osv.osv):
+class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    def _validar_nit(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0], context=context)
-
-        if obj.vat == 'CF' or not obj.vat:
+    def _validar_nit(self):
+        if self.vat == 'CF' or not self.vat:
             return True
 
-        if obj.country_id and obj.country_id.id != 91:
+        if self.country_id and self.country_id.id != 91:
             return True
 
-        nit = obj.vat.replace('-','')
+        nit = self.vat.replace('-','')
         verificador = nit[-1]
         if verificador.upper() == 'K':
             verificador = '10'
@@ -34,25 +32,23 @@ class res_partner(osv.osv):
         else:
             return False
 
-    def _validar_duplicado(self, cr, uid, ids, context=None):
-        obj = self.browse(cr, uid, ids[0], context=context)
-        if not obj.parent_id:
-            repetidos = self.search(cr, uid, [('vat','=',obj.vat), ('id','!=',obj.id)],context=context)
+    def _validar_duplicado(self):
+        if not self.parent_id:
+            repetidos = self.search([('vat','=',self.vat), ('id','!=',self.id)])
             if len(repetidos) > 0:
                 return False
         return True
 
-    def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
-        res1 = super(res_partner,self).name_search(cr, uid, name, args, operator=operator, context=context, limit=limit)
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        res1 = super(ResPartner, self).name_search(name, args, operator=operator, limit=limit)
 
-        ids = self.search(cr, uid, [('vat', 'ilike', name)], limit=limit, context=context)
-        res2 = self.name_get(cr, uid, ids, context)
+        records = self.search([('vat', 'ilike', name)], limit=limit)
+        res2 = records.name_get()
 
         return res1+res2
 
-    _columns = {
-        'pequenio_contribuyente': fields.boolean('Pequeño contribuyente'),
-    }
+    pequenio_contribuyente = fields.Boolean(string="Numero Viejo")
 
     _constraints = [
     #    (_validar_duplicado, 'El NIT ya existe.', ['vat']),

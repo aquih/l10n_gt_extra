@@ -2,13 +2,14 @@
 <document filename="test.pdf">
     <template pageSize="(595.0,842.0)" title="Test" author="Martin Simon" allowSplitting="20">
         <pageTemplate id="first">
-            <frame id="first" x1="57.0" y1="57.0" width="481" height="738"/>
+            <frame id="first" x1="57.0" y1="57.0" width="481" height="720"/>
             <pageGraphics>
               <setFont name="Times-Bold" size="13"/>
               <drawRightString x="20cm" y="28.50cm">Folio [[ folio(objects) ]]</drawRightString>
               <drawCentredString x="10cm" y="28.50cm">[[ user.company_id.name ]]</drawCentredString>
-              <drawCentredString x="10cm" y="28.00cm">[[ 'Libro Diario' if objects[0].tipo == 'diario' else 'Libro Mayor General' ]]</drawCentredString>
-              <drawCentredString x="10cm" y="27.50cm">Períodos: [[ ','.join(x.name for x in objects[0].periodos_id) ]]</drawCentredString>
+              <drawCentredString x="10cm" y="28.00cm">NIT: [[ user.company_id.vat ]]</drawCentredString>
+              <drawCentredString x="10cm" y="27.50cm">[[ 'Libro Diario' if objects[0].tipo == 'diario' else 'Libro Mayor General' ]]</drawCentredString>
+              <drawCentredString x="10cm" y="27.00cm">Del: [[ formatLang(objects[0].fecha_desde, date=True) ]] al [[ formatLang(objects[0].fecha_hasta, date=True) ]]</drawCentredString>
             </pageGraphics>
         </pageTemplate>
     </template>
@@ -20,7 +21,7 @@
         <blockTableStyle id="Table4">
             <blockAlignment value="LEFT"/>
             <blockValign value="TOP"/>
-            <lineStyle kind="LINEBELOW" colorName="black" start="0,-1" stop="-1,-1" thickness="1"/>
+            <lineStyle kind="LINEBELOW" colorName="black" start="0,-2" stop="-1,-2" thickness="1"/>
         </blockTableStyle>
         <blockTableStyle id="Table5">
             <blockAlignment value="LEFT"/>
@@ -59,127 +60,114 @@
             <font color="white">-</font>
         </para>
         <section>
-            <para style="Category1">[[ repeatIn(lineas(o), 'd') ]]</para>
-            <section>
-                <para style="Category2">[[ repeatIn(d['lineas'], 'f') ]] [[ 'Fecha' if o.tipo == 'diario' else 'Cuenta' ]] : [[ formatLang(f['llave'], date=True) if o.tipo == 'diario' else f['llave'] ]]</para>
-                <blockTable colWidths="60.0,60.0,150.0,60.0,60.0" style="Table4">
-                    <tr>
-                        <td>
-                            <para style="Table_20_Contents" alignment="CENTER">[[ '' if o.tipo == 'diario' else removeParentNode('blockTable') ]]Fecha</para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents" alignment="CENTER">Código</para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents" alignment="CENTER">Cuenta</para>
-                        </td>
-                        <td>
-                            <para style="P1" alignment="CENTER">Debe</para>
-                        </td>
-                        <td>
-                            <para style="P1" alignment="CENTER">Haber</para>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <para style="Table_20_Contents">[[ repeatIn(f['lineas_detalladas'], 'l') ]][[ l['date'] ]]</para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents">[[ l['code'] ]]</para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents">[[ l['name'] ]]</para>
-                        </td>
-                        <td>
-                            <para style="P1">[[ formatLang(l['debit'], monetary=True) ]]</para>
-                        </td>
-                        <td>
-                            <para style="P1">[[ formatLang(l['credit'], monetary=True) ]]</para>
-                        </td>
-                    </tr>
-                </blockTable>
+            <para style="Category2">[[ repeatIn(lineas(o), 'l') ]] [[ 'Fecha' if o.tipo == 'diario' else 'Cuenta' ]] : [[ formatLang(l['llave'], date=True) if o.tipo == 'diario' else l['llave'] ]]</para>
+            <blockTable colWidths="100.0,250.0,80.0,80.0" style="Table4">
+                <tr>
+                    <td>
+                        <para style="Table_20_Contents" alignment="CENTER">[[ '' if o.tipo == 'diario' else removeParentNode('blockTable') ]]Código</para>
+                    </td>
+                    <td>
+                        <para style="Table_20_Contents" alignment="CENTER">Cuenta</para>
+                    </td>
+                    <td>
+                        <para style="P1" alignment="CENTER">Debe</para>
+                    </td>
+                    <td>
+                        <para style="P1" alignment="CENTER">Haber</para>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <para style="Table_20_Contents">[[ repeatIn(l['lineas_detalladas'], 'ld') ]][[ ld['code'] ]]</para>
+                    </td>
+                    <td>
+                        <para style="Table_20_Contents">[[ ld['name'] ]]</para>
+                    </td>
+                    <td>
+                        <para style="P1">[[ formatLang(ld['debit'], monetary=True) ]]</para>
+                    </td>
+                    <td>
+                        <para style="P1">[[ formatLang(ld['credit'], monetary=True) ]]</para>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <para style="Table_20_Contents"></para>
+                    </td>
+                    <td>
+                        <para style="Table_20_Contents">Totales</para>
+                    </td>
+                    <td>
+                        <para style="P1">[[ formatLang(l['total_debe'], monetary=True) ]]</para>
+                    </td>
+                    <td>
+                        <para style="P1">[[ formatLang(l['total_haber'], monetary=True) ]]</para>
+                    </td>
+                </tr>
+            </blockTable>
 
-                <blockTable colWidths="60.0,60.0,120.0,60.0,60.0,60.0,60.0,40.0" style="Table4">
-                    <tr>
-                        <td>
-                            <para style="Table_20_Contents"></para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents"></para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents">Totales</para>
-                        </td>
-                        <td>
-                            <para style="P1">0</para>
-                        </td>
-                        <td>
-                            <para style="P1">[[ formatLang(f['total_debe'], monetary=True) ]]</para>
-                        </td>
-                        <td>
-                            <para style="P1">[[ formatLang(f['total_haber'], monetary=True) ]]</para>
-                        </td>
-                        <td>
-                            <para style="P1">[[ formatLang(f['total_debe']-f['total_haber'], monetary=True) ]]</para>
-                        </td>
-                        <td>
-                            <para style="P1"></para>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <para style="Table_20_Contents" alignment="CENTER">[[ '' if o.tipo == 'mayor' else removeParentNode('blockTable') ]]No. Poliza</para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents" alignment="CENTER">Fecha</para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents" alignment="CENTER">Descripcion</para>
-                        </td>
-                        <td>
-                            <para style="P1" alignment="CENTER"></para>
-                        </td>
-                        <td>
-                            <para style="P1" alignment="CENTER">Debe</para>
-                        </td>
-                        <td>
-                            <para style="P1" alignment="CENTER">Haber</para>
-                        </td>
-                        <td>
-                            <para style="P1" alignment="CENTER"></para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents" alignment="CENTER">Doc</para>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <para style="Table_20_Contents">[[ repeatIn(f['lineas_detalladas'], 'l') ]][[ l['number'] ]]</para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents">[[ formatLang(l['date'], date=True) ]]</para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents">[[ l['descr'] ]]</para>
-                        </td>
-                        <td>
-                            <para style="P1"></para>
-                        </td>
-                        <td>
-                            <para style="P1">[[ formatLang(l['debit'], monetary=True) ]]</para>
-                        </td>
-                        <td>
-                            <para style="P1">[[ formatLang(l['credit'], monetary=True) ]]</para>
-                        </td>
-                        <td>
-                            <para style="P1"></para>
-                        </td>
-                        <td>
-                            <para style="Table_20_Contents">[[ l['doc'] ]]</para>
-                        </td>
-                    </tr>
-                </blockTable>
-            </section>
+            <blockTable colWidths="60.0,120.0,80.0,80.0,80.0,80.0" style="Table4">
+                <tr>
+                    <td>
+                        <para style="Table_20_Contents" alignment="CENTER">[[ '' if o.tipo == 'mayor' else removeParentNode('blockTable') ]]Fecha</para>
+                    </td>
+                    <td>
+                        <para style="Table_20_Contents" alignment="CENTER">Descripcion</para>
+                    </td>
+                    <td>
+                        <para style="P1" alignment="CENTER"></para>
+                    </td>
+                    <td>
+                        <para style="P1" alignment="CENTER">Debe</para>
+                    </td>
+                    <td>
+                        <para style="P1" alignment="CENTER">Haber</para>
+                    </td>
+                    <td>
+                        <para style="P1" alignment="CENTER"></para>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <para style="Table_20_Contents">[[ repeatIn(l['lineas_detalladas'], 'ld') ]][[ formatLang(ld['date'], date=True) ]]</para>
+                    </td>
+                    <td>
+                        <para style="Table_20_Contents">[[ ld['descr'] ]]</para>
+                    </td>
+                    <td>
+                        <para style="P1"></para>
+                    </td>
+                    <td>
+                        <para style="P1">[[ formatLang(ld['debit'], monetary=True) ]]</para>
+                    </td>
+                    <td>
+                        <para style="P1">[[ formatLang(ld['credit'], monetary=True) ]]</para>
+                    </td>
+                    <td>
+                        <para style="P1"></para>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <para style="Table_20_Contents">Totales</para>
+                    </td>
+                    <td>
+                        <para style="Table_20_Contents"></para>
+                    </td>
+                    <td>
+                        <para style="P1">[[ formatLang(saldo_inicial(o, l['lineas_detalladas'][0]['account_id']), monetary=True) ]]</para>
+                    </td>
+                    <td>
+                        <para style="P1">[[ formatLang(l['total_debe'], monetary=True) ]]</para>
+                    </td>
+                    <td>
+                        <para style="P1">[[ formatLang(l['total_haber'], monetary=True) ]]</para>
+                    </td>
+                    <td>
+                        <para style="P1">[[ formatLang(saldo_inicial(o, l['lineas_detalladas'][0]['account_id']) + l['total_debe'] - l['total_haber'], monetary=True) ]]</para>
+                    </td>
+                </tr>
+            </blockTable>
         </section>
         <para style="P2">
             <font color="white"> </font>
