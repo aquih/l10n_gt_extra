@@ -33,7 +33,7 @@ class ventas_reporte(report_sxw.rml_parse):
 
         return self.folioActual
 
-    def lineas(self, datos):
+    def lineas_viejo(self, datos):
 
         if self.temp_lineas:
             return self.temp_lineas
@@ -127,7 +127,7 @@ class ventas_reporte(report_sxw.rml_parse):
             lineas_resumidas = {}
             for l in lineas:
                 l['state'] = 'open'
-                l['tipo_gasto'] = 'compra' 
+                l['tipo_gasto'] = 'compra'
                 llave = l['tipo_doc']+l['date_invoice']
                 if llave not in lineas_resumidas:
                     lineas_resumidas[llave] = dict(l)
@@ -150,6 +150,136 @@ class ventas_reporte(report_sxw.rml_parse):
 
         self.temp_lineas = lineas
         return lineas
+
+    def lineas(self, datos):
+
+        if self.temp_lineas:
+            return self.temp_lineas
+
+        self.totales['num_facturas'] = 0
+        self.totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
+        self.totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
+        self.totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
+        self.totales['combustible'] = {'exento':0,'neto':0,'iva':0,'total':0}
+
+        journal_ids = [x.id for x in datos.diarios_id]
+        period_ids = [x.id for x in datos.periodos_id]
+        facturas = self.pool.get('account.invoice').search(self.cr, self.uid, [
+            ('state','in',['open','paid','cancel']), ('journal_id','in',journal_ids), ('period_id','in',period_ids)
+        ], order='date_invoice, number')
+
+        lineas = []
+        for f in self.pool.get('account.invoice').browse(self.cr, self.uid, facturas):
+            self.totales['num_facturas'] += 1
+
+            tipo_cambio = 1
+            if f.currency_id.id != f.company_id.currency_id.id:
+                total = 0
+                for l in f.move_id.line_id:
+                    if l.account_id.id == f.account_id.id:
+                        total += l.debit - l.credit
+                tipo_cambio = total / f.amount_total
+
+            tipo = 'FACT'
+            if f.type == 'out_refund':
+                if f.amount_untaxed >= 0:
+                    tipo = 'NC'
+                else:
+                    tipo = 'ND'
+
+            linea = {
+                'estado': f.state,
+                'tipo': tipo,
+                'fecha': f.date_invoice,
+                'numero': f.number or f.internal_number,
+                'cliente': f.partner_id.name,
+                'nit': f.partner_id.vat,
+                'compra': 0,
+                'compra_exento': 0,
+                'servicio': 0,
+                'servicio_exento': 0,
+                'combustible': 0,
+                'combustible_exento': 0,
+                'importacion': 0,
+                'importacion_exento': 0,
+                'base': 0,
+                'iva': 0,
+                'total': 0
+            }
+
+            if f.state == 'cancel':
+                lineas.append(linea)
+                continue
+
+            for l in f.invoice_line:
+                precio = ( l.price_unit * (1-(l.discount or 0.0)/100.0) ) * tipo_cambio
+                if tipo == 'NC':
+                    precio = precio * -1
+
+                tipo_linea = f.tipo_gasto
+                if f.tipo_gasto == 'mixto':
+                    if l.product_id.type == 'product':
+                        tipo_linea = 'compra'
+                    else:
+                        tipo_linea = 'servicio'
+
+                r = self.pool.get('account.tax').compute_all(self.cr, self.uid, l.invoice_line_tax_id, precio, l.quantity, product=l.product_id, partner=l.invoice_id.partner_id)
+
+                linea['base'] += r['total']
+                self.totales[tipo_linea]['total'] += r['total']
+                if len(l.invoice_line_tax_id) > 0:
+                    linea[tipo_linea] += r['total']
+                    self.totales[tipo_linea]['neto'] += r['total']
+                    for i in r['taxes']:
+                        if i['base_code_id'] == datos.base_id.id and i['tax_code_id'] == datos.impuesto_id.id:
+                            linea['iva'] += i['amount']
+                            self.totales[tipo_linea]['iva'] += i['amount']
+                            self.totales[tipo_linea]['total'] += i['amount']
+                        elif i['amount'] > 0:
+                            linea[tipo_linea+'_exento'] += i['amount']
+                            self.totales[tipo_linea]['exento'] += r['total']
+                else:
+                    linea[tipo_linea+'_exento'] += r['total']
+                    self.totales[tipo_linea]['exento'] += r['total']
+
+
+            linea['total'] = linea['compra']+linea['servicio']+linea['combustible']+linea['importacion']+linea['iva']
+
+            lineas.append(linea)
+
+        if datos.resumido:
+            lineas_resumidas = {}
+            for l in lineas:
+                llave = l['tipo']+l['fecha']
+                if llave not in lineas_resumidas:
+                    lineas_resumidas[llave] = dict(l)
+                    lineas_resumidas[llave]['estado'] = 'open'
+                    lineas_resumidas[llave]['cliente'] = 'Varios'
+                    lineas_resumidas[llave]['nit'] = 'Varios'
+                    lineas_resumidas[llave]['facturas'] = [l['numero']]
+                else:
+                    lineas_resumidas[llave]['compra'] += l['compra']
+                    lineas_resumidas[llave]['compra_exento'] += l['compra_exento']
+                    lineas_resumidas[llave]['servicio'] += l['servicio']
+                    lineas_resumidas[llave]['servicio_exento'] += l['servicio_exento']
+                    lineas_resumidas[llave]['combustible'] += l['combustible']
+                    lineas_resumidas[llave]['combustible_exento'] += l['combustible_exento']
+                    lineas_resumidas[llave]['importacion'] += l['importacion']
+                    lineas_resumidas[llave]['importacion_exento'] += l['importacion_exento']
+                    lineas_resumidas[llave]['base'] += l['base']
+                    lineas_resumidas[llave]['iva'] += l['iva']
+                    lineas_resumidas[llave]['total'] += l['total']
+                    lineas_resumidas[llave]['facturas'].append(l['numero'])
+
+            for l in lineas_resumidas.values():
+                facturas = sorted(l['facturas'])
+                l['numero'] = facturas[0] + ' al ' + facturas[-1]
+
+            lineas = sorted(lineas_resumidas.values(), key=lambda l: l['tipo']+l['fecha'])
+
+        self.temp_lineas = lineas
+        return lineas
+
 
 report_sxw.report_sxw('report.ventas_reporte', 'l10n_gt_extra.asistente_ventas_reporte', 'addons/l10n_gt_extra/report/ventas_reporte.rml', parser=ventas_reporte, header=False)
 

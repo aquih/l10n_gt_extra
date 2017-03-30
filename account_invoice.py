@@ -41,4 +41,10 @@ class account_invoice(osv.osv):
     _defaults = {
         'tipo_gasto': lambda *a: 'compra',
     }
-account_invoice()
+
+class account_journal(osv.osv):
+    _inherit = "account.journal"
+
+    _columns = {
+        'direccion': fields.many2one('res.partner', 'Dirección'),
+    }
