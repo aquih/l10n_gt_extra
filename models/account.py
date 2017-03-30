@@ -9,6 +9,13 @@ class AccountInvoice(models.Model):
     tipo_gasto = fields.Selection([('compra', 'Compra/Bien'), ('servicio', 'Servicio'), ('importacion', 'Importación/Exportación'), ('combustible', 'Combustible'), ('mixto', 'Mixto')], string="Numero Viejo", default="compra")
     numero_viejo = fields.Char(string="Numero Viejo")
 
+    @api.constrains('reference')
+    def _validar_factura_proveedor(self):
+        if self.reference:
+            facturas = self.search([('reference','=',self.reference), ('partner_id','=',self.partner_id.id), ('type','=','in_invoice')])
+            if len(facturas) > 1:
+                raise ValidationError("La factura está duplicada")
+
     @api.multi
     def action_cancel(self):
         for rec in self:
