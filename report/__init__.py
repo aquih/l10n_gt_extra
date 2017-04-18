@@ -20,9 +20,9 @@
 #
 ##############################################################################
 
+import asistente_reporte_banco
+import reporte_banco
 #import partida
-#import asistente_banco_reporte
-#import banco_reporte
 #import asistente_compras_reporte
 #import compras_reporte
 #import asistente_ventas_reporte
