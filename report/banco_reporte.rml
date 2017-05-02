@@ -7,7 +7,7 @@
             <pageGraphics>
                 <setFont name="Courier-Bold" size="7"/>
                 <drawCentredString x="10cm" y="28.50cm">[[ o.cuenta_bancaria_id.company_id.name ]]</drawCentredString>
-                <drawCentredString x="10cm" y="28.20cm">Cifras expresadas en quetzales</drawCentredString>
+                <drawCentredString x="10cm" y="28.20cm">Cifras expresadas en [[ o.cuenta_bancaria_id.currency_id and o.cuenta_bancaria_id.currency_id.symbol or o.cuenta_bancaria_id.company_id.currency_id.symbol ]] </drawCentredString>
                 <drawRightString x="20cm" y="28.50cm">Pag. No. <pageNumber/></drawRightString>
                 <drawString x="1cm" y="28.00cm">Libro de Bancos</drawString>
                 <drawString x="1cm" y="27.60cm">Banco: [[ o.cuenta_bancaria_id.name ]]</drawString>
