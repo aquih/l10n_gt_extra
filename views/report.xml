@@ -26,8 +26,10 @@
         </record>
 
         <act_window id="window_reporte_banco" name="Libro de banco" res_model="l10n_gt_extra.asistente_reporte_banco" src_model="account.account" view_mode="form" target="new"/>
-        <menuitem icon="STOCK_PRINT" action="window_reporte_banco" id="menu_asistente_reporte_banco" parent="account.menu_finance_legal_statement"/>
+        <menuitem action="window_reporte_banco" id="menu_asistente_reporte_banco" parent="account.menu_finance_legal_statement"/>
         <report id="action_reporte_banco" model="l10n_gt_extra.asistente_reporte_banco" string="Libro de banco" report_type="qweb-pdf" name="l10n_gt_extra.reporte_banco" file="l10n_gt_extra.reporte_banco"/>
+
+        <report id="action_reporte_partida" model="account.move" string="Partida" report_type="qweb-pdf" name="l10n_gt_extra.reporte_partida" file="l10n_gt_extra.reporte_partida"/>
 
         <!-- <report id="banco_reporte" model="l10n_gt_extra.asistente_banco_reporte" name="banco_reporte" rml="l10n_gt_extra/report/banco_reporte.rml" string="Libro de banco"/> -->
 
@@ -63,7 +65,7 @@
         </record>
 
         <act_window id="window_compras_reporte" name="Libro de compras" res_model="l10n_gt_extra.asistente_compras_reporte" src_model="account.journal" view_mode="form" target="new"/>
-        <menuitem icon="STOCK_PRINT" action="window_compras_reporte" id="menu_asistente_compras_reporte" parent="account.menu_finance_legal_statement"/>
+        <menuitem action="window_compras_reporte" id="menu_asistente_compras_reporte" parent="account.menu_finance_legal_statement"/>
         <report id="compras_reporte" model="l10n_gt_extra.asistente_compras_reporte" name="compras_reporte" rml="l10n_gt_extra/report/compras_reporte.rml" string="Libro de compras"/>
 
         <record id="asistente_ventas_reporte" model="ir.ui.view">
@@ -97,7 +99,7 @@
         </record>
 
         <act_window id="window_ventas_reporte" name="Libro de ventas" res_model="l10n_gt_extra.asistente_ventas_reporte" src_model="account.journal" view_mode="form" target="new"/>
-        <menuitem icon="STOCK_PRINT" action="window_ventas_reporte" id="menu_asistente_ventas_reporte" parent="account.menu_finance_legal_statement"/>
+        <menuitem action="window_ventas_reporte" id="menu_asistente_ventas_reporte" parent="account.menu_finance_legal_statement"/>
         <report id="ventas_reporte" model="l10n_gt_extra.asistente_ventas_reporte" name="ventas_reporte" rml="l10n_gt_extra/report/ventas_reporte.rml" string="Libro de ventas"/>
 
         <record id="asistente_diario_reporte" model="ir.ui.view">
@@ -130,7 +132,7 @@
         </record>
 
         <act_window id="window_diario_reporte" name="Libro diario/mayor" res_model="l10n_gt_extra.asistente_diario_reporte" src_model="account.journal" view_mode="form" target="new"/>
-        <menuitem icon="STOCK_PRINT" action="window_diario_reporte" id="menu_asistente_diario_reporte" parent="account.menu_finance_legal_statement"/>
+        <menuitem action="window_diario_reporte" id="menu_asistente_diario_reporte" parent="account.menu_finance_legal_statement"/>
         <report id="diario_reporte" model="l10n_gt_extra.asistente_diario_reporte" name="diario_reporte" rml="l10n_gt_extra/report/diario_reporte.rml" string="Libro diario"/> -->
 
     </data>

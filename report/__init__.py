@@ -22,7 +22,7 @@
 
 import asistente_reporte_banco
 import reporte_banco
-#import partida
+import reporte_partida
 #import asistente_compras_reporte
 #import compras_reporte
 #import asistente_ventas_reporte

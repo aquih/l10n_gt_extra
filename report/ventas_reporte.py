@@ -62,7 +62,7 @@ class ventas_reporte(report_sxw.rml_parse):
                 for l in f.move_id.line_ids:
                     if l.account_id.id == f.account_id.id:
                         total += l.debit - l.credit
-                tipo_cambio = total / f.amount_total
+                tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
             if f.type == 'out_refund':

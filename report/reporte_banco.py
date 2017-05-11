@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 
-import time
 from odoo import api, models
 
 class ReporteBanco(models.AbstractModel):
@@ -46,7 +45,7 @@ class ReporteBanco(models.AbstractModel):
         return lineas
 
     def balance_inicial(self, datos):
-        self.env.cr.execute('select (sum(debit) - sum(credit)) as balance, sum(amount_currency) as balance_moneda from account_move_line where account_id = %s and date < %s', (datos['cuenta_bancaria_id'][0], datos['fecha_desde']))
+        self.env.cr.execute('select coalesce(sum(debit) - sum(credit), 0) as balance, coalesce(sum(amount_currency), 0) as balance_moneda from account_move_line where account_id = %s and date < %s', (datos['cuenta_bancaria_id'][0], datos['fecha_desde']))
         return self.env.cr.dictfetchall()[0]
 
     @api.model
@@ -59,7 +58,8 @@ class ReporteBanco(models.AbstractModel):
             'doc_model': self.model,
             'data': data['form'],
             'docs': docs,
-            'lineas': self.lineas(data['form']),
+            'moneda': docs[0].cuenta_bancaria_id.currency_id or self.env.user.company_id.currency_id,
+            'lineas': self.lineas,
             'balance_inicial': self.balance_inicial(data['form']),
         }
         return self.env['report'].render('l10n_gt_extra.reporte_banco', docargs)

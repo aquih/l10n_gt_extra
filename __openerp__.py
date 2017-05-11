@@ -34,6 +34,7 @@
         'views/res_partner_view.xml',
         'views/report.xml',
         'views/reporte_banco.xml',
+        'views/reporte_partida.xml',
     ],
     'demo': [],
     'installable': True,
