@@ -31,16 +31,13 @@
 
         <report id="action_reporte_partida" model="account.move" string="Partida" report_type="qweb-pdf" name="l10n_gt_extra.reporte_partida" file="l10n_gt_extra.reporte_partida"/>
 
-        <!-- <report id="banco_reporte" model="l10n_gt_extra.asistente_banco_reporte" name="banco_reporte" rml="l10n_gt_extra/report/banco_reporte.rml" string="Libro de banco"/> -->
-
-        <!-- <report id="partida" model="account.move" name="partida" rml="l10n_gt_extra/report/partida.rml" string="Partida"/>
 
         <record id="asistente_compras_reporte" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.asistente_compras_reporte</field>
-            <field name="model">l10n_gt_extra.asistente_compras_reporte</field>
+            <field name="name">l10n_gt_extra.asistente_reporte_compras</field>
+            <field name="model">l10n_gt_extra.asistente_reporte_compras</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Seleccione diario y periodos">
+                <form string="Seleccione diario y rango de fecha">
                     <group>
                         <group>
                             <field name="folio_inicial"/>
@@ -64,13 +61,14 @@
             </field>
         </record>
 
-        <act_window id="window_compras_reporte" name="Libro de compras" res_model="l10n_gt_extra.asistente_compras_reporte" src_model="account.journal" view_mode="form" target="new"/>
-        <menuitem action="window_compras_reporte" id="menu_asistente_compras_reporte" parent="account.menu_finance_legal_statement"/>
-        <report id="compras_reporte" model="l10n_gt_extra.asistente_compras_reporte" name="compras_reporte" rml="l10n_gt_extra/report/compras_reporte.rml" string="Libro de compras"/>
+        <act_window id="window_reporte_compras" name="Libro de compras" res_model="l10n_gt_extra.asistente_reporte_compras" src_model="account.journal" view_mode="form" target="new"/>
+        <menuitem action="window_reporte_compras" id="menu_asistente_reporte_compras" parent="account.menu_finance_legal_statement"/>
+        <report id="reporte_compras" model="l10n_gt_extra.asistente_reporte_compras" name="reporte_compras" rml="l10n_gt_extra/report/reporte_compras.rml" string="Libro de compras"/>
+
 
         <record id="asistente_ventas_reporte" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.asistente_ventas_reporte</field>
-            <field name="model">l10n_gt_extra.asistente_ventas_reporte</field>
+            <field name="name">l10n_gt_extra.asistente_reporte_ventas</field>
+            <field name="model">l10n_gt_extra.asistente_reporte_ventas</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Seleccione diario peridodos">
@@ -98,11 +96,11 @@
             </field>
         </record>
 
-        <act_window id="window_ventas_reporte" name="Libro de ventas" res_model="l10n_gt_extra.asistente_ventas_reporte" src_model="account.journal" view_mode="form" target="new"/>
-        <menuitem action="window_ventas_reporte" id="menu_asistente_ventas_reporte" parent="account.menu_finance_legal_statement"/>
-        <report id="ventas_reporte" model="l10n_gt_extra.asistente_ventas_reporte" name="ventas_reporte" rml="l10n_gt_extra/report/ventas_reporte.rml" string="Libro de ventas"/>
+        <act_window id="window_reporte_ventas" name="Libro de ventas" res_model="l10n_gt_extra.asistente_reporte_ventas" src_model="account.journal" view_mode="form" target="new"/>
+        <menuitem action="window_reporte_ventas" id="menu_asistente_reporte_ventas" parent="account.menu_finance_legal_statement"/>
+        <report id="reporte_ventas" model="l10n_gt_extra.asistente_reporte_ventas" name="reporte_ventas" rml="l10n_gt_extra/report/reporte_ventas.rml" string="Libro de ventas"/>
 
-        <record id="asistente_diario_reporte" model="ir.ui.view">
+        <!-- <record id="asistente_diario_reporte" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_diario_reporte</field>
             <field name="model">l10n_gt_extra.asistente_diario_reporte</field>
             <field name="type">form</field>

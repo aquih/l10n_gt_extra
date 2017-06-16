@@ -6,6 +6,7 @@ from openerp.exceptions import UserError, ValidationError
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    @api.constrains('vat')
     def _validar_nit(self):
         if self.vat == 'CF' or not self.vat:
             return True
@@ -30,13 +31,14 @@ class ResPartner(models.Model):
         if str(resultante) == verificador:
             return True
         else:
-            return False
+            raise ValidationError("El NIT no es correcto (según lineamientos de la SAT)")
 
+    @api.constrains('vat')
     def _validar_duplicado(self):
-        if not self.parent_id:
+        if not self.parent_id and self.vat:
             repetidos = self.search([('vat','=',self.vat), ('id','!=',self.id)])
             if len(repetidos) > 0:
-                return False
+                raise ValidationError("El NIT ya existe")
         return True
 
     @api.model
@@ -48,9 +50,4 @@ class ResPartner(models.Model):
 
         return res1+res2
 
-    pequenio_contribuyente = fields.Boolean(string="Numero Viejo")
-
-    _constraints = [
-    #    (_validar_duplicado, 'El NIT ya existe.', ['vat']),
-    #    (_validar_nit, 'El NIT no es correcto', ['vat']),
-    ]
+    pequenio_contribuyente = fields.Boolean(string="Pequeño Contribuyente")

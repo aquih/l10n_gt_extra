@@ -23,9 +23,9 @@
 import asistente_reporte_banco
 import reporte_banco
 import reporte_partida
-#import asistente_compras_reporte
+import asistente_reporte_compras
+import asistente_reporte_ventas
 #import compras_reporte
-#import asistente_ventas_reporte
 #import ventas_reporte
 #import asistente_diario_reporte
 #import diario_reporte
