@@ -53,7 +53,7 @@
                         <field name="diarios_id" nolabel="1" domain="[('type','in',['purchase','purchase_refund'])]"/>
                     </group>
                     <footer>
-                        <button name="reporte" string="Reporte" type="object" class="oe_highlight"/>
+                        <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
                         o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
@@ -63,8 +63,7 @@
 
         <act_window id="window_reporte_compras" name="Libro de compras" res_model="l10n_gt_extra.asistente_reporte_compras" src_model="account.journal" view_mode="form" target="new"/>
         <menuitem action="window_reporte_compras" id="menu_asistente_reporte_compras" parent="account.menu_finance_legal_statement"/>
-        <report id="reporte_compras" model="l10n_gt_extra.asistente_reporte_compras" name="reporte_compras" rml="l10n_gt_extra/report/reporte_compras.rml" string="Libro de compras"/>
-
+        <report id="action_reporte_compras" model="l10n_gt_extra.asistente_reporte_compras" string="Libro de compras" report_type="qweb-pdf" name="l10n_gt_extra.reporte_compras" file="l10n_gt_extra.reporte_compras"/>
 
         <record id="asistente_ventas_reporte" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_reporte_ventas</field>
@@ -98,7 +97,7 @@
 
         <act_window id="window_reporte_ventas" name="Libro de ventas" res_model="l10n_gt_extra.asistente_reporte_ventas" src_model="account.journal" view_mode="form" target="new"/>
         <menuitem action="window_reporte_ventas" id="menu_asistente_reporte_ventas" parent="account.menu_finance_legal_statement"/>
-        <report id="reporte_ventas" model="l10n_gt_extra.asistente_reporte_ventas" name="reporte_ventas" rml="l10n_gt_extra/report/reporte_ventas.rml" string="Libro de ventas"/>
+        <report id="action_reporte_ventas" model="l10n_gt_extra.asistente_reporte_ventas" name="reporte_ventas" rml="l10n_gt_extra/report/reporte_ventas.rml" string="Libro de ventas"/>
 
         <!-- <record id="asistente_diario_reporte" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_diario_reporte</field>
@@ -131,7 +130,7 @@
 
         <act_window id="window_diario_reporte" name="Libro diario/mayor" res_model="l10n_gt_extra.asistente_diario_reporte" src_model="account.journal" view_mode="form" target="new"/>
         <menuitem action="window_diario_reporte" id="menu_asistente_diario_reporte" parent="account.menu_finance_legal_statement"/>
-        <report id="diario_reporte" model="l10n_gt_extra.asistente_diario_reporte" name="diario_reporte" rml="l10n_gt_extra/report/diario_reporte.rml" string="Libro diario"/> -->
+        <report id="action_diario_reporte" model="l10n_gt_extra.asistente_diario_reporte" name="diario_reporte" rml="l10n_gt_extra/report/diario_reporte.rml" string="Libro diario"/> -->
 
     </data>
 </openerp>
