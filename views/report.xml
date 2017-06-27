@@ -1,5 +1,12 @@
-<openerp>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
     <data>
+
+        <template id="l10n_gt_extra_layout" inherit_id="report.layout">
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-data-report-page-offset">data_report_page_offset</attribute>
+            </xpath>
+        </template>
 
         <record id="asistente_reporte_banco" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_reporte_banco</field>
@@ -133,4 +140,4 @@
         <report id="action_diario_reporte" model="l10n_gt_extra.asistente_diario_reporte" name="diario_reporte" rml="l10n_gt_extra/report/diario_reporte.rml" string="Libro diario"/> -->
 
     </data>
-</openerp>
+</odoo>
