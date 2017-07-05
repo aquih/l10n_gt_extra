@@ -6,7 +6,7 @@ from openerp.exceptions import UserError, ValidationError
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
 
-    tipo_gasto = fields.Selection([('compra', 'Compra/Bien'), ('servicio', 'Servicio'), ('importacion', 'Importación/Exportación'), ('combustible', 'Combustible'), ('mixto', 'Mixto')], string="Numero Viejo", default="compra")
+    tipo_gasto = fields.Selection([('compra', 'Compra/Bien'), ('servicio', 'Servicio'), ('importacion', 'Importación/Exportación'), ('combustible', 'Combustible'), ('mixto', 'Mixto')], string="Tipo de Gasto", default="compra")
     numero_viejo = fields.Char(string="Numero Viejo")
 
     @api.constrains('reference')
