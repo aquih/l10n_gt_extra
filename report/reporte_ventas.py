@@ -1,60 +1,31 @@
 # -*- encoding: utf-8 -*-
 
-from openerp.report import report_sxw
-import time
-import datetime
+from odoo import api, models
 import logging
 
-class ventas_reporte(report_sxw.rml_parse):
-    def __init__(self, cr, uid, name, context):
-        super(ventas_reporte, self).__init__(cr, uid, name, context)
-        self.totales = {}
-        self.folioActual = -1
-        self.temp_lineas = []
-        self.localcontext.update( {
-            'time': time,
-            'datetime': datetime,
-            'lineas': self.lineas,
-            'totales': self.totales,
-            'folio': self.folio,
-        })
-        self.context = context
-        self.cr = cr
-
-    def folio(self, datos):
-
-        if self.folioActual < 0:
-            if datos[0].folio_inicial <= 0:
-                self.folioActual = 1
-            else:
-                self.folioActual = datos[0].folio_inicial
-        else:
-            self.folioActual += 1
-
-        return self.folioActual
+class ReporteVentas(models.AbstractModel):
+    _name = 'report.l10n_gt_extra.reporte_ventas'
 
     def lineas(self, datos):
+        totales = {}
 
-        if self.temp_lineas:
-            return self.temp_lineas
+        totales['num_facturas'] = 0
+        totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
+        totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
+        totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
+        totales['combustible'] = {'exento':0,'neto':0,'iva':0,'total':0}
 
-        self.totales['num_facturas'] = 0
-        self.totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        self.totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        self.totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        self.totales['combustible'] = {'exento':0,'neto':0,'iva':0,'total':0}
-
-        journal_ids = [x.id for x in datos.diarios_id]
-        facturas = self.pool.get('account.invoice').search(self.cr, self.uid, [
+        journal_ids = [x for x in datos['diarios_id']]
+        facturas = self.env['account.invoice'].search([
             ('state','in',['open','paid','cancel']),
             ('journal_id','in',journal_ids),
-            ('date_invoice','<=',datos.fecha_hasta),
-            ('date_invoice','>=',datos.fecha_desde),
+            ('date_invoice','<=',datos['fecha_hasta']),
+            ('date_invoice','>=',datos['fecha_desde']),
         ], order='date_invoice')
 
         lineas = []
-        for f in self.pool.get('account.invoice').browse(self.cr, self.uid, facturas):
-            self.totales['num_facturas'] += 1
+        for f in facturas:
+            totales['num_facturas'] += 1
 
             tipo_cambio = 1
             if f.currency_id.id != f.company_id.currency_id.id:
@@ -110,29 +81,29 @@ class ventas_reporte(report_sxw.rml_parse):
                 r = l.invoice_line_tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
                 linea['base'] += r['base']
-                self.totales[tipo_linea]['total'] += r['base']
+                totales[tipo_linea]['total'] += r['base']
                 if len(l.invoice_line_tax_ids) > 0:
                     linea[tipo_linea] += r['base']
-                    self.totales[tipo_linea]['neto'] += r['base']
+                    totales[tipo_linea]['neto'] += r['base']
                     for i in r['taxes']:
-                        if i['id'] == datos.impuesto_id.id:
+                        if i['id'] == datos['impuesto_id'][0]:
                             linea['iva'] += i['amount']
-                            self.totales[tipo_linea]['iva'] += i['amount']
-                            self.totales[tipo_linea]['total'] += i['amount']
+                            totales[tipo_linea]['iva'] += i['amount']
+                            totales[tipo_linea]['total'] += i['amount']
                         elif i['amount'] > 0:
                             linea[f.tipo_gasto+'_exento'] += i['amount']
-                            self.totales[tipo_linea]['exento'] += i['amount']
+                            totales[tipo_linea]['exento'] += i['amount']
                 else:
                     linea[tipo_linea+'_exento'] += r['base']
-                    self.totales[tipo_linea]['exento'] += r['base']
+                    totales[tipo_linea]['exento'] += r['base']
 
-                linea['total'] = linea[tipo_linea]+linea['iva']
-                if linea['total'] == 0:
-                    linea['total'] = linea[tipo_linea+'_exento']
+                linea['total'] += r['base']
+
+            linea['total'] += linea['iva']
 
             lineas.append(linea)
 
-        if datos.resumido:
+        if datos['resumido']:
             lineas_resumidas = {}
             for l in lineas:
                 llave = l['tipo']+l['fecha']
@@ -162,9 +133,23 @@ class ventas_reporte(report_sxw.rml_parse):
 
             lineas = sorted(lineas_resumidas.values(), key=lambda l: l['tipo']+l['fecha'])
 
-        self.temp_lineas = lineas
-        return lineas
+        return { 'lineas': lineas, 'totales': totales }
 
-report_sxw.report_sxw('report.ventas_reporte', 'l10n_gt_extra.asistente_ventas_reporte', 'addons/l10n_gt_extra/report/ventas_reporte.rml', parser=ventas_reporte, header=False)
+    @api.model
+    def render_html(self, docids, data=None):
+        self.model = self.env.context.get('active_model')
+        docs = self.env[self.model].browse(self.env.context.get('active_ids', []))
+
+        diario = self.env['account.journal'].browse(data['form']['diarios_id'][0])
+
+        docargs = {
+            'doc_ids': self.ids,
+            'doc_model': self.model,
+            'data': data['form'],
+            'docs': docs,
+            'lineas': self.lineas,
+            'direccion_diario': diario.direccion and diario.direccion.street,
+        }
+        return self.env['report'].render('l10n_gt_extra.reporte_ventas', docargs)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

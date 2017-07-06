@@ -89,8 +89,6 @@
                                 <span t-esc="l['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                             </td>
                         </tr>
-                    </tbody>
-                    <tfoot>
                         <tr>
                             <td>
                             </td>
@@ -131,17 +129,17 @@
                                 <span t-esc="result['totales']['compra']['total'] + result['totales']['servicio']['total'] + result['totales']['combustible']['total'] + result['totales']['importacion']['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                             </td>
                         </tr>
-                    </tfoot>
+                    </tbody>
                 </table>
 
-                <table class="table table-condensed">
+                <table>
                     <tbody>
                         <tr>
                             <td>
                                 Total de facturas de pequeños contribuyentes:
                             </td>
                             <td class="text-right">
-                                <span t-esc="result['totales']['pequenio_contribuyente']['exento']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                <span t-esc="result['totales']['pequenio_contribuyente']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                             </td>
                         </tr>
                         <tr>
@@ -149,7 +147,7 @@
                                 Cantidad de facturas:
                             </td>
                             <td class="text-right">
-                                <span t-esc="'{0:,.2f}'.format(len(result['lineas']))"/>
+                                <span t-esc="'{0:,.0f}'.format(result['totales']['num_facturas'])"/>
                             </td>
                         </tr>
                         <tr>

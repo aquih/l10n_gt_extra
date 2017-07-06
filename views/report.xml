@@ -94,7 +94,7 @@
                         <field name="diarios_id" nolabel="1" domain="[('type','in',['sale','sale_refund'])]"/>
                     </group>
                     <footer>
-                        <button name="reporte" string="Reporte" type="object" class="oe_highlight"/>
+                        <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
                         o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
@@ -104,7 +104,7 @@
 
         <act_window id="window_reporte_ventas" name="Libro de ventas" res_model="l10n_gt_extra.asistente_reporte_ventas" src_model="account.journal" view_mode="form" target="new"/>
         <menuitem action="window_reporte_ventas" id="menu_asistente_reporte_ventas" parent="account.menu_finance_legal_statement"/>
-        <report id="action_reporte_ventas" model="l10n_gt_extra.asistente_reporte_ventas" name="reporte_ventas" rml="l10n_gt_extra/report/reporte_ventas.rml" string="Libro de ventas"/>
+        <report id="action_reporte_ventas" model="l10n_gt_extra.asistente_reporte_ventas" string="Libro de ventas" report_type="qweb-pdf" name="l10n_gt_extra.reporte_ventas" file="l10n_gt_extra.reporte_ventas"/>
 
         <!-- <record id="asistente_diario_reporte" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_diario_reporte</field>

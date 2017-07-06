@@ -36,6 +36,7 @@
         'views/reporte_banco.xml',
         'views/reporte_partida.xml',
         'views/reporte_compras.xml',
+        'views/reporte_ventas.xml',
     ],
     'demo': [],
     'installable': True,

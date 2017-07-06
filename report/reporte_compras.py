@@ -7,14 +7,14 @@ class ReporteCompras(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_compras'
 
     def lineas(self, datos):
-        logging.warn(datos)
         totales = {}
 
+        totales['num_facturas'] = 0
         totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
         totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
         totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
         totales['combustible'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        totales['pequenio_contribuyente'] = {'exento':0,'neto':0,'iva':0,'total':0}
+        totales['pequenio_contribuyente'] = 0
 
         journal_ids = [x for x in datos['diarios_id']]
         facturas = self.env['account.invoice'].search([
@@ -26,6 +26,7 @@ class ReporteCompras(models.AbstractModel):
 
         lineas = []
         for f in facturas:
+            totales['num_facturas'] += 1
 
             tipo_cambio = 1
             if f.currency_id.id != f.company_id.currency_id.id:
@@ -65,31 +66,36 @@ class ReporteCompras(models.AbstractModel):
                 if tipo == 'NC':
                     precio = precio * -1
 
+                tipo_linea = f.tipo_gasto
+                if f.tipo_gasto == 'mixto':
+                    if l.product_id.type == 'product':
+                        tipo_linea = 'compra'
+                    else:
+                        tipo_linea = 'servicio'
+
                 r = l.invoice_line_tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
                 linea['base'] += r['base']
+                totales[tipo_linea]['total'] += r['base']
                 if len(l.invoice_line_tax_ids) > 0:
-                    linea[f.tipo_gasto] += r['base']
+                    linea[tipo_linea] += r['base']
+                    totales[tipo_linea]['neto'] += r['base']
                     for i in r['taxes']:
                         if i['id'] == datos['impuesto_id'][0]:
                             linea['iva'] += i['amount']
+                            totales[tipo_linea]['iva'] += i['amount']
+                            totales[tipo_linea]['total'] += i['amount']
                         elif i['amount'] > 0:
                             linea[f.tipo_gasto+'_exento'] += i['amount']
+                            totales[tipo_linea]['exento'] += i['amount']
                 else:
-                    linea[f.tipo_gasto+'_exento'] += r['base']
+                    linea[tipo_linea+'_exento'] += r['base']
+                    totales[tipo_linea]['exento'] += r['base']
 
-            linea['total'] = linea[f.tipo_gasto] + linea['iva']
+                linea['total'] += r['base']
 
             if f.partner_id.pequenio_contribuyente:
-                totales['pequenio_contribuyente']['exento'] += linea[f.tipo_gasto+'_exento']
-                totales['pequenio_contribuyente']['neto'] += linea[f.tipo_gasto]
-                totales['pequenio_contribuyente']['iva'] += linea['iva']
-                totales['pequenio_contribuyente']['total'] += linea['total']
-
-            totales[f.tipo_gasto]['exento'] += linea[f.tipo_gasto+'_exento']
-            totales[f.tipo_gasto]['neto'] += linea[f.tipo_gasto]
-            totales[f.tipo_gasto]['iva'] += linea['iva']
-            totales[f.tipo_gasto]['total'] += linea['total']
+                totales['pequenio_contribuyente'] += linea['base']
 
             lineas.append(linea)
 
@@ -100,12 +106,15 @@ class ReporteCompras(models.AbstractModel):
         self.model = self.env.context.get('active_model')
         docs = self.env[self.model].browse(self.env.context.get('active_ids', []))
 
+        diario = self.env['account.journal'].browse(data['form']['diarios_id'][0])
+
         docargs = {
             'doc_ids': self.ids,
             'doc_model': self.model,
             'data': data['form'],
             'docs': docs,
             'lineas': self.lineas,
+            'direccion': diario.direccion and diario.direccion.street,
         }
         return self.env['report'].render('l10n_gt_extra.reporte_compras', docargs)
 
