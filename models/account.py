@@ -31,7 +31,7 @@ class AccountPayment(models.Model):
     def cancel(self):
         for rec in self:
             rec.write({'numero_viejo': rec.name})
-        return super(account_payment, self).cancel()
+        return super(AccountPayment, self).cancel()
 
     @api.multi
     def anular(self):

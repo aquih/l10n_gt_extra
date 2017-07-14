@@ -21,7 +21,7 @@ class ReporteVentas(models.AbstractModel):
             ('journal_id','in',journal_ids),
             ('date_invoice','<=',datos['fecha_hasta']),
             ('date_invoice','>=',datos['fecha_desde']),
-        ], order='date_invoice')
+        ], order='date_invoice, number')
 
         lineas = []
         for f in facturas:
@@ -98,8 +98,6 @@ class ReporteVentas(models.AbstractModel):
                     totales[tipo_linea]['exento'] += r['base']
 
                 linea['total'] += r['base']
-
-            linea['total'] += linea['iva']
 
             lineas.append(linea)
 

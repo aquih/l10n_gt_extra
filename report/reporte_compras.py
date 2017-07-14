@@ -22,7 +22,7 @@ class ReporteCompras(models.AbstractModel):
             ('journal_id','in',journal_ids),
             ('date','<=',datos['fecha_hasta']),
             ('date','>=',datos['fecha_desde']),
-        ], order='date_invoice')
+        ], order='date_invoice, reference')
 
         lineas = []
         for f in facturas:
