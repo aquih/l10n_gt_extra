@@ -28,6 +28,12 @@ class account_invoice(osv.osv):
         else:
             return True
 
+    def copy(self, cr, uid, id, default=None, context=None):
+        default.update({
+            'supplier_invoice_number': False,
+        })
+        return super(account_invoice, self).copy(cr, uid, id, default, context)
+
     _constraints = [
         (_validar_factura_proveedor, 'La factura está duplicada', ['supplier_invoice_number']),
     ]
