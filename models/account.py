@@ -8,6 +8,7 @@ class AccountInvoice(models.Model):
 
     tipo_gasto = fields.Selection([('compra', 'Compra/Bien'), ('servicio', 'Servicio'), ('importacion', 'Importación/Exportación'), ('combustible', 'Combustible'), ('mixto', 'Mixto')], string="Tipo de Gasto", default="compra")
     numero_viejo = fields.Char(string="Numero Viejo")
+    reference = fields.Char(string='Vendor Reference', help="The partner reference of this invoice.", readonly=True, states={'draft': [('readonly', False)]}, copy=False)
 
     @api.constrains('reference')
     def _validar_factura_proveedor(self):
