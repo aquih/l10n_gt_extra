@@ -42,11 +42,15 @@ class ReporteVentas(models.AbstractModel):
                 else:
                     tipo = 'ND'
 
+            numero = f.number or f.numero_viejo or '-',
+            if firma_gface in f.fields_get() and f.firma_gface:
+                numero = f.name
+
             linea = {
                 'estado': f.state,
                 'tipo': tipo,
                 'fecha': f.date_invoice,
-                'numero': f.number or f.numero_viejo or '-',
+                'numero': numero,
                 'cliente': f.partner_id.name,
                 'nit': f.partner_id.vat,
                 'compra': 0,
