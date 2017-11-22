@@ -43,7 +43,7 @@ class ReporteVentas(models.AbstractModel):
                     tipo = 'ND'
 
             numero = f.number or f.numero_viejo or '-',
-            if firma_gface in f.fields_get() and f.firma_gface:
+            if 'firma_gface' in f.fields_get() and f.firma_gface:
                 numero = f.name
 
             linea = {
