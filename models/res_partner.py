@@ -11,7 +11,7 @@ class ResPartner(models.Model):
         if self.vat == 'CF' or self.vat == 'C/F' or not self.vat:
             return True
 
-        if self.country_id and self.country_id.id != 91:
+        if self.country_id and self.country_id.code != 'GT':
             return True
 
         nit = self.vat.replace('-','')
