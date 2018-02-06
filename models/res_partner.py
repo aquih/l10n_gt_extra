@@ -6,17 +6,17 @@ from openerp.exceptions import UserError, ValidationError
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    @api.one
+    @api.multi
     @api.constrains('vat')
     def _validar_nit(self):
         for p in self:
-            if self.vat == 'CF' or self.vat == 'C/F' or not self.vat:
+            if p.vat == 'CF' or p.vat == 'C/F' or not p.vat:
                 return True
 
-            if self.country_id and self.country_id.id != 91:
+            if p.country_id and p.country_id.code != 'GT':
                 return True
 
-            nit = self.vat.replace('-','')
+            nit = p.vat.replace('-','')
             verificador = nit[-1]
             if verificador.upper() == 'K':
                 verificador = '10'
@@ -30,19 +30,17 @@ class ResPartner(models.Model):
 
             resultante = ( 11 - ( total % 11 ) ) % 11
 
-            if str(resultante) == verificador:
-                return True
-            else:
+            if str(resultante) != verificador:
                 raise ValidationError("El NIT no es correcto (según lineamientos de la SAT)")
 
-    @api.one
+    @api.multi
     @api.constrains('vat')
     def _validar_duplicado(self):
-        if not self.parent_id and self.vat and self.vat != 'CF' and self.vat != 'C/F':
-            repetidos = self.search([('vat','=',self.vat), ('id','!=',self.id)])
-            if len(repetidos) > 0:
-                raise ValidationError("El NIT ya existe")
-        return True
+        for p in self:
+            if not p.parent_id and p.vat and p.vat != 'CF' and p.vat != 'C/F':
+                repetidos = p.search([('vat','=',p.vat), ('id','!=',p.id), ('parent_id','=',False)])
+                if len(repetidos) > 0:
+                    raise ValidationError("El NIT ya existe")
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
