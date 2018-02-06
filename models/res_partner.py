@@ -6,33 +6,36 @@ from openerp.exceptions import UserError, ValidationError
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    @api.one
     @api.constrains('vat')
     def _validar_nit(self):
-        if self.vat == 'CF' or self.vat == 'C/F' or not self.vat:
-            return True
+        for p in self:
+            if self.vat == 'CF' or self.vat == 'C/F' or not self.vat:
+                return True
 
-        if self.country_id and self.country_id.id != 91:
-            return True
+            if self.country_id and self.country_id.id != 91:
+                return True
 
-        nit = self.vat.replace('-','')
-        verificador = nit[-1]
-        if verificador.upper() == 'K':
-            verificador = '10'
-        secuencia = nit[:-1]
+            nit = self.vat.replace('-','')
+            verificador = nit[-1]
+            if verificador.upper() == 'K':
+                verificador = '10'
+            secuencia = nit[:-1]
 
-        total = 0
-        i = 2
-        for c in secuencia[::-1]:
-            total += int(c) * i
-            i += 1
+            total = 0
+            i = 2
+            for c in secuencia[::-1]:
+                total += int(c) * i
+                i += 1
 
-        resultante = ( 11 - ( total % 11 ) ) % 11
+            resultante = ( 11 - ( total % 11 ) ) % 11
 
-        if str(resultante) == verificador:
-            return True
-        else:
-            raise ValidationError("El NIT no es correcto (según lineamientos de la SAT)")
+            if str(resultante) == verificador:
+                return True
+            else:
+                raise ValidationError("El NIT no es correcto (según lineamientos de la SAT)")
 
+    @api.one
     @api.constrains('vat')
     def _validar_duplicado(self):
         if not self.parent_id and self.vat and self.vat != 'CF' and self.vat != 'C/F':
