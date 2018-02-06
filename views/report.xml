@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <template id="l10n_gt_extra_layout" inherit_id="report.layout">
+        <template id="l10n_gt_extra_layout" inherit_id="web.report_layout">
             <xpath expr="//html" position="attributes">
                 <attribute name="t-att-data-report-page-offset">data_report_page_offset</attribute>
             </xpath>

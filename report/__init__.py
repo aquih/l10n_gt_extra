@@ -20,12 +20,12 @@
 #
 ##############################################################################
 
-import asistente_reporte_banco
-import reporte_banco
-import reporte_partida
-import asistente_reporte_compras
-import reporte_compras
-import asistente_reporte_ventas
-import reporte_ventas
+from . import asistente_reporte_banco
+from . import reporte_banco
+from . import asistente_reporte_compras
+from . import reporte_compras
+from . import asistente_reporte_ventas
+from . import reporte_ventas
+from . import reporte_partida
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

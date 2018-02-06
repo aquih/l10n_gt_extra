@@ -5,7 +5,6 @@
 # que le agregue los quetzales y centavos.
 #
 
-import logging
 def num_a_letras(num, completo=True):
     en_letras = {
         '0': 'cero',

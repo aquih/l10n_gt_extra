@@ -6,7 +6,7 @@ from openerp.exceptions import UserError, ValidationError
 import logging
 
 class Report(models.Model):
-    _inherit = "report"
+    _inherit = "ir.actions.report"
 
     def _build_wkhtmltopdf_args(self, paperformat, specific_paperformat_args=None):
         command_args = super(Report, self)._build_wkhtmltopdf_args(paperformat, specific_paperformat_args)
