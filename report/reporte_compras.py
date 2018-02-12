@@ -102,20 +102,19 @@ class ReporteCompras(models.AbstractModel):
         return { 'lineas': lineas, 'totales': totales }
 
     @api.model
-    def render_html(self, docids, data=None):
-        self.model = self.env.context.get('active_model')
-        docs = self.env[self.model].browse(self.env.context.get('active_ids', []))
+    def get_report_values(self, docids, data=None):
+        model = self.env.context.get('active_model')
+        docs = self.env[model].browse(self.env.context.get('active_ids', []))
 
         diario = self.env['account.journal'].browse(data['form']['diarios_id'][0])
 
-        docargs = {
+        return {
             'doc_ids': self.ids,
-            'doc_model': self.model,
+            'doc_model': model,
             'data': data['form'],
             'docs': docs,
             'lineas': self.lineas,
             'direccion': diario.direccion and diario.direccion.street,
         }
-        return self.env['report'].render('l10n_gt_extra.reporte_compras', docargs)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

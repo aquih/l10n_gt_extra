@@ -49,17 +49,18 @@ class ReporteBanco(models.AbstractModel):
         return self.env.cr.dictfetchall()[0]
 
     @api.model
-    def render_html(self, docids, data=None):
-        self.model = self.env.context.get('active_model')
-        docs = self.env[self.model].browse(self.env.context.get('active_ids', []))
+    def get_report_values(self, docids, data=None):
+        model = self.env.context.get('active_model')
+        docs = self.env[model].browse(self.env.context.get('active_ids', []))
 
-        docargs = {
+        return {
             'doc_ids': self.ids,
-            'doc_model': self.model,
+            'doc_model': model,
             'data': data['form'],
             'docs': docs,
             'moneda': docs[0].cuenta_bancaria_id.currency_id or self.env.user.company_id.currency_id,
             'lineas': self.lineas,
             'balance_inicial': self.balance_inicial(data['form']),
         }
-        return self.env['report'].render('l10n_gt_extra.reporte_banco', docargs)
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

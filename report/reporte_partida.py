@@ -1,18 +1,20 @@
 # -*- encoding: utf-8 -*-
 
 from odoo import api, models
+import logging
 
 class ReportePartida(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_partida'
 
     @api.model
-    def render_html(self, docids, data=None):
-        self.model = 'account.move'
-        docs = self.env[self.model].browse(docids)
+    def get_report_values(self, docids, data=None):
+        model = 'account.move'
+        docs = self.env[model].browse(docids)
 
-        docargs = {
-            'doc_ids': self.ids,
-            'doc_model': self.model,
+        return {
+            'doc_ids': docids,
+            'doc_model': model,
             'docs': docs,
         }
-        return self.env['report'].render('l10n_gt_extra.reporte_partida', docargs)
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
