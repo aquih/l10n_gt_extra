@@ -91,7 +91,7 @@
                     </group>
                     <group>
                         <separator colspan="4" string="Diarios"/>
-                        <field name="diarios_id" nolabel="1" domain="[('type','in',['sale','sale_refund'])]"/>
+                        <field name="diarios_id" nolabel="1"/>
                     </group>
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
@@ -105,6 +105,39 @@
         <act_window id="window_reporte_ventas" name="Libro de ventas" res_model="l10n_gt_extra.asistente_reporte_ventas" src_model="account.journal" view_mode="form" target="new"/>
         <menuitem action="window_reporte_ventas" id="menu_asistente_reporte_ventas" parent="account.menu_finance_reports"/>
         <report id="action_reporte_ventas" model="l10n_gt_extra.asistente_reporte_ventas" string="Libro de ventas" report_type="qweb-pdf" name="l10n_gt_extra.reporte_ventas" file="l10n_gt_extra.reporte_ventas"/>
+
+        <record id="asistente_reporte_diario" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.asistente_reporte_diario</field>
+            <field name="model">l10n_gt_extra.asistente_reporte_diario</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Seleccione Cuentas y rango de fecha">
+                    <group>
+                        <group>
+                            <field name="folio_inicial"/>
+                        </group>
+                        <group>
+                            <field name="fecha_desde"/>
+                            <field name="fecha_hasta"/>
+                        </group>
+                    </group>
+                    <group>
+                        <separator colspan="4" string="Cuentas"/>
+                        <field name="cuentas_id" nolabel="1"/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                        o
+                        <button special="cancel" string="Cancel" class="oe_link"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="window_reporte_diario" name="Libro diario" res_model="l10n_gt_extra.asistente_reporte_diario" src_model="account.account" view_mode="form" target="new"/>
+        <menuitem action="window_reporte_diario" id="menu_asistente_reporte_diario" parent="account.menu_finance_reports"/>
+        <report id="action_reporte_diario" model="l10n_gt_extra.asistente_reporte_diario" string="Libro Diario" report_type="qweb-pdf" name="l10n_gt_extra.reporte_diario" file="l10n_gt_extra.reporte_diario"/>
+
 
         <!-- <record id="asistente_diario_reporte" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_diario_reporte</field>

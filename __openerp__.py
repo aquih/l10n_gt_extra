@@ -17,6 +17,7 @@
         'views/reporte_partida.xml',
         'views/reporte_compras.xml',
         'views/reporte_ventas.xml',
+        'views/reporte_diario.xml',
     ],
     'demo': [],
     'installable': True,
