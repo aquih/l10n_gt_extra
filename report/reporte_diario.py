@@ -1,34 +1,34 @@
 # -*- encoding: utf-8 -*-
 
 from odoo import api, models, fields
+import logging
 
 class ReporteDiario(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_diario'
 
     def retornar_saldo_inicial_todos_anios(self, cuenta, fecha_desde):
         saldo_inicial = 0
-        movimientos_cuentas_todos_anios = self.env['account.move.line'].search([
-            ('account_id','=',cuenta.id),
-            ('date','<',fecha_desde)])
-        for m in movimientos_cuentas_todos_anios:
-            saldo_inicial += m.debit - m.credit
+        self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, sum(l.debit) as debe, sum(l.credit) as haber '\
+        'from account_move_line l join account_account a on(l.account_id = a.id)'\
+        'where a.id = %s and l.date < %s group by a.id, a.code, a.name,l.debit,l.credit', (cuenta,fecha_desde))
+        for m in self.env.cr.dictfetchall():
+            saldo_inicial += m['debe'] - m['haber']
         return saldo_inicial
 
     def retornar_saldo_inicial_inicio_anio(self, cuenta, fecha_desde):
         saldo_inicial = 0
         fecha = fields.Date.from_string(fecha_desde)
-        movimientos_cuentas_anio_actual = self.env['account.move.line'].search([
-            ('account_id','=',cuenta.id),
-            ('date','>=',fecha.strftime('%Y-1-1')),
-            ('date','<',fecha_desde)])
-        for m in movimientos_cuentas_anio_actual:
-            saldo_inicial += m.debit - m.credit
+        self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, sum(l.debit) as debe, sum(l.credit) as haber '\
+        'from account_move_line l join account_account a on(l.account_id = a.id)'\
+        'where a.id = %s and l.date < %s and l.date >= %s group by a.id, a.code, a.name,l.debit,l.credit', (cuenta,fecha_desde,fecha.strftime('%Y-1-1')))
+        for m in self.env.cr.dictfetchall():
+            saldo_inicial += m['debe'] - m['haber']
         return saldo_inicial
 
     def lineas(self, datos):
         totales = {}
         lineas_resumidas = {}
-        
+        lineas=[]
         totales['debe'] = 0
         totales['haber'] = 0
         totales['saldo_inicial'] = 0
@@ -40,38 +40,41 @@ class ReporteDiario(models.AbstractModel):
             ('date','<=',datos['fecha_hasta']),
             ('date','>=',datos['fecha_desde'])])
 
-        for m in movimientos:
-            totales['debe'] += m.debit
-            totales['haber'] += m.credit
-            llave = m.account_id.id
-            if llave not in lineas_resumidas:
-                lineas_resumidas[llave] = {
-                    'codigo': m.account_id.code,
-                    'cuenta': m.account_id,
-                    'fecha': m.date,
-                    'saldo_inicial': 0,
-                    'debe': m.debit,
-                    'haber': m.credit,
-                    'saldo_final': 0
-                }
-            else:
-                lineas_resumidas[llave]['debe'] += m.debit
-                lineas_resumidas[llave]['haber'] += m.credit
+        accounts_str = ','.join([str(x) for x in datos['cuentas_id']])
+        self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
+        	'from account_move_line l join account_account a on(l.account_id = a.id)' \
+        	'join account_account_type t on (t.id = a.user_type_id)' \
+        	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.include_initial_balance',
+        (datos['fecha_desde'], datos['fecha_hasta']))
 
-        for l in lineas_resumidas.values():
-            if l['cuenta'].user_type_id.include_initial_balance:
-                print l['cuenta']
-                l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['cuenta'],datos['fecha_desde'])
+        for r in self.env.cr.dictfetchall():
+            totales['debe'] += r['debe']
+            totales['haber'] += r['haber']
+            linea = {
+                'id': r['id'],
+                'codigo': r['codigo'],
+                'cuenta': r['cuenta'],
+                'saldo_inicial': 0,
+                'debe': r['debe'],
+                'haber': r['haber'],
+                'saldo_final': 0,
+                'balance_inicial': r['balance_inicial']
+            }
+            lineas.append(linea)
+
+        for l in lineas:
+            if l['balance_inicial']:
+                l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], datos['fecha_desde'])
                 l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
-                totales['saldo_inicial'] += l['saldo_inicial'] 
+                totales['saldo_inicial'] += l['saldo_inicial']
                 totales['saldo_final'] += l['saldo_final']
             else:
-                l['saldo_inicial'] += self.retornar_saldo_inicial_todos_anios(l['cuenta'],datos['fecha_desde'])
+                l['saldo_inicial'] += self.retornar_saldo_inicial_todos_anios(l['id'], datos['fecha_desde'])
                 l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
                 totales['saldo_inicial'] += l['saldo_inicial']
                 totales['saldo_final'] += l['saldo_final']
 
-        return {'lineas': lineas_resumidas.values(),'totales': totales }
+        return {'lineas': lineas,'totales': totales }
 
     @api.model
     def render_html(self, docids, data=None):

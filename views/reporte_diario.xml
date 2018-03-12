@@ -42,7 +42,7 @@
                                 <span t-esc="l['codigo']"/>
                             </td>
                             <td>
-                                <span t-esc="l['cuenta'].name"/>
+                                <span t-esc="l['cuenta']"/>
                             </td>
                             <td class="text-right"> 
                                 <span t-esc="l['saldo_inicial']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
