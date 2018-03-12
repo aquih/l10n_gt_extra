@@ -12,7 +12,7 @@ class ReporteBanco(models.AbstractModel):
                 'fecha': linea.date,
                 'documento': linea.move_id.name if linea.move_id else '',
                 'nombre': linea.partner_id.name or '',
-                'concepto': (linea.ref if linea.ref else '')+linea.name,
+                'concepto': (linea.ref if linea.ref else '') + (linea.name if linea.name else ''),
                 'debito': linea.debit,
                 'credito': linea.credit,
                 'balance': 0,
