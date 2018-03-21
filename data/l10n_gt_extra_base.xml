@@ -1,5 +1,5 @@
 <openerp>
-    <data>
+    <data noupdate="1">
 
         <record id="impuestos_plantilla_timbre_prensa" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_gt.cuentas_plantilla"/>
