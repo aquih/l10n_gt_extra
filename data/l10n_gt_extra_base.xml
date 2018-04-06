@@ -109,9 +109,9 @@ result = price_unit / 1.12 * 0.005
             </field>
         </record>
 
-        <record id="impuestos_idp_super_2" model="account.tax">
+        <record id="impuestos_idp_super" model="account.tax">
             <field name="sequence">10</field>
-            <field name="name">IDP Super 2</field>
+            <field name="name">IDP Super</field>
             <field name="description">IDP Super</field>
             <field name="amount" eval="4.6"/>
             <field name="amount_type">fixed</field>
