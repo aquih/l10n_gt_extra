@@ -2,6 +2,7 @@
 <odoo>
     <data noupdate="1">
 
+<!--
         <record id="impuestos_plantilla_timbre_prensa" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_gt.cuentas_plantilla"/>
             <field name="sequence">5</field>
@@ -182,6 +183,8 @@ else:
     result = price_unit/1.12 * -0.05
             </field>
         </record>
+
+    -->
 
     </data>
 </odoo>
