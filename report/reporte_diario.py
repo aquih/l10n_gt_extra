@@ -63,7 +63,7 @@ class ReporteDiario(models.AbstractModel):
             lineas.append(linea)
 
         for l in lineas:
-            if l['balance_inicial']:
+            if not l['balance_inicial']:
                 l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], datos['fecha_desde'])
                 l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
                 totales['saldo_inicial'] += l['saldo_inicial']
