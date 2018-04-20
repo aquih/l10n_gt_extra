@@ -7,7 +7,13 @@ import time
 class AsistenteReporteDiario(models.TransientModel):
     _name = 'l10n_gt_extra.asistente_reporte_diario'
 
-    cuentas_id = fields.Many2many("account.account", string="Diario", required=True, default=lambda self: self.env['account.account'].search([]).ids)
+    def _default_cuenta(self):
+        if len(self.env.context.get('active_ids', [])) > 0:
+            return self.env.context.get('active_ids')
+        else:
+            return self.env['account.account'].search([]).ids
+
+    cuentas_id = fields.Many2many("account.account", string="Diario", required=True, default=_default_cuenta)
     folio_inicial = fields.Integer(string="Folio Inicial", required=True, default=1)
     fecha_desde = fields.Date(string="Fecha Inicial", required=True, default=lambda self: time.strftime('%Y-%m-01'))
     fecha_hasta = fields.Date(string="Fecha Final", required=True, default=lambda self: time.strftime('%Y-%m-%d'))
