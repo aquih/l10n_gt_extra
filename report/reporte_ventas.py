@@ -43,7 +43,15 @@ class ReporteVentas(models.AbstractModel):
                     tipo = 'ND'
 
             numero = f.number or f.numero_viejo or '-',
+
+            # Por si usa factura electrónica
             if 'firma_gface' in f.fields_get() and f.firma_gface:
+                numero = f.name
+
+            # Por si usa tickets
+            logging.warn(f.journal_id.fields_get())
+            logging.warn(f.journal_id.requiere_resolucion)
+            if 'requiere_resolucion' in f.journal_id.fields_get() and f.journal_id.requiere_resolucion:
                 numero = f.name
 
             linea = {
