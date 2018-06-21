@@ -49,8 +49,6 @@ class ReporteVentas(models.AbstractModel):
                 numero = f.name
 
             # Por si usa tickets
-            logging.warn(f.journal_id.fields_get())
-            logging.warn(f.journal_id.requiere_resolucion)
             if 'requiere_resolucion' in f.journal_id.fields_get() and f.journal_id.requiere_resolucion:
                 numero = f.name
 
