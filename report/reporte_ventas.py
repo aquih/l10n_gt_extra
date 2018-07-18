@@ -43,7 +43,13 @@ class ReporteVentas(models.AbstractModel):
                     tipo = 'ND'
 
             numero = f.number or f.numero_viejo or '-',
+
+            # Por si usa factura electrónica
             if 'firma_gface' in f.fields_get() and f.firma_gface:
+                numero = f.name
+
+            # Por si usa tickets
+            if 'requiere_resolucion' in f.journal_id.fields_get() and f.journal_id.requiere_resolucion:
                 numero = f.name
 
             linea = {
@@ -101,7 +107,8 @@ class ReporteVentas(models.AbstractModel):
                     linea[tipo_linea+'_exento'] += r['base']
                     totales[tipo_linea]['exento'] += r['base']
 
-                linea['total'] += r['base']
+                # linea['total'] += r['base']
+                linea['total'] += l.price_unit * l.quantity * ( 100 - l.discount ) / 100
 
             lineas.append(linea)
 

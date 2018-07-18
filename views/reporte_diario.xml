@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="reporte_diario">
+        <t t-call="report.html_container">
+            <t t-set="data_report_page_offset" t-value="data['folio_inicial']-1"/>
+
+            <div class="header">
+                Folio: <span class="page"/>
+            </div>
+            <div class="page">
+                <h2><span t-esc="res_company.name"/>: Libro Diario</h2>
+
+
+                <div class="row mt32">
+                    <div class="col-xs-4">
+                        <strong>Número de identificación tributaria:</strong> <span t-esc="user.company_id.vat"/><br/>
+                        <strong>Nombre comercial:</strong> <span t-esc="user.company_id.partner_id.name"/><br/>
+                    </div>
+                    <div class="col-xs-4">
+                        <strong>Domicilio fiscal:</strong> <span t-esc="user.company_id.partner_id.street"/><br/>
+                        <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-esc-options='{"widget": "date"}'/> al: <span t-esc="data['fecha_hasta']" t-esc-options='{"widget": "date"}'/><br/>
+                    </div>
+                </div>
+
+                <t t-set="result" t-value="lineas(data)"/>
+
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Codigo</th>
+                            <th>Cuenta</th>
+                            <th class="text-right">Saldo Inicial</th>
+                            <th class="text-right">Debe</th>
+                            <th class="text-right">Haber</th>
+                            <th class="text-right">Saldo Final</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="result['lineas']" t-as="l">
+                            <td>
+                                <span t-esc="l['codigo']"/>
+                            </td>
+                            <td>
+                                <span t-esc="l['cuenta']"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-esc="l['saldo_inicial']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-esc="l['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-esc="l['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-esc="l['saldo_final']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                <b>Totales</b>
+                            </td>
+                            <td class="text-right">
+                            </td>
+                            <td class="text-right">
+                                <b><span t-esc="result['totales']['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                            </td>
+                            <td class="text-right">
+                                <b><span t-esc="result['totales']['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                            </td>
+                            <td class="text-right">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+</odoo>
