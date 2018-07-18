@@ -112,7 +112,7 @@ def num_a_letras(num, completo=True):
     if decimal == 0:
         letras = '%s exactos' % num_en_letras
     else:
-        letras = '%s con %s centavos' % (num_en_letras, decimal)
+        letras = '%s con %s/100' % (num_en_letras, decimal)
 
     return letras
 
