@@ -27,6 +27,7 @@ class AccountPayment(models.Model):
     _inherit = "account.payment"
 
     numero_viejo = fields.Char(string="Numero Viejo")
+    nombre_impreso = fields.Char(string="Nombre Impreso")
 
     @api.multi
     def cancel(self):

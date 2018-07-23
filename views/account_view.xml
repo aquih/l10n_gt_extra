@@ -35,6 +35,7 @@
                     </button>
                     <field name="communication" position="after">
                         <field name="numero_viejo" attrs="{'invisible':[('state','!=','draft')]}" readonly="True"/>
+                        <field name="nombre_impreso"/>
                     </field>
                 </data>
             </field>

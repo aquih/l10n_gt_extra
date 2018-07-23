@@ -1,4 +1,5 @@
-<openerp>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
     <data noupdate="1">
 
         <record id="impuestos_plantilla_timbre_prensa" model="account.tax.template">
@@ -183,4 +184,4 @@ else:
         </record>
 
     </data>
-</openerp>
+</odoo>
