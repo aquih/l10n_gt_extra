@@ -40,6 +40,17 @@
             </field>
         </record>
 
+        <record id="l10n_gt_view_account_supplier_payment_tree" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.account.supplier.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="move_name"/>
+                </field>
+            </field>
+        </record>
+
         <record id="l10n_gt_view_account_journal_form" model="ir.ui.view">
             <field name="name">l10n_gt_extra.view_account_journal_form</field>
             <field name="model">account.journal</field>
