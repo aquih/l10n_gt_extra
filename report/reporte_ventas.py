@@ -44,10 +44,12 @@ class ReporteVentas(models.AbstractModel):
 
             numero = f.number or f.numero_viejo or '-',
 
+            # Por si es un diario de rango de facturas
+            if f.journal_id.facturas_por_rangos:
+                numero = f.name
+
             # Por si usa factura electrónica
             if 'firma_gface' in f.fields_get() and f.firma_gface:
-                numero = f.name
-            if f.journal_id.facturas_por_rangos:
                 numero = f.name
 
             # Por si usa tickets
