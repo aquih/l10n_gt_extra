@@ -20,9 +20,9 @@
                 <field name="move_id" position="after">
                     <field name="tipo_gasto"/>
                     <field name="numero_viejo"/>
-                    <field name="serie_rango" attrs="{'invisible': [('journal_id.facturas_por_rangos','=',False)]}"/>
-                    <field name="inicial_rango" attrs="{'invisible': [('journal_id.facturas_por_rangos','=',False)]}"/>
-                    <field name="final_rango" attrs="{'invisible': [('journal_id.facturas_por_rangos','=',False)]}"/>
+                    <field name="serie_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
+                    <field name="inicial_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
+                    <field name="final_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
                 </field>
             </field>
         </record>
