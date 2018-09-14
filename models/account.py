@@ -28,6 +28,7 @@ class AccountPayment(models.Model):
 
     numero_viejo = fields.Char(string="Numero Viejo")
     nombre_impreso = fields.Char(string="Nombre Impreso")
+    no_negociable = fields.Boolean(string="No Negociable", default=True)
 
     @api.multi
     def cancel(self):
