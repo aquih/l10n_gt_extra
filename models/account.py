@@ -25,13 +25,13 @@ class AccountInvoice(models.Model):
         if self.diario_facturas_por_rangos:
             if int(self.final_rango) <= int(self.inicial_rango):
                 raise ValidationError('El número inicial del rango es mayor que el final.')
-            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','<=',self.inicial_rango), ('final','>=',self.inicial_rango)])
+            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','<=',self.inicial_rango), ('final_rango','>=',self.inicial_rango)])
             if len(cruzados) > 1:
                 raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
             cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','<=',self.final_rango), ('final_rango','>=',self.final_rango)])
             if len(cruzados) > 1:
                 raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
-            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','>=',self.inicial_rango), ('inicial','<=',self.final_rango)])
+            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','>=',self.inicial_rango), ('inicial_rango','<=',self.final_rango)])
             if len(cruzados) > 1:
                 raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
 
