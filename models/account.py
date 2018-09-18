@@ -35,7 +35,7 @@ class AccountInvoice(models.Model):
             if len(cruzados) > 1:
                 raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
 
-            factura.name = "{}-{} al {}-{}".format(self.serie_rango, self.inicial_rango, self.serie_rango, self.final_rango)
+            self.name = "{}-{} al {}-{}".format(self.serie_rango, self.inicial_rango, self.serie_rango, self.final_rango)
 
     @api.multi
     def action_cancel(self):
