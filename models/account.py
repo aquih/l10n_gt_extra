@@ -13,7 +13,7 @@ class AccountInvoice(models.Model):
     final_rango = fields.Integer(string="Final Rango")
     diario_facturas_por_rangos = fields.Boolean(string='Las facturas se ingresan por rango', help='Cada factura realmente es un rango de factura y el rango se ingresa en Referencia/Descripción', related="journal_id.facturas_por_rangos")
 
-    @api.constrains('reference')
+    @api.constrains('inicial_rango', 'final_rango')
     def _validar_factura_proveedor(self):
         if self.reference:
             facturas = self.search([('reference','=',self.reference), ('partner_id','=',self.partner_id.id), ('type','=','in_invoice')])
