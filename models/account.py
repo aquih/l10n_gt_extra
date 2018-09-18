@@ -23,7 +23,7 @@ class AccountInvoice(models.Model):
     @api.constrains('inicial_rango', 'final_rango')
     def _validar_rango(self):
         if self.diario_facturas_por_rangos:
-            if int(self.inicial_rango) <= int(self.inicial_rango):
+            if int(self.final_rango) <= int(self.inicial_rango):
                 raise ValidationError('El número inicial del rango es mayor que el final.')
             cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','<=',self.inicial_rango), ('final','>=',self.inicial_rango)])
             if len(cruzados) > 1:
