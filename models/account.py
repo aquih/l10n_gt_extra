@@ -8,14 +8,34 @@ class AccountInvoice(models.Model):
 
     tipo_gasto = fields.Selection([('compra', 'Compra/Bien'), ('servicio', 'Servicio'), ('importacion', 'Importación/Exportación'), ('combustible', 'Combustible'), ('mixto', 'Mixto')], string="Tipo de Gasto", default="compra")
     numero_viejo = fields.Char(string="Numero Viejo")
-    reference = fields.Char(string='Vendor Reference', help="The partner reference of this invoice.", readonly=True, states={'draft': [('readonly', False)]}, copy=False)
+    serie_rango = fields.Char(string="Serie Rango")
+    inicial_rango = fields.Integer(string="Inicial Rango")
+    final_rango = fields.Integer(string="Final Rango")
+    diario_facturas_por_rangos = fields.Boolean(string='Las facturas se ingresan por rango', help='Cada factura realmente es un rango de factura y el rango se ingresa en Referencia/Descripción', related="journal_id.facturas_por_rangos")
 
     @api.constrains('reference')
     def _validar_factura_proveedor(self):
         if self.reference:
             facturas = self.search([('reference','=',self.reference), ('partner_id','=',self.partner_id.id), ('type','=','in_invoice')])
             if len(facturas) > 1:
-                raise ValidationError("La factura está duplicada")
+                raise ValidationError("Ya existe una factura con ese mismo numero.")
+
+    @api.constrains('inicial_rango', 'final_rango')
+    def _validar_rango(self):
+        if self.diario_facturas_por_rangos:
+            if int(self.final_rango) < int(self.inicial_rango):
+                raise ValidationError('El número inicial del rango es mayor que el final.')
+            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','<=',self.inicial_rango), ('final_rango','>=',self.inicial_rango)])
+            if len(cruzados) > 1:
+                raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
+            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','<=',self.final_rango), ('final_rango','>=',self.final_rango)])
+            if len(cruzados) > 1:
+                raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
+            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','>=',self.inicial_rango), ('inicial_rango','<=',self.final_rango)])
+            if len(cruzados) > 1:
+                raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
+
+            self.name = "{}-{} al {}-{}".format(self.serie_rango, self.inicial_rango, self.serie_rango, self.final_rango)
 
     @api.multi
     def action_cancel(self):
@@ -28,6 +48,7 @@ class AccountPayment(models.Model):
 
     numero_viejo = fields.Char(string="Numero Viejo")
     nombre_impreso = fields.Char(string="Nombre Impreso")
+    no_negociable = fields.Boolean(string="No Negociable", default=True)
 
     @api.multi
     def cancel(self):

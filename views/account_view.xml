@@ -20,6 +20,10 @@
                 <field name="move_id" position="after">
                     <field name="tipo_gasto"/>
                     <field name="numero_viejo"/>
+                    <field name="diario_facturas_por_rangos" invisible="1"/>
+                    <field name="serie_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
+                    <field name="inicial_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
+                    <field name="final_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
                 </field>
             </field>
         </record>
@@ -36,6 +40,7 @@
                     <field name="communication" position="after">
                         <field name="numero_viejo" attrs="{'invisible':[('state','!=','draft')]}" readonly="True"/>
                         <field name="nombre_impreso"/>
+                        <field name="no_negociable"/>
                     </field>
                 </data>
             </field>
