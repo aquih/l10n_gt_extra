@@ -9,7 +9,6 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="website" position="after">
-                    <field name="vat" string="NIT"></field>
                     <field name="pequenio_contribuyente"></field>
                 </field>
             </field>
@@ -21,7 +20,7 @@
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
             <field name="type">search</field>
             <field name="arch" type="xml">
-                <field name="name" position="before">
+                <field name="name" position="after">
                     <field name="vat" string="NIT" select="1"></field>
                 </field>
             </field>
