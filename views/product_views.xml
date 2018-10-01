@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+    <record id="l10n_gt_extra.product_template_form_view" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.product.template.common.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <label for="standard_price" position="attributes">
+                <attribute name="groups">account.group_account_manager</attribute>
+            </label>
+            <div name="standard_price_uom" position="attributes">
+                <attribute name="groups">account.group_account_manager</attribute>
+            </div>
+        </field>
+    </record>
+
+
+    <record id="l10n_gt_extra_product_variant_easy_edit_view" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.product.product.view.form.easy</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+            <field name="standard_price" position="attributes">
+                <attribute name="groups">account.group_account_manager</attribute>
+            </field>
+      </field>
+    </record>
+
+
+    </data>
+</odoo>
