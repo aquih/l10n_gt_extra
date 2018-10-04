@@ -29,5 +29,7 @@ import asistente_reporte_ventas
 import reporte_ventas
 import asistente_reporte_diario
 import reporte_diario
+import asistente_reporte_inventario
+import reporte_inventario
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
