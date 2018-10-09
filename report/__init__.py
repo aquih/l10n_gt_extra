@@ -22,8 +22,10 @@
 
 import partida
 import asistente_compras_reporte
+import asistente_compras_reporte_excel
 import compras_reporte
 import asistente_ventas_reporte
+import asistente_ventas_reporte_excel
 import ventas_reporte
 import asistente_banco_reporte
 import banco_reporte

@@ -41,6 +41,43 @@
 
         <report id="compras_reporte" model="l10n_gt_extra.asistente_compras_reporte" name="compras_reporte" rml="l10n_gt_extra/report/compras_reporte.rml" string="Libro de compras"/>
 
+        <record id="asistente_compras_reporte_excel" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.asistente_compras_reporte_excel</field>
+            <field name="model">l10n_gt_extra.asistente_compras_reporte_excel</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Seleccione diario y periodos">
+                    <group>
+                        <group>
+                            <field name="empresa_id"/>
+                            <field name="folio_inicial"/>
+                        </group>
+                        <group>
+                            <field name="impuesto_id" domain="[('name','=','IVA por Cobrar'), ('company_id','=',empresa_id)]"/>
+                            <field name="base_id" domain="[('name','=','Base Impositiva de Compras'), ('company_id','=',empresa_id)]"/>
+                        </group>
+                    </group>
+                    <group>
+                        <separator colspan="4" string="Diarios"/>
+                        <field name="diarios_id" nolabel="1" domain="[('type','in',['purchase','purchase_refund'])]"/>
+                        <separator colspan="4" string="Periodos"/>
+                        <field name="periodos_id" nolabel="1"/>
+                        <field name="archivo"/>
+                    </group>
+                    <group>
+                        <group>
+                            <button icon="gtk-cancel" special="cancel" string="Cancelar"/>
+                        </group>
+                        <group>
+                            <button icon="gtk-ok" name="reporte" string="Reporte" type="object"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="window_compras_reporte_excel" name="Libro de compras excel" res_model="l10n_gt_extra.asistente_compras_reporte_excel" src_model="account.journal" view_mode="form" target="new"/>
+
         <record id="asistente_ventas_reporte" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_ventas_reporte</field>
             <field name="model">l10n_gt_extra.asistente_ventas_reporte</field>
@@ -84,6 +121,46 @@
 
         <report id="ventas_reporte_financiero" model="l10n_gt_extra.asistente_ventas_reporte" name="l10n_gt_extra.ventas_reporte_financiero" rml="l10n_gt_extra/report/ventas_reporte_financiero.rml" string="Libro de ventas financiero"/>
 
+        
+        <record id="asistente_ventas_reporte_excel" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.asistente_ventas_reporte_excel</field>
+            <field name="model">l10n_gt_extra.asistente_ventas_reporte_excel</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Seleccione diario peridodos">
+                    <group>
+                        <group>
+                            <field name="empresa_id"/>
+                            <field name="folio_inicial"/>
+                            <field name="resumido"/>
+                        </group>
+                        <group>
+                            <field name="impuesto_id" domain="[('name','=','IVA por Pagar')]"/>
+                            <field name="base_id" domain="[('name','=','Base Impositiva de Ventas')]"/>
+                        </group>
+                    </group>
+                    <group>
+                        <separator colspan="4" string="Diarios"/>
+                        <field name="diarios_id" nolabel="1" domain="[('type','in',['sale','sale_refund'])]"/>
+                        <separator colspan="4" string="Periodos"/>
+                        <field name="periodos_id" nolabel="1"/>
+                        <field name="archivo"/>
+                    </group>
+                    <group>
+                        <group>
+                            <button icon="gtk-cancel" special="cancel" string="Cancelar"/>
+                        </group>
+                        <group>
+                            <button icon="gtk-ok" name="reporte" string="Reporte" type="object"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="window_ventas_reporte_excel" name="Libro de ventas excel" res_model="l10n_gt_extra.asistente_ventas_reporte_excel" src_model="account.journal" view_mode="form" target="new"/>
+
+        
         <record id="asistente_banco_reporte" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_banco_reporte</field>
             <field name="model">l10n_gt_extra.asistente_banco_reporte</field>
