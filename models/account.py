@@ -20,6 +20,23 @@ class AccountInvoice(models.Model):
             if len(facturas) > 1:
                 raise ValidationError("Ya existe una factura con ese mismo numero.")
 
+    @api.constrains('inicial_rango', 'final_rango')
+    def _validar_rango(self):
+        if self.diario_facturas_por_rangos:
+            if int(self.final_rango) < int(self.inicial_rango):
+                raise ValidationError('El número inicial del rango es mayor que el final.')
+            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','<=',self.inicial_rango), ('final_rango','>=',self.inicial_rango)])
+            if len(cruzados) > 1:
+                raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
+            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','<=',self.final_rango), ('final_rango','>=',self.final_rango)])
+            if len(cruzados) > 1:
+                raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
+            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','>=',self.inicial_rango), ('inicial_rango','<=',self.final_rango)])
+            if len(cruzados) > 1:
+                raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
+
+            self.name = "{}-{} al {}-{}".format(self.serie_rango, self.inicial_rango, self.serie_rango, self.final_rango)
+
     @api.multi
     def action_cancel(self):
         for rec in self:
