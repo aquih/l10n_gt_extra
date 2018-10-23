@@ -59,8 +59,13 @@
                         <separator colspan="4" string="Diarios"/>
                         <field name="diarios_id" nolabel="1" domain="[('type','in',['purchase','purchase_refund'])]"/>
                     </group>
+                    <group>
+                        <field name="name" invisible="1"/>                    
+                        <field name="archivo" readonly="1" filename="name"/>
+                    </group>
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                        <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
                         o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
@@ -93,8 +98,13 @@
                         <separator colspan="4" string="Diarios"/>
                         <field name="diarios_id" nolabel="1" domain="[('type','in',['sale','sale_refund'])]"/>
                     </group>
+                    <group>
+                        <field name="name" invisible="1"/>                    
+                        <field name="archivo" readonly="1" filename="name"/>
+                    </group>
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                        <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
                         o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
