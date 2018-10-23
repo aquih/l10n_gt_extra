@@ -8,7 +8,7 @@ class ReporteVentas(models.AbstractModel):
 
     def lineas(self, datos):
         totales = {}
-
+        logging.warn(datos)
         totales['num_facturas'] = 0
         totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
         totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
