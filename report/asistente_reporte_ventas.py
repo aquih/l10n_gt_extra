@@ -36,7 +36,7 @@ class AsistenteReporteVentas(models.TransientModel):
             dict['impuesto_id'] = [w.impuesto_id.id, w.impuesto_id.name]
             dict['diarios_id'] =[x.id for x in w.diarios_id]
             dict['resumido'] = w['resumido']
-            
+
             res = self.env['report.l10n_gt_extra.reporte_ventas'].lineas(dict)
             lineas = res['lineas']
             totales = res['totales']
