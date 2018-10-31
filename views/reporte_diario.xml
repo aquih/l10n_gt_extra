@@ -26,55 +26,97 @@
                 <t t-set="result" t-value="lineas(data)"/>
 
                 <table class="table table-condensed">
-                    <thead>
-                        <tr>
-                            <th>Codigo</th>
-                            <th>Cuenta</th>
-                            <th class="text-right">Saldo Inicial</th>
-                            <th class="text-right">Debe</th>
-                            <th class="text-right">Haber</th>
-                            <th class="text-right">Saldo Final</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr t-foreach="result['lineas']" t-as="l">
-                            <td>
-                                <span t-esc="l['codigo']"/>
-                            </td>
-                            <td>
-                                <span t-esc="l['cuenta']"/>
-                            </td>
-                            <td class="text-right">
-                                <span t-esc="l['saldo_inicial']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                            </td>
-                            <td class="text-right">
-                                <span t-esc="l['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                            </td>
-                            <td class="text-right">
-                                <span t-esc="l['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                            </td>
-                            <td class="text-right">
-                                <span t-esc="l['saldo_final']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                            </td>
-                            <td>
-                                <b>Totales</b>
-                            </td>
-                            <td class="text-right">
-                            </td>
-                            <td class="text-right">
-                                <b><span t-esc="result['totales']['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
-                            </td>
-                            <td class="text-right">
-                                <b><span t-esc="result['totales']['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
-                            </td>
-                            <td class="text-right">
-                            </td>
-                        </tr>
-                    </tbody>
+                    <t t-if="data['agrupado_por_dia'] == true">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Codigo</th>
+                                <th>Cuenta</th>
+                                <th class="text-right">Debe</th>
+                                <th class="text-right">Haber</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="result['lineas']" t-as="l">
+                                <tr>
+                                    <td><span t-esc="l['fecha']" t-options="{'widget': 'date'}"/>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <t t-foreach="l['cuentas']" t-as="ld">
+                                        <tr>
+                                            <td></td>
+                                            <td><span t-esc="ld['codigo']"/></td>
+                                            <td><span t-esc="ld['cuenta']"/></td>
+                                            <td class="text-right"><span t-esc="ld['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                            <td class="text-right"><span t-esc="ld['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                        </tr>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                        <b>Totales</b>
+                                    </td>
+                                    <td class="text-right">
+                                        <b><span t-esc="l['total_debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                                    </td>
+                                    <td class="text-right">
+                                        <b><span t-esc="l['total_haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                                    </td>
+                                </tr>
+
+                            </t>
+                        </tbody>
+                    </t>
+                    <t t-else="">
+                        <thead>
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Cuenta</th>
+                                <th class="text-right">Debe</th>
+                                <th class="text-right">Haber</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="result['lineas']" t-as="l">
+                                <td>
+                                    <span t-esc="l['codigo']"/>
+                                </td>
+                                <td>
+                                    <span t-esc="l['cuenta']"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="l['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="l['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                    <b>Totales</b>
+                                </td>
+                                <td class="text-right">
+                                    <b><span t-esc="result['totales']['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                                </td>
+                                <td class="text-right">
+                                    <b><span t-esc="result['totales']['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </t>
                 </table>
             </div>
         </t>
