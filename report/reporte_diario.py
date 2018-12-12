@@ -129,7 +129,7 @@ class ReporteDiario(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         return self.get_report_values(docids, data)
 
-        @api.model
+    @api.model
     def get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
