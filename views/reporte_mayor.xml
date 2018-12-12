@@ -20,7 +20,7 @@
                         </div>
                         <div class="col-xs-4">
                             <strong>Domicilio fiscal:</strong> <span t-esc="user.company_id.partner_id.street"/><br/>
-                            <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-esc-options='{"widget": "date"}'/> al: <span t-esc="data['fecha_hasta']" t-esc-options='{"widget": "date"}'/><br/>
+                            <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-options='{"widget": "date"}'/> al: <span t-esc="data['fecha_hasta']" t-options='{"widget": "date"}'/><br/>
                         </div>
                     </div>
 
@@ -51,26 +51,26 @@
                                         <td>
                                         </td>
                                         <td class="text-right">
-                                            <span t-esc="l['saldo_inicial']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                            <span t-esc="l['saldo_inicial']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                         </td>
                                         <td class="text-right">
-                                            <span t-esc="l['total_debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                            <span t-esc="l['total_debe']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                         </td>
                                         <td class="text-right">
-                                            <span t-esc="l['total_haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                            <span t-esc="l['total_haber']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                         </td>
                                         <td class="text-right">
-                                            <span t-esc="l['saldo_final']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                            <span t-esc="l['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                         </td>
                                     </tr>
                                     <t t-foreach="l['fechas']" t-as="fecha">
                                         <tr>
                                             <td></td>
                                             <td></td>
-                                            <td><span t-esc="fecha['fecha']" t-esc-options='{"widget": "date"}'/></td>
+                                            <td><span t-esc="fecha['fecha']" t-options='{"widget": "date"}'/></td>
                                             <td></td>
-                                            <td class="text-right"><span t-esc="fecha['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
-                                            <td class="text-right"><span t-esc="fecha['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                            <td class="text-right"><span t-esc="fecha['debe']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                            <td class="text-right"><span t-esc="fecha['haber']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
                                             <td></td>
                                         </tr>
                                     </t>
@@ -97,16 +97,16 @@
                                         <span t-esc="l['cuenta']"/>
                                     </td>
                                 <td class="text-right">
-                                    <span t-esc="l['saldo_inicial']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    <span t-esc="l['saldo_inicial']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="l['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    <span t-esc="l['debe']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="l['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    <span t-esc="l['haber']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="l['saldo_final']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    <span t-esc="l['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
                         </tr>
                         <tr>
@@ -116,10 +116,10 @@
                                 <b>Totales</b>
                             </td>
                         <td class="text-right">
-                            <b><span t-esc="result['totales']['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                            <b><span t-esc="result['totales']['debe']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
                         </td>
                         <td class="text-right">
-                            <b><span t-esc="result['totales']['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                            <b><span t-esc="result['totales']['haber']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
                         </td>
                         <td class="text-right">
                         </td>
