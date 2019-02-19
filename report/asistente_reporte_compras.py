@@ -34,7 +34,7 @@ class AsistenteReporteCompras(models.TransientModel):
             dict['fecha_desde'] = w['fecha_desde']
             dict['impuesto_id'] = [w.impuesto_id.id, w.impuesto_id.name]
             dict['diarios_id'] =[x.id for x in w.diarios_id]
-            
+
             res = self.env['report.l10n_gt_extra.reporte_compras'].lineas(dict)
             lineas = res['lineas']
             totales = res['totales']
@@ -52,7 +52,7 @@ class AsistenteReporteCompras(models.TransientModel):
             hoja.write(2, 3, 'DOMICILIO FISCAL')
             hoja.write(2, 4, w.diarios_id[0].company_id.partner_id.street)
             hoja.write(3, 3, 'REGISTRO DEL')
-            hoja.write(3, 4, w.fecha_desde + ' al ' + w.fecha_hasta)
+            hoja.write(3, 4, str(w.fecha_desde) + ' al ' + str(w.fecha_hasta))
 
             y = 5
             hoja.write(y, 0, 'Tipo')
@@ -108,7 +108,7 @@ class AsistenteReporteCompras(models.TransientModel):
             y += 1
             hoja.write(y, 0, 'Total credito fiscal')
             hoja.write(y, 1, totales['compra']['iva'] + totales['servicio']['iva'] + totales['combustible']['iva'] + totales['importacion']['iva'])
-            
+
             y += 2
             hoja.write(y, 3, 'EXENTO')
             hoja.write(y, 4, 'NETO')
