@@ -37,6 +37,9 @@ class ResPartner(models.Model):
     @api.constrains('vat')
     def _validar_duplicado(self):
         for p in self:
+            if p.country_id and p.country_id.code != 'GT':
+                return True
+            
             if not p.parent_id and p.vat and p.vat != 'CF' and p.vat != 'C/F':
                 repetidos = p.search([('vat','=',p.vat), ('id','!=',p.id), ('parent_id','=',False)])
                 if len(repetidos) > 0:

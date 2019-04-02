@@ -40,7 +40,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_cancel(self):
         for rec in self:
-            rec.numero_viejo = rec.name
+            rec.numero_viejo = rec.number
         return super(AccountInvoice, self).action_cancel()
 
 class AccountPayment(models.Model):

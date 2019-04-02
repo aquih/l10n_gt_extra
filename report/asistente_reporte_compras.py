@@ -52,7 +52,7 @@ class AsistenteReporteCompras(models.TransientModel):
             hoja.write(2, 3, 'DOMICILIO FISCAL')
             hoja.write(2, 4, w.diarios_id[0].company_id.partner_id.street)
             hoja.write(3, 3, 'REGISTRO DEL')
-            hoja.write(3, 4, w.fecha_desde + ' al ' + w.fecha_hasta)
+            hoja.write(3, 4, str(w.fecha_desde) + ' al ' + str(w.fecha_hasta))
 
             y = 5
             hoja.write(y, 0, 'Tipo')

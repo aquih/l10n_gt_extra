@@ -20,7 +20,7 @@
                         </div>
                         <div class="col-xs-4">
                             <strong>Domicilio fiscal:</strong> <span t-esc="user.company_id.partner_id.street"/><br/>
-                            <strong>Registro del:</strong> <span t-esc="fecha_desde" t-esc-options='{"widget": "date"}'/> al: <span t-esc="data['fecha_hasta']" t-esc-options='{"widget": "date"}'/><br/>
+                            <strong>Registro del:</strong> <span t-esc="fecha_desde" t-options='{"widget": "date"}'/> al: <span t-esc="data['fecha_hasta']" t-options='{"widget": "date"}'/><br/>
                         </div>
                     </div>
 
@@ -43,7 +43,7 @@
                                     <span t-esc="l['cuenta']"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="l['saldo_final']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    <span t-esc="l['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
                             </tr>
                         </tbody>
