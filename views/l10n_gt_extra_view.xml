@@ -1,0 +1,63 @@
+<openerp>
+    <data>
+
+        <record id="l10n_gt_extra_view_impuestos_form" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.view.impuestos.form</field>
+            <field name="model">l10n_gt_extra.impuestos</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="nombre"/>
+                                <field name="tipo"/>
+                            </group>
+                            <group>
+                                <field name="active"/>
+                            </group>
+                            <field name="rangos_ids">
+                                <tree string="Rangos" editable="bottom">
+                                    <field name="rango_inicial"/>
+                                    <field name="rango_final"/>
+                                    <field name="impuestos_ids" widget="many2many_tags"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="l10n_gt_extra_view_impuesto_tree" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.impuesto.tree</field>
+            <field name="model">l10n_gt_extra.impuestos</field>
+            <field name="arch" type="xml">
+                <tree string="Impuestos">
+                    <field name="nombre"/>
+                    <field name="tipo"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_l10n_gt_extra_impuestos_form" model="ir.actions.act_window">
+            <field name="name">Impuestos globales</field>
+            <field name="res_model">l10n_gt_extra.impuestos</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain" eval="False"/>
+            <field name="context"></field>
+            <field name="view_id" ref="l10n_gt_extra_view_impuesto_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+
+              </p><p>
+              Cree un nuevo impuesto global
+              </p>
+            </field>
+        </record>
+        <menuitem action="action_l10n_gt_extra_impuestos_form" id="menu_action_l10n_gt_extra_impuesto_form" parent="account.account_account_menu" sequence="3"/>
+
+
+
+    </data>
+</openerp>

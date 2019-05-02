@@ -86,6 +86,10 @@ class ReporteInventario(models.AbstractModel):
         return fecha_desde
 
     @api.model
+    def _get_report_values(self, docids, data=None):
+        return self.get_report_values(docids, data)
+
+    @api.model
     def get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))

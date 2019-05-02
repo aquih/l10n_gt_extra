@@ -11,8 +11,8 @@
                             <strong>Cuenta:</strong> <span t-esc="data['cuenta_bancaria_id'][1]"/><br/>
                         </div>
                         <div class="col-xs-4">
-                            <strong>Fecha inicial:</strong> <span t-esc="data['fecha_desde']" t-esc-options='{"widget": "date"}'/><br/>
-                            <strong>Fecha final:</strong> <span t-esc="data['fecha_hasta']" t-esc-options='{"widget": "date"}'/>
+                            <strong>Fecha inicial:</strong> <span t-esc="data['fecha_desde']" t-options='{"widget": "date"}'/><br/>
+                            <strong>Fecha final:</strong> <span t-esc="data['fecha_hasta']" t-options='{"widget": "date"}'/>
                         </div>
                     </div>
 
@@ -44,12 +44,12 @@
                                 <td class="text-right">
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="balance_inicial['balance_moneda'] or balance_inicial['balance']" t-esc-options="{'widget': 'monetary', 'display_currency': moneda}"/>
+                                    <span t-esc="balance_inicial['balance_moneda'] or balance_inicial['balance']" t-options="{'widget': 'monetary', 'display_currency': moneda}"/>
                                 </td>
                             </tr>
                             <tr t-foreach="lineas(data)" t-as="l">
                                 <td>
-                                    <span t-esc="l['fecha']" t-esc-options='{"widget": "date"}'/>
+                                    <span t-esc="l['fecha']" t-options='{"widget": "date"}'/>
                                 </td>
                                 <td>
                                     <span t-esc="l['documento']"/>
@@ -61,13 +61,13 @@
                                     <span t-esc="l['concepto']"/>
                                 </td>
                                 <td class="text-right">
-                                     <span t-esc="l['debito']" t-esc-options="{'widget': 'monetary', 'display_currency': l['moneda']}"/>
+                                     <span t-esc="l['debito']" t-options="{'widget': 'monetary', 'display_currency': l['moneda']}"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="l['credito']" t-esc-options="{'widget': 'monetary', 'display_currency': l['moneda']}"/>
+                                    <span t-esc="l['credito']" t-options="{'widget': 'monetary', 'display_currency': l['moneda']}"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="l['balance']" t-esc-options="{'widget': 'monetary', 'display_currency': l['moneda']}"/>
+                                    <span t-esc="l['balance']" t-options="{'widget': 'monetary', 'display_currency': l['moneda']}"/>
                                 </td>
                             </tr>
                         </tbody>

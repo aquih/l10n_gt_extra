@@ -3,8 +3,8 @@
 from odoo import api, models, fields
 import logging
 
-class ReporteDiario(models.AbstractModel):
-    _name = 'report.l10n_gt_extra.reporte_diario'
+class ReporteMayor(models.AbstractModel):
+    _name = 'report.l10n_gt_extra.reporte_mayor'
 
     def retornar_saldo_inicial_todos_anios(self, cuenta, fecha_desde):
         saldo_inicial = 0
@@ -77,16 +77,16 @@ class ReporteDiario(models.AbstractModel):
                     totales['saldo_final'] += l['saldo_final']
 
             cuentas_agrupadas = {}
-            llave = 'fecha'
+            llave = 'codigo'
             for l in lineas:
                 if l[llave] not in cuentas_agrupadas:
-                    cuentas_agrupadas[l[llave]] = {'fecha': l[llave], 'cuentas': [], 'total_debe': 0, 'total_haber': 0}
-                cuentas_agrupadas[l[llave]]['cuentas'].append(l)
+                    cuentas_agrupadas[l[llave]] = {'codigo': l[llave],'cuenta':l['cuenta'] ,'saldo_inicial':l['saldo_inicial'],'saldo_final':l['saldo_final'],'fechas':[], 'total_debe':0, 'total_haber':0}
+                cuentas_agrupadas[l[llave]]['fechas'].append(l)
 
-            for la in cuentas_agrupadas.values():
-                for l in la['cuentas']:
-                    la['total_debe'] += l['debe']
-                    la['total_haber'] += l['haber']
+            for cuenta in cuentas_agrupadas.values():
+                for fecha in cuenta['fechas']:
+                    cuenta['total_debe'] += fecha['debe']
+                    cuenta['total_haber'] += fecha['haber']
 
             lineas = cuentas_agrupadas.values()
         else:

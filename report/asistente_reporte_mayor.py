@@ -8,8 +8,8 @@ import base64
 import io
 import logging
 
-class AsistenteReporteDiario(models.TransientModel):
-    _name = 'l10n_gt_extra.asistente_reporte_diario'
+class AsistenteReporteMayor(models.TransientModel):
+    _name = 'l10n_gt_extra.asistente_reporte_mayor'
 
     def _default_cuenta(self):
         if len(self.env.context.get('active_ids', [])) > 0:
@@ -17,7 +17,7 @@ class AsistenteReporteDiario(models.TransientModel):
         else:
             return self.env['account.account'].search([]).ids
 
-    cuentas_id = fields.Many2many("account.account", string="Diario", required=True, default=_default_cuenta)
+    cuentas_id = fields.Many2many("account.account", string="Cuentas", required=True, default=_default_cuenta)
     folio_inicial = fields.Integer(string="Folio Inicial", required=True, default=1)
     agrupado_por_dia = fields.Boolean(string="Agrupado por dia")
     fecha_desde = fields.Date(string="Fecha Inicial", required=True, default=lambda self: time.strftime('%Y-%m-01'))
@@ -29,10 +29,10 @@ class AsistenteReporteDiario(models.TransientModel):
     def print_report(self):
         data = {
              'ids': [],
-             'model': 'l10n_gt_extra.asistente_reporte_diario',
+             'model': 'l10n_gt_extra.asistente_reporte_mayor',
              'form': self.read()[0]
         }
-        return self.env.ref('l10n_gt_extra.action_reporte_diario').report_action(self, data=data)
+        return self.env.ref('l10n_gt_extra.action_reporte_mayor').report_action(self, data=data)
 
     def print_report_excel(self):
         for w in self:
@@ -41,7 +41,7 @@ class AsistenteReporteDiario(models.TransientModel):
             dict['fecha_desde'] = w['fecha_desde']
             dict['agrupado_por_dia'] = w['agrupado_por_dia']
             dict['cuentas_id'] =[x.id for x in w.cuentas_id]
-            res = self.env['report.l10n_gt_extra.reporte_diario'].lineas(dict)
+            res = self.env['report.l10n_gt_extra.reporte_mayor'].lineas(dict)
 
             libro = xlwt.Workbook()
             hoja = libro.add_sheet('reporte')
@@ -49,7 +49,7 @@ class AsistenteReporteDiario(models.TransientModel):
             xlwt.add_palette_colour("custom_colour", 0x21)
             libro.set_colour_RGB(0x21, 200, 200, 200)
             estilo = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
-            hoja.write(0, 0, 'LIBRO DIARIO')
+            hoja.write(0, 0, 'LIBRO MAYOR')
             hoja.write(2, 0, 'NUMERO DE IDENTIFICACION TRIBUTARIA')
             hoja.write(2, 1, w.cuentas_id[0].company_id.partner_id.vat)
             hoja.write(3, 0, 'NOMBRE COMERCIAL')
@@ -63,25 +63,28 @@ class AsistenteReporteDiario(models.TransientModel):
             if w['agrupado_por_dia']:
                 lineas = res['lineas']
 
-                hoja.write(y, 0, 'Fecha')
-                hoja.write(y, 1, 'Codigo')
-                hoja.write(y, 2, 'Cuenta')
-                hoja.write(y, 3, 'Debe')
-                hoja.write(y, 4, 'Haber')
+                hoja.write(y, 0, 'Codigo')
+                hoja.write(y, 1, 'Cuenta')
+                hoja.write(y, 2, 'fecha')
+                hoja.write(y, 3, 'Saldo Inicial')
+                hoja.write(y, 4, 'Debe')
+                hoja.write(y, 5, 'Haber')
+                hoja.write(y, 6, 'Saldo FInal')
 
-                for fechas in lineas:
+                for cuenta in lineas:
                     y += 1
-                    hoja.write(y, 0, fechas['fecha'])
-                    for cuentas in fechas['cuentas']:
+                    hoja.write(y, 0, cuenta['codigo'])
+                    hoja.write(y, 1, cuenta['cuenta'])
+                    hoja.write(y, 3, cuenta['saldo_inicial'])
+                    hoja.write(y, 4, cuenta['total_debe'])
+                    hoja.write(y, 5, cuenta['total_haber'])
+                    hoja.write(y, 6, cuenta['saldo_final'])
+                    for fechas in cuenta['fechas']:
                         y += 1
-                        hoja.write(y, 1, cuentas['codigo'])
-                        hoja.write(y, 2, cuentas['cuenta'])
-                        hoja.write(y, 3, cuentas['debe'])
-                        hoja.write(y, 4, cuentas['haber'])
+                        hoja.write(y, 2, fechas['fecha'])
+                        hoja.write(y, 4, fechas['debe'])
+                        hoja.write(y, 5, fechas['haber'])
                     y += 1
-                    hoja.write(y, 3, fechas['total_debe'])
-                    hoja.write(y, 4, fechas['total_haber'])
-
             else:
                 lineas = res['lineas']
                 totales = res['totales']
@@ -111,12 +114,12 @@ class AsistenteReporteDiario(models.TransientModel):
             f = io.BytesIO()
             libro.save(f)
             datos = base64.b64encode(f.getvalue())
-            self.write({'archivo':datos, 'name':'libro_diario.xls'})
+            self.write({'archivo':datos, 'name':'libro_mayor.xls'})
 
         return {
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'l10n_gt_extra.asistente_reporte_diario',
+            'res_model': 'l10n_gt_extra.asistente_reporte_mayor',
             'res_id': self.id,
             'view_id': False,
             'type': 'ir.actions.act_window',
