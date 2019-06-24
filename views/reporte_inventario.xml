@@ -7,7 +7,6 @@
             <t t-set="data_report_margin_top" t-value="20"/>
             <t t-set="data_report_header_spacing" t-value="10"/>
             <div class="header">
-                Folio: <span class="page"/>
             </div>
             <t t-call="web.external_layout">
                 <div class="page">
