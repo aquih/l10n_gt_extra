@@ -11,6 +11,9 @@
                 <field name="website" position="after">
                     <field name="pequenio_contribuyente"></field>
                 </field>
+                <field name="vat" position="after">
+                    <field name="no_validar_nit"></field>
+                </field>
             </field>
         </record>
 

@@ -49,6 +49,7 @@ class AccountPayment(models.Model):
     numero_viejo = fields.Char(string="Numero Viejo")
     nombre_impreso = fields.Char(string="Nombre Impreso")
     no_negociable = fields.Boolean(string="No Negociable", default=True)
+    anulado = fields.Boolean('Anulado')
 
     @api.multi
     def cancel(self):
@@ -67,6 +68,7 @@ class AccountPayment(models.Model):
 
             for move in rec.move_line_ids.mapped('move_id'):
                 move.post()
+            rec.anulado = True
 
 class AccountJournal(models.Model):
     _inherit = "account.journal"
