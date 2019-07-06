@@ -106,7 +106,7 @@
                                     <span t-esc="result['totales']['servicio']['exento']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="result['totales']['importacion']['neto']+result['totales']['importacion_exento']['neto']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    <span t-esc="result['totales']['importacion']['neto']+result['totales']['importacion']['exento']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
                                 <td class="text-right">
                                     <span t-esc="result['totales']['compra']['iva'] + result['totales']['servicio']['iva'] + result['totales']['importacion']['iva']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>

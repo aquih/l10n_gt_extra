@@ -91,7 +91,7 @@ class AsistenteReporteVentas(models.TransientModel):
             hoja.write(y, 6, totales['compra']['exento'])
             hoja.write(y, 7, totales['servicio']['neto'])
             hoja.write(y, 8, totales['servicio']['exento'])
-            hoja.write(y, 9, totales['importacion']['neto']+totales['importacion_exento']['neto'])
+            hoja.write(y, 9, totales['importacion']['neto']+totales['importacion']['exento'])
             hoja.write(y, 10, totales['compra']['iva'] + totales['servicio']['iva'] + totales['importacion']['iva'])
             hoja.write(y, 11, totales['compra']['total'] + totales['servicio']['total'] + totales['importacion']['total'])
 
