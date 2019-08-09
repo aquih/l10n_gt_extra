@@ -49,7 +49,7 @@ class ReporteVentas(models.AbstractModel):
                 numero = f.name
 
             # Por si usa factura electrónica
-            if 'firma_gface' in f.fields_get() and f.firma_gface:
+            if ('firma_gface' in f.fields_get() and f.firma_gface) or ('firma_fel' in f.fields_get() and f.firma_fel):
                 numero = f.name
 
             # Por si usa tickets
