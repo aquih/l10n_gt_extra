@@ -38,6 +38,7 @@
                         <button name="anular" states="posted" string="Anular" type="object"/>
                     </button>
                     <field name="communication" position="after">
+                        <field name="descripcion"/>
                         <field name="anulado"/>
                         <field name="numero_viejo" attrs="{'invisible':[('state','!=','draft')]}" readonly="True"/>
                         <field name="nombre_impreso"/>
