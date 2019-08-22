@@ -46,6 +46,7 @@ class AccountInvoice(models.Model):
 class AccountPayment(models.Model):
     _inherit = "account.payment"
 
+    descripcion = fields.Char(string="Descripción")
     numero_viejo = fields.Char(string="Numero Viejo")
     nombre_impreso = fields.Char(string="Nombre Impreso")
     no_negociable = fields.Boolean(string="No Negociable", default=True)
