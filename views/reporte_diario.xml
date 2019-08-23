@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <template id="reporte_diario">
         <t t-call="web.html_container">
             <t t-set="data_report_margin_top" t-value="20"/>
@@ -96,33 +95,31 @@
                                     <td>
                                         <span t-esc="l['cuenta']"/>
                                     </td>
-                                <td class="text-right">
-                                    <span t-esc="l['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                                </td>
-                                <td class="text-right">
-                                    <span t-esc="l['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                                </td>
-                        </tr>
-                        <tr>
-                            <td>
-                            </td>
-                            <td>
-                                <b>Totales</b>
-                            </td>
-                        <td class="text-right">
-                            <b><span t-esc="result['totales']['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
-                        </td>
-                        <td class="text-right">
-                            <b><span t-esc="result['totales']['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
-                        </td>
-                        <td class="text-right">
-                        </td>
-                    </tr>
-                </tbody>
+                                    <td class="text-right">
+                                        <span t-esc="l['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="l['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Totales</b>
+                                    </td>
+                                    <td class="text-right">
+                                    </td>
+                                    <td class="text-right">
+                                        <b><span t-esc="result['totales']['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                                    </td>
+                                    <td class="text-right">
+                                        <b><span t-esc="result['totales']['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </t>
+                    </table>
+                </div>
             </t>
-        </table>
-    </div>
-</t>
-</t>
-</template>
+        </t>
+    </template>
 </odoo>

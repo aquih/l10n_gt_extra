@@ -26,7 +26,7 @@ class AsistenteReporteVentas(models.TransientModel):
              'model': 'l10n_gt_extra.asistente_reporte_ventas',
              'form': self.read()[0]
         }
-        return self.env.ref('l10n_gt_extra.action_reporte_ventas').report_action(self, data=data)
+        return self.env.ref('l10n_gt_extra.action_reporte_ventas').with_context(landscape=True).report_action(self, data=data)
 
     def print_report_excel(self):
         for w in self:

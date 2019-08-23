@@ -12,9 +12,9 @@ class ReporteCompras(models.AbstractModel):
         totales['num_facturas'] = 0
         totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
         totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
         totales['combustible'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        totales['pequenio_contribuyente'] = 0
+        totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
+        totales['pequeño'] = {'exento':0,'neto':0,'iva':0,'total':0}
 
         journal_ids = [x for x in datos['diarios_id']]
         facturas = self.env['account.invoice'].search([
@@ -56,6 +56,8 @@ class ReporteCompras(models.AbstractModel):
                 'combustible_exento': 0,
                 'importacion': 0,
                 'importacion_exento': 0,
+                'pequeño': 0,
+                'pequeño_exento': 0,
                 'base': 0,
                 'iva': 0,
                 'total': 0
@@ -72,6 +74,8 @@ class ReporteCompras(models.AbstractModel):
                         tipo_linea = 'compra'
                     else:
                         tipo_linea = 'servicio'
+                if f.partner_id.pequenio_contribuyente:
+                    tipo_linea = 'pequeño'
 
                 r = l.invoice_line_tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
@@ -93,9 +97,6 @@ class ReporteCompras(models.AbstractModel):
                     totales[tipo_linea]['exento'] += r['base']
 
                 linea['total'] += precio * l.quantity
-
-            if f.partner_id.pequenio_contribuyente:
-                totales['pequenio_contribuyente'] += linea['base']
 
             lineas.append(linea)
 
