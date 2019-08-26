@@ -25,26 +25,95 @@
                     </div>
 
                     <t t-set="result" t-value="lineas(data)"/>
+                    <t t-set="total_activo" t-value="0"/>
+                    <t t-set="total_pasivo" t-value="0"/>
+                    <t t-set="total_capital" t-value="0"/>
 
                     <table class="table table-condensed">
-                        <thead>
+                        <tbody>
+                            <thead>
+                                <tr>
+                                    <td><b>ACTIVO</b></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </thead>
                             <tr>
                                 <th>Codigo</th>
                                 <th>Cuenta</th>
                                 <th class="text-right">Saldo</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr t-foreach="result['lineas']" t-as="l">
+                            <tr t-foreach="result['lineas']['activo']" t-as="activo">
                                 <td>
-                                    <span t-esc="l['codigo']"/>
+                                    <span t-esc="activo['codigo']"/>
                                 </td>
                                 <td>
-                                    <span t-esc="l['cuenta']"/>
+                                    <span t-esc="activo['cuenta']"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="l['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    <span t-esc="activo['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
+                                <t t-set="total_activo" t-value="total_activo + activo['saldo_final']"/>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><b>Total activo</b></td>
+                                <td class="text-right"><b><span t-esc="total_activo" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b></td>
+                            </tr>
+                            <thead>
+                                <tr>
+                                    <td><b>PASIVO</b></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Cuenta</th>
+                                <th class="text-right">Saldo</th>
+                            </tr>
+                            <tr t-foreach="result['lineas']['pasivo']" t-as="pasivo">
+                                <td>
+                                    <span t-esc="pasivo['codigo']"/>
+                                </td>
+                                <td>
+                                    <span t-esc="pasivo['cuenta']"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="pasivo['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                </td>
+                                <t t-set="total_pasivo" t-value="total_pasivo + pasivo['saldo_final']"/>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><b>Total pasivo</b></td>
+                                <td class="text-right"><b><span t-esc="total_pasivo" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b></td>
+                            </tr>
+                            <thead>
+                                <tr>
+                                    <td><b>CAPITAL</b></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Cuenta</th>
+                                <th class="text-right">Saldo</th>
+                            </tr>
+                            <tr t-foreach="result['lineas']['capital']" t-as="capital">
+                                <td>
+                                    <span t-esc="capital['codigo']"/>
+                                </td>
+                                <td>
+                                    <span t-esc="capital['cuenta']"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="capital['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                </td>
+                                <t t-set="total_capital" t-value="total_capital + capital['saldo_final']"/>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><b>Total capital</b></td>
+                                <td class="text-right"><b><span t-esc="total_capital" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b></td>
                             </tr>
                         </tbody>
                     </table>
