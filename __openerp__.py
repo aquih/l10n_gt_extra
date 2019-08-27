@@ -19,6 +19,7 @@
         'views/reporte_ventas.xml',
         'views/reporte_diario.xml',
         'views/reporte_inventario.xml',
+        'views/reporte_mayor.xml',
     ],
     'demo': [],
     'installable': True,

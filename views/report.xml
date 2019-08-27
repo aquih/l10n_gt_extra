@@ -59,8 +59,13 @@
                         <separator colspan="4" string="Diarios"/>
                         <field name="diarios_id" nolabel="1" domain="[('type','in',['purchase','purchase_refund'])]"/>
                     </group>
+                    <group>
+                        <field name="name" invisible="1"/>                    
+                        <field name="archivo" readonly="1" filename="name"/>
+                    </group>
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                        <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
                         o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
@@ -93,8 +98,13 @@
                         <separator colspan="4" string="Diarios"/>
                         <field name="diarios_id" nolabel="1"/>
                     </group>
+                    <group>
+                        <field name="name" invisible="1"/>                    
+                        <field name="archivo" readonly="1" filename="name"/>
+                    </group>
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                        <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
                         o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
@@ -115,6 +125,7 @@
                     <group>
                         <group>
                             <field name="folio_inicial"/>
+                            <field name="agrupado_por_dia"/>
                         </group>
                         <group>
                             <field name="fecha_desde"/>
@@ -125,8 +136,13 @@
                         <separator colspan="4" string="Cuentas"/>
                         <field name="cuentas_id" nolabel="1"/>
                     </group>
+                    <group>
+                        <field name="name" invisible="1"/>
+                        <field name="archivo" readonly="1" filename="name"/>
+                    </group>
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                        <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
                         o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
@@ -137,6 +153,44 @@
         <act_window id="window_reporte_diario" name="Libro diario" res_model="l10n_gt_extra.asistente_reporte_diario" src_model="account.account" view_mode="form" target="new"/>
         <menuitem action="window_reporte_diario" id="menu_asistente_reporte_diario" parent="account.menu_finance_reports"/>
         <report id="action_reporte_diario" model="l10n_gt_extra.asistente_reporte_diario" string="Libro Diario" report_type="qweb-pdf" name="l10n_gt_extra.reporte_diario" file="l10n_gt_extra.reporte_diario"/>
+
+        <record id="asistente_reporte_mayor" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.asistente_reporte_mayor</field>
+            <field name="model">l10n_gt_extra.asistente_reporte_mayor</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Seleccione Cuentas y rango de fecha">
+                    <group>
+                        <group>
+                            <field name="folio_inicial"/>
+                            <field name="agrupado_por_dia"/>
+                        </group>
+                        <group>
+                            <field name="fecha_desde"/>
+                            <field name="fecha_hasta"/>
+                        </group>
+                    </group>
+                    <group>
+                        <separator colspan="4" string="Cuentas"/>
+                        <field name="cuentas_id" nolabel="1"/>
+                    </group>
+                    <group>
+                        <field name="name" invisible="1"/>
+                        <field name="archivo" readonly="1" filename="name"/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                        <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
+                        o
+                        <button special="cancel" string="Cancel" class="oe_link"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="window_reporte_mayor" name="Libro mayor" res_model="l10n_gt_extra.asistente_reporte_mayor" src_model="account.account" view_mode="form" target="new"/>
+        <menuitem action="window_reporte_mayor" id="menu_asistente_reporte_mayor" parent="account.menu_finance_reports"/>
+        <report id="action_reporte_mayor" model="l10n_gt_extra.asistente_reporte_mayor" string="Libro Mayor" report_type="qweb-pdf" name="l10n_gt_extra.reporte_mayor" file="l10n_gt_extra.reporte_mayor"/>
 
         <record id="asistente_reporte_inventario" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_reporte_inventario</field>
