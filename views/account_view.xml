@@ -9,6 +9,9 @@
                 <field name="move_id" position="after">
                     <field name="tipo_gasto"/>
                 </field>
+                <button name="action_invoice_draft" position="after">
+                    <button name="impuesto_global" id="impuesto_global" string="Generar impuesto" class="btn-primary" type="object"/>
+                </button>
             </field>
         </record>
 
