@@ -24,6 +24,7 @@
                     <field name="serie_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
                     <field name="inicial_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
                     <field name="final_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
+                    <field name="nota_debito"/>
                 </field>
             </field>
         </record>

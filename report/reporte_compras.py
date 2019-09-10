@@ -39,6 +39,8 @@ class ReporteCompras(models.AbstractModel):
             tipo = 'FACT'
             if f.type != 'in_invoice':
                 tipo = 'NC'
+            if f.nota_debito:
+                tipo = 'ND'
             if f.partner_id.pequenio_contribuyente:
                 tipo += ' PEQ'
 

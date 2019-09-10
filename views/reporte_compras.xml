@@ -125,10 +125,10 @@
                                     <span t-esc="result['totales']['combustible']['exento']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="result['totales']['importacion']['neto']+result['totales']['importacion_exento']['exento']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    <span t-esc="result['totales']['importacion']['neto']+result['totales']['importacion']['exento']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-esc="result['totales']['pequeño']['neto']+result['totales']['pequeño_exento']['exento']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                    <span t-esc="result['totales']['pequeño']['neto']+result['totales']['pequeño']['exento']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                 </td>
                                 <td class="text-right">
                                     <span t-esc="result['totales']['compra']['iva'] + result['totales']['servicio']['iva'] + result['totales']['combustible']['iva'] + result['totales']['importacion']['iva'] + result['totales']['pequeño']['iva']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>

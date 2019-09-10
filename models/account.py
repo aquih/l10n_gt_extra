@@ -12,6 +12,7 @@ class AccountInvoice(models.Model):
     inicial_rango = fields.Integer(string="Inicial Rango")
     final_rango = fields.Integer(string="Final Rango")
     diario_facturas_por_rangos = fields.Boolean(string='Las facturas se ingresan por rango', help='Cada factura realmente es un rango de factura y el rango se ingresa en Referencia/Descripción', related="journal_id.facturas_por_rangos")
+    nota_debito = fields.Boolean(string='Nota de debito')
 
     @api.constrains('reference')
     def _validar_factura_proveedor(self):
