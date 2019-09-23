@@ -13,7 +13,6 @@
         'views/account_view.xml',
         'views/res_partner_view.xml',
         'views/product_views.xml',
-        'views/purchase_views.xml',
         'views/report.xml',
         'views/reporte_banco.xml',
         'views/reporte_partida.xml',

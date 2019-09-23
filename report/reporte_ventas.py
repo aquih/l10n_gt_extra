@@ -36,11 +36,10 @@ class ReporteVentas(models.AbstractModel):
                 tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
-            if f.type == 'out_refund':
-                if f.amount_untaxed >= 0:
-                    tipo = 'NC'
-                else:
-                    tipo = 'ND'
+            if f.type != 'out_invoice':
+                tipo = 'NC'
+            if f.nota_debito:
+                tipo = 'ND'
 
             numero = f.number or f.numero_viejo or '-',
 
@@ -49,7 +48,7 @@ class ReporteVentas(models.AbstractModel):
                 numero = f.name
 
             # Por si usa factura electrónica
-            if 'firma_gface' in f.fields_get() and f.firma_gface:
+            if ('firma_gface' in f.fields_get() and f.firma_gface) or ('firma_fel' in f.fields_get() and f.firma_fel):
                 numero = f.name
 
             # Por si usa tickets

@@ -25,7 +25,7 @@ class AsistenteReporteCompras(models.TransientModel):
              'model': 'l10n_gt_extra.asistente_reporte_compras',
              'form': self.read()[0]
         }
-        return self.env.ref('l10n_gt_extra.action_reporte_compras').report_action(self, data=data)
+        return self.env.ref('l10n_gt_extra.action_reporte_compras').with_context(landscape=True).report_action(self, data=data)
 
     def print_report_excel(self):
         for w in self:
@@ -67,8 +67,9 @@ class AsistenteReporteCompras(models.TransientModel):
             hoja.write(y, 9, 'Combustible')
             hoja.write(y, 10, 'Combustible exento')
             hoja.write(y, 11, 'Importaciones')
-            hoja.write(y, 12, 'IVA')
-            hoja.write(y, 13, 'Total')
+            hoja.write(y, 12, 'Pequeños contribuyentes')
+            hoja.write(y, 13, 'IVA')
+            hoja.write(y, 14, 'Total')
 
             for linea in lineas:
                 y += 1
@@ -83,9 +84,10 @@ class AsistenteReporteCompras(models.TransientModel):
                 hoja.write(y, 8, linea['servicio_exento'])
                 hoja.write(y, 9, linea['combustible'])
                 hoja.write(y, 10, linea['combustible_exento'])
-                hoja.write(y, 11, linea['importacion'])
-                hoja.write(y, 12, linea['iva'])
-                hoja.write(y, 13, linea['total'])
+                hoja.write(y, 11, linea['importacion'] + linea['importacion_exento'])
+                hoja.write(y, 12, linea['pequeño'] + linea['pequeño_exento'])
+                hoja.write(y, 13, linea['iva'])
+                hoja.write(y, 14, linea['total'])
 
             y += 1
             hoja.write(y, 3, 'Totales')
@@ -95,19 +97,17 @@ class AsistenteReporteCompras(models.TransientModel):
             hoja.write(y, 8, totales['servicio']['exento'])
             hoja.write(y, 9, totales['combustible']['neto'])
             hoja.write(y, 10, totales['combustible']['exento'])
-            hoja.write(y, 11, totales['importacion']['neto'])
-            hoja.write(y, 12, totales['compra']['iva'] + totales['servicio']['iva'] + totales['combustible']['iva'] + totales['importacion']['iva'])
-            hoja.write(y, 13, totales['compra']['total'] + totales['servicio']['total'] + totales['combustible']['total'] + totales['importacion']['total'])
+            hoja.write(y, 11, totales['importacion']['neto'] + totales['importacion']['exento'])
+            hoja.write(y, 12, totales['pequeño']['neto'] + totales['pequeño']['exento'])
+            hoja.write(y, 13, totales['compra']['iva'] + totales['servicio']['iva'] + totales['combustible']['iva'] + totales['importacion']['iva'] + totales['pequeño']['iva'])
+            hoja.write(y, 14, totales['compra']['total'] + totales['servicio']['total'] + totales['combustible']['total'] + totales['importacion']['total'] + totales['pequeño']['total'])
 
             y += 2
-            hoja.write(y, 0, 'Total de facturas de pequenos contribuyentes')
-            hoja.write(y, 1, totales['pequenio_contribuyente'])
-            y += 1
             hoja.write(y, 0, 'Cantidad de facturas')
             hoja.write(y, 1, totales['num_facturas'])
             y += 1
             hoja.write(y, 0, 'Total credito fiscal')
-            hoja.write(y, 1, totales['compra']['iva'] + totales['servicio']['iva'] + totales['combustible']['iva'] + totales['importacion']['iva'])
+            hoja.write(y, 1, totales['compra']['iva'] + totales['servicio']['iva'] + totales['combustible']['iva'] + totales['importacion']['iva'] + totales['pequeño']['iva'])
 
             y += 2
             hoja.write(y, 3, 'EXENTO')
@@ -139,11 +139,17 @@ class AsistenteReporteCompras(models.TransientModel):
             hoja.write(y, 5, totales['importacion']['iva'])
             hoja.write(y, 6, totales['importacion']['total'])
             y += 1
+            hoja.write(y, 1, 'PEQUEÑOS CONTRIBUYENTES')
+            hoja.write(y, 3, totales['pequeño']['exento'])
+            hoja.write(y, 4, totales['pequeño']['neto'])
+            hoja.write(y, 5, totales['pequeño']['iva'])
+            hoja.write(y, 6, totales['pequeño']['total'])
+            y += 1
             hoja.write(y, 1, 'TOTALES')
-            hoja.write(y, 3, totales['compra']['exento']+totales['servicio']['exento']+totales['combustible']['exento']+totales['importacion']['total'])
-            hoja.write(y, 4, totales['compra']['neto']+totales['servicio']['neto']+totales['combustible']['neto']+totales['importacion']['neto'])
-            hoja.write(y, 5, totales['compra']['iva']+totales['servicio']['iva']+totales['combustible']['iva']+totales['importacion']['iva'])
-            hoja.write(y, 6, totales['compra']['total']+totales['servicio']['total']+totales['combustible']['total']+totales['importacion']['total'])
+            hoja.write(y, 3, totales['compra']['exento']+totales['servicio']['exento']+totales['combustible']['exento']+totales['importacion']['exento']+totales['pequeño']['exento'])
+            hoja.write(y, 4, totales['compra']['neto']+totales['servicio']['neto']+totales['combustible']['neto']+totales['importacion']['neto']+totales['pequeño']['neto'])
+            hoja.write(y, 5, totales['compra']['iva']+totales['servicio']['iva']+totales['combustible']['iva']+totales['importacion']['iva']+totales['pequeño']['iva'])
+            hoja.write(y, 6, totales['compra']['total']+totales['servicio']['total']+totales['combustible']['total']+totales['importacion']['total']+totales['pequeño']['total'])
 
             f = io.BytesIO()
             libro.save(f)

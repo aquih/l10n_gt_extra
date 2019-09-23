@@ -30,7 +30,8 @@ class ReporteInventario(models.AbstractModel):
     def lineas(self, datos):
         totales = {}
         lineas_resumidas = {}
-        lineas=[]
+        lineas = {'activo':[],'total_activo': 0,'pasivo': [],'total_pasivo': 0,'capital': [],'total_capital': 0,}
+        agrupado = {'activo':[],'pasivo': [],'capital': []}
         totales['debe'] = 0
         totales['haber'] = 0
         totales['saldo_inicial'] = 0
@@ -45,10 +46,10 @@ class ReporteInventario(models.AbstractModel):
             ('date','>=',fecha_desde)])
 
         accounts_str = ','.join([str(x) for x in datos['cuentas_id']])
-        self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
+        self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta,t.id as id_cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
         	'from account_move_line l join account_account a on(l.account_id = a.id)' \
         	'join account_account_type t on (t.id = a.user_type_id)' \
-        	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.include_initial_balance ORDER BY a.code',
+        	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.id,t.include_initial_balance ORDER BY a.code',
         (fecha_desde, datos['fecha_hasta']))
 
         for r in self.env.cr.dictfetchall():
@@ -64,9 +65,38 @@ class ReporteInventario(models.AbstractModel):
                 'saldo_final': 0,
                 'balance_inicial': r['balance_inicial']
             }
-            lineas.append(linea)
+            if r['id_cuenta'] in [1,3,7,8]:
+                lineas['activo'].append(linea)
+            elif r['id_cuenta'] in [9,4,2,10]:
+                lineas['pasivo'].append(linea)
+            elif r['id_cuenta'] in [11]:
+                lineas['capital'].append(linea)
 
-        for l in lineas:
+        for l in lineas['activo']:
+            if not l['balance_inicial']:
+                l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], fecha_desde)
+                l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
+                totales['saldo_inicial'] += l['saldo_inicial']
+                totales['saldo_final'] += l['saldo_final']
+            else:
+                l['saldo_inicial'] += self.retornar_saldo_inicial_todos_anios(l['id'], fecha_desde)
+                l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
+                totales['saldo_inicial'] += l['saldo_inicial']
+                totales['saldo_final'] += l['saldo_final']
+
+        for l in lineas['pasivo']:
+            if not l['balance_inicial']:
+                l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], fecha_desde)
+                l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
+                totales['saldo_inicial'] += l['saldo_inicial']
+                totales['saldo_final'] += l['saldo_final']
+            else:
+                l['saldo_inicial'] += self.retornar_saldo_inicial_todos_anios(l['id'], fecha_desde)
+                l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
+                totales['saldo_inicial'] += l['saldo_inicial']
+                totales['saldo_final'] += l['saldo_final']
+
+        for l in lineas['capital']:
             if not l['balance_inicial']:
                 l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], fecha_desde)
                 l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']

@@ -14,6 +14,44 @@ class AccountInvoice(models.Model):
     inicial_rango = fields.Integer(string="Inicial Rango")
     final_rango = fields.Integer(string="Final Rango")
     diario_facturas_por_rangos = fields.Boolean(string='Las facturas se ingresan por rango', help='Cada factura realmente es un rango de factura y el rango se ingresa en Referencia/Descripción', related="journal_id.facturas_por_rangos")
+    nota_debito = fields.Boolean(string='Nota de debito')
+
+    def suma_impuesto(self,impuestos_ids):
+        suma_monto = 0
+        for impuesto in impuestos_ids:
+            suma_monto += impuesto.amount
+        return suma_monto
+
+    @api.multi
+    def impuesto_global(self):
+        impuestos = self.env['l10n_gt_extra.impuestos'].search([['active','=',True],['tipo','=','compra']])
+        impuestos_valores = []
+        diferencia  = 0
+        suma_impuesto = 0
+        impuesto_total = 0
+        rango_final_anterior = 0
+        for rango in impuestos.rangos_ids:
+            if self.amount_untaxed > rango.rango_final and diferencia == 0:
+                diferencia = self.amount_untaxed - rango.rango_final
+                impuesto_individual = rango.rango_final * (self.suma_impuesto(rango.impuestos_ids) / 100)
+                suma_impuesto += impuesto_individual
+                impuestos_valores.append({'nombre': rango.impuestos_ids[0].name,'impuesto_id': rango.impuestos_ids[0].id,'account_id': rango.impuestos_ids[0].account_id.id,'total': impuesto_individual})
+            elif self.amount_untaxed <= rango.rango_final and diferencia == 0 and rango_final_anterior == 0:
+                impuesto_individual = self.amount_untaxed * (self.suma_impuesto(rango.impuestos_ids) / 100)
+                suma_impuesto += impuesto_individual
+                rango_final_anterior = rango.rango_final
+                impuestos_valores.append({'nombre': rango.impuestos_ids[0].name,'impuesto_id': rango.impuestos_ids[0].id,'account_id': rango.impuestos_ids[0].account_id.id,'total': impuesto_individual})
+            elif diferencia > 0:
+                impuesto_individual = diferencia * (self.suma_impuesto(rango.impuestos_ids) / 100)
+                suma_impuesto += impuesto_individual
+                impuestos_valores.append({'nombre': rango.impuestos_ids[0].name,'impuesto_id': rango.impuestos_ids[0].id,'account_id': rango.impuestos_ids[0].account_id.id,'total': impuesto_individual})
+        impuesto_total = 0
+        self.update({'amount_tax': suma_impuesto,'amount_total': impuesto_total + self.amount_untaxed})
+        account_invoice_tax = self.env['account.invoice.tax']
+
+        for impuesto in impuestos_valores:
+            account_invoice_tax.create({'invoice_id': self.id,'tax_id':impuesto['impuesto_id'],'name': impuesto['nombre'],'account_id': impuesto['account_id'],'amount':impuesto['total'] })
+        return True
 
     @api.constrains('reference')
     def _validar_factura_proveedor(self):
@@ -48,6 +86,7 @@ class AccountInvoice(models.Model):
 class AccountPayment(models.Model):
     _inherit = "account.payment"
 
+    descripcion = fields.Char(string="Descripción")
     numero_viejo = fields.Char(string="Numero Viejo")
     nombre_impreso = fields.Char(string="Nombre Impreso")
     no_negociable = fields.Boolean(string="No Negociable", default=True)
@@ -78,4 +117,5 @@ class AccountJournal(models.Model):
     _inherit = "account.journal"
 
     direccion = fields.Many2one('res.partner', string='Dirección')
+    codigo_establecimiento = fields.Integer(string='Código de establecimiento')
     facturas_por_rangos = fields.Boolean(string='Las facturas se ingresan por rango', help='Cada factura realmente es un rango de factura y el rango se ingresa en Referencia/Descripción')
