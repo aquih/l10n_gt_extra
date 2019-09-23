@@ -2,6 +2,8 @@
 
 from openerp import models, fields, api, _
 from openerp.exceptions import UserError, ValidationError
+import datetime
+import logging
 
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
@@ -50,6 +52,7 @@ class AccountPayment(models.Model):
     nombre_impreso = fields.Char(string="Nombre Impreso")
     no_negociable = fields.Boolean(string="No Negociable", default=True)
     anulado = fields.Boolean('Anulado')
+    fecha_anulacion = fields.Date('Fecha anulación')
 
     @api.multi
     def cancel(self):
@@ -69,6 +72,7 @@ class AccountPayment(models.Model):
             for move in rec.move_line_ids.mapped('move_id'):
                 move.post()
             rec.anulado = True
+            rec.fecha_anulacion = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d')
 
 class AccountJournal(models.Model):
     _inherit = "account.journal"

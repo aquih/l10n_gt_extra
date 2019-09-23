@@ -69,7 +69,7 @@ class AsistenteReporteMayor(models.TransientModel):
                 hoja.write(y, 3, 'Saldo Inicial')
                 hoja.write(y, 4, 'Debe')
                 hoja.write(y, 5, 'Haber')
-                hoja.write(y, 6, 'Saldo FInal')
+                hoja.write(y, 6, 'Saldo Final')
 
                 for cuenta in lineas:
                     y += 1
@@ -91,21 +91,25 @@ class AsistenteReporteMayor(models.TransientModel):
 
                 hoja.write(y, 0, 'Codigo')
                 hoja.write(y, 1, 'Cuenta')
-                hoja.write(y, 2, 'Debe')
-                hoja.write(y, 3, 'Haber')
+                hoja.write(y, 2, 'Saldo Inicial')
+                hoja.write(y, 3, 'Debe')
+                hoja.write(y, 4, 'Haber')
+                hoja.write(y, 5, 'Saldo Final')
 
                 for linea in lineas:
                     y += 1
 
                     hoja.write(y, 0, linea['codigo'])
                     hoja.write(y, 1, linea['cuenta'])
-                    hoja.write(y, 2, linea['debe'])
-                    hoja.write(y, 3, linea['haber'])
+                    hoja.write(y, 2, linea['saldo_inicial'])
+                    hoja.write(y, 3, linea['debe'])
+                    hoja.write(y, 4, linea['haber'])
+                    hoja.write(y, 5, linea['saldo_final'])
 
                 y += 1
                 hoja.write(y, 1, 'Totales')
-                hoja.write(y, 2, totales['debe'])
-                hoja.write(y, 3, totales['haber'])
+                hoja.write(y, 3, totales['debe'])
+                hoja.write(y, 4, totales['haber'])
 
             xlwt.add_palette_colour("custom_colour", 0x21)
             libro.set_colour_RGB(0x21, 200, 200, 200)

@@ -38,12 +38,24 @@
                         <button name="anular" states="posted" string="Anular" type="object"/>
                     </button>
                     <field name="communication" position="after">
-                        <field name="anulado"/>
+                        <field name="anulado" readonly="1"/>
+                        <field name="fecha_anulacion" readonly="1"/>
                         <field name="numero_viejo" attrs="{'invisible':[('state','!=','draft')]}" readonly="True"/>
                         <field name="nombre_impreso"/>
                         <field name="no_negociable"/>
                     </field>
                 </data>
+            </field>
+        </record>
+
+        <record id="l10n_gt_view_account_payment_tree" model="ir.ui.view">
+            <field name="name">l10n_gt_extra.account.supplier.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="fecha_anulacion"/>
+                </field>
             </field>
         </record>
 
@@ -54,6 +66,7 @@
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="move_name"/>
+                    <field name="fecha_anulacion"/>
                 </field>
             </field>
         </record>
