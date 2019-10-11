@@ -115,6 +115,8 @@
                             <td>
                                 <b>Totales</b>
                             </td>
+                            <td>
+                            </td>
                         <td class="text-right">
                             <b><span t-esc="result['totales']['debe']" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
                         </td>
