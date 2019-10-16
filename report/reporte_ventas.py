@@ -41,7 +41,7 @@ class ReporteVentas(models.AbstractModel):
             if f.nota_debito:
                 tipo = 'ND'
 
-            numero = f.number or f.numero_viejo or '-',
+            numero = f.number or f.numero_viejo or '-'
 
             # Por si es un diario de rango de facturas
             if f.journal_id.facturas_por_rangos or f.journal_id.usar_referencia:
