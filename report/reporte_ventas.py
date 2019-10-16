@@ -22,6 +22,7 @@ class ReporteVentas(models.AbstractModel):
             ('date_invoice','<=',datos['fecha_hasta']),
             ('date_invoice','>=',datos['fecha_desde']),
         ], order='date_invoice, number')
+        logging.warn(facturas)
 
         lineas = []
         for f in facturas:
@@ -42,7 +43,7 @@ class ReporteVentas(models.AbstractModel):
                 else:
                     tipo = 'ND'
 
-            numero = f.number or f.numero_viejo or '-',
+            numero = f.number or f.move_name or '-'
 
             # Por si es un diario de rango de facturas
             if f.journal_id.facturas_por_rangos:
@@ -112,7 +113,7 @@ class ReporteVentas(models.AbstractModel):
                     totales[tipo_linea]['exento'] += r['base']
 
                 # linea['total'] += r['base']
-                linea['total'] += l.price_unit * l.quantity * ( 100 - l.discount ) / 100
+                linea['total'] += precio * l.quantity
 
             lineas.append(linea)
 

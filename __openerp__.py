@@ -9,7 +9,7 @@
     'website': 'http://solucionesprisma.com/',
     'depends': ['l10n_gt', 'account_tax_python', 'account_cancel'],
     'data': [
-        'data/l10n_gt_extra_base.xml',
+#        'data/l10n_gt_extra_base.xml',
         'views/account_view.xml',
         'views/res_partner_view.xml',
         'views/report.xml',
