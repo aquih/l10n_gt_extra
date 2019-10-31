@@ -70,7 +70,7 @@ class ReporteCompras(models.AbstractModel):
                 if tipo == 'NC':
                     precio = precio * -1
 
-                tipo_linea = f.tipo_gasto
+                tipo_linea = f.tipo_gasto or 'mixto'
                 if f.tipo_gasto == 'mixto':
                     if l.product_id.type == 'product':
                         tipo_linea = 'compra'
