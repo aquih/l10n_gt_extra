@@ -118,7 +118,7 @@ class ReporteVentas(models.AbstractModel):
         if datos['resumido']:
             lineas_resumidas = {}
             for l in lineas:
-                llave = l['tipo']+l['fecha']
+                llave = l['tipo']+str(l['fecha'])
                 if llave not in lineas_resumidas:
                     lineas_resumidas[llave] = dict(l)
                     lineas_resumidas[llave]['estado'] = 'open'
