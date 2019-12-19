@@ -141,9 +141,9 @@ class ReporteVentas(models.AbstractModel):
 
             for l in lineas_resumidas.values():
                 facturas = sorted(l['facturas'])
-                l['numero'] = l['facturas'][0] + ' al ' + l['facturas'][-1]
+                l['numero'] = str(l['facturas'][0]) + ' al ' + str(l['facturas'][-1])
 
-            lineas = sorted(lineas_resumidas.values(), key=lambda l: l['tipo']+l['fecha'])
+            lineas = sorted(lineas_resumidas.values(), key=lambda l: l['tipo']+str(l['fecha']))
 
         return { 'lineas': lineas, 'totales': totales }
 
