@@ -45,7 +45,7 @@ class ReporteMayor(models.AbstractModel):
             self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, l.date as fecha, t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
                 'from account_move_line l join account_account a on(l.account_id = a.id)' \
                 'join account_account_type t on (t.id = a.user_type_id)' \
-                'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name, l.date, t.include_initial_balance ORDER BY a.code',
+                'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name, l.date, t.include_initial_balance ORDER BY l.date, a.code',
             (datos['fecha_desde'], datos['fecha_hasta']))
 
             for r in self.env.cr.dictfetchall():
