@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
-from openerp import models, fields, api, _
-from openerp.exceptions import UserError, ValidationError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 import time
 
 class AsistenteReporteInventario(models.TransientModel):
@@ -17,7 +17,6 @@ class AsistenteReporteInventario(models.TransientModel):
     folio_inicial = fields.Integer(string="Folio Inicial", required=True, default=1)
     fecha_hasta = fields.Date(string="Fecha Final", required=True, default=lambda self: time.strftime('%Y-%m-%d'))
 
-    @api.multi
     def print_report(self):
         data = {
              'ids': [],

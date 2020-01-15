@@ -1,15 +1,14 @@
 # -*- encoding: utf-8 -*-
 
-from openerp import models, fields, api, _
-from openerp.exceptions import UserError, ValidationError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 import datetime
 import logging
 
-class AccountInvoice(models.Model):
-    _inherit = "account.invoice"
+class AccountMove(models.Model):
+    _inherit = "account.move"
 
-    tipo_gasto = fields.Selection([('compra', 'Compra/Bien'), ('servicio', 'Servicio'), ('importacion', 'Importación/Exportación'), ('combustible', 'Combustible'), ('mixto', 'Mixto')], string="Tipo de Gasto", default="compra")
-    numero_viejo = fields.Char(string="Numero Viejo")
+    tipo_gasto = fields.Selection([('mixto', 'Mixto'), ('compra', 'Compra/Bien'), ('servicio', 'Servicio'), ('importacion', 'Importación/Exportación'), ('combustible', 'Combustible')], string="Tipo de Gasto", default="mixto")
     serie_rango = fields.Char(string="Serie Rango")
     inicial_rango = fields.Integer(string="Inicial Rango")
     final_rango = fields.Integer(string="Final Rango")
@@ -22,7 +21,6 @@ class AccountInvoice(models.Model):
             suma_monto += impuesto.amount
         return suma_monto
 
-    @api.multi
     def impuesto_global(self):
         impuestos = self.env['l10n_gt_extra.impuestos'].search([['active','=',True],['tipo','=','compra']])
         impuestos_valores = []
@@ -46,7 +44,7 @@ class AccountInvoice(models.Model):
                 suma_impuesto += impuesto_individual
                 impuestos_valores.append({'nombre': rango.impuestos_ids[0].name,'impuesto_id': rango.impuestos_ids[0].id,'account_id': rango.impuestos_ids[0].account_id.id,'total': impuesto_individual})
         impuesto_total = 0
-        self.update({'amount_tax': suma_impuesto,'amount_total': impuesto_total + self.amount_untaxed})
+        self.update({'amount_tax': suma_impuesto, 'amount_total': impuesto_total + self.amount_untaxed})
         account_invoice_tax = self.env['account.invoice.tax']
 
         for impuesto in impuestos_valores:
@@ -77,12 +75,6 @@ class AccountInvoice(models.Model):
 
             self.name = "{}-{} al {}-{}".format(self.serie_rango, self.inicial_rango, self.serie_rango, self.final_rango)
 
-    @api.multi
-    def action_cancel(self):
-        for rec in self:
-            rec.numero_viejo = rec.number
-        return super(AccountInvoice, self).action_cancel()
-
 class AccountPayment(models.Model):
     _inherit = "account.payment"
 
@@ -93,13 +85,11 @@ class AccountPayment(models.Model):
     anulado = fields.Boolean('Anulado')
     fecha_anulacion = fields.Date('Fecha anulación')
 
-    @api.multi
     def cancel(self):
         for rec in self:
             rec.write({'numero_viejo': rec.name})
         return super(AccountPayment, self).cancel()
 
-    @api.multi
     def anular(self):
         for rec in self:
             for move in rec.move_line_ids.mapped('move_id'):

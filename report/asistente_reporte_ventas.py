@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
-from openerp import models, fields, api, _
-from openerp.exceptions import UserError, ValidationError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 import time
 import xlsxwriter
 import base64
@@ -20,7 +20,6 @@ class AsistenteReporteVentas(models.TransientModel):
     name = fields.Char('Nombre archivo', size=32)
     archivo = fields.Binary('Archivo', filters='.xls')
 
-    @api.multi
     def print_report(self):
         data = {
              'ids': [],

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
-from openerp import models, fields, api, _
-from openerp.exceptions import UserError, ValidationError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 import time
 
 class AsistenteReporteBanco(models.TransientModel):
@@ -17,7 +17,6 @@ class AsistenteReporteBanco(models.TransientModel):
     fecha_desde = fields.Date(string="Fecha Inicial", required=True, default=lambda self: time.strftime('%Y-%m-01'))
     fecha_hasta = fields.Date(string="Fecha Final", required=True, default=lambda self: time.strftime('%Y-%m-%d'))
 
-    @api.multi
     def print_report(self):
         data = {
              'ids': [],
