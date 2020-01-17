@@ -7,9 +7,10 @@ import logging
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    cui = fields.Char(string="CUI")
     no_validar_nit = fields.Boolean(string="No validar NIT")
+    pequenio_contribuyente = fields.Boolean(string="Pequeño Contribuyente")
 
-    @api.multi
     @api.constrains('vat')
     def _validar_nit(self):
         for p in self:
@@ -39,7 +40,6 @@ class ResPartner(models.Model):
             if str(resultante) != verificador:
                 raise ValidationError("El NIT " + p.vat + " no es correcto (según lineamientos de la SAT)")
 
-    @api.multi
     @api.constrains('vat')
     def _validar_duplicado(self):
         for p in self:
@@ -56,5 +56,3 @@ class ResPartner(models.Model):
         res2 = records.name_get()
 
         return res1+res2
-
-    pequenio_contribuyente = fields.Boolean(string="Pequeño Contribuyente")

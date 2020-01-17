@@ -33,7 +33,8 @@ class ReporteVentas(models.AbstractModel):
                 for l in f.move_id.line_ids:
                     if l.account_id.id == f.account_id.id:
                         total += l.debit - l.credit
-                tipo_cambio = abs(total / f.amount_total)
+                if f.amount_total != 0:
+                    tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
             if f.type != 'out_invoice':
