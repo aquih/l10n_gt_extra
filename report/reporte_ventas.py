@@ -56,6 +56,9 @@ class ReporteVentas(models.AbstractModel):
             if 'requiere_resolucion' in f.journal_id.fields_get() and f.journal_id.requiere_resolucion:
                 numero = f.name
 
+            if f.journal_id.usar_referencia:
+                numero = f.name
+
             linea = {
                 'estado': f.state,
                 'tipo': tipo,
@@ -115,7 +118,9 @@ class ReporteVentas(models.AbstractModel):
                 linea['total'] += precio * l.quantity
 
             lineas.append(linea)
-
+            if f.journal_id.usar_referencia:
+                lineas = sorted(lineas, key = lambda i: (i['fecha'], i['numero']))
+                
         if datos['resumido']:
             lineas_resumidas = {}
             for l in lineas:
@@ -146,6 +151,7 @@ class ReporteVentas(models.AbstractModel):
 
             lineas = sorted(lineas_resumidas.values(), key=lambda l: l['tipo']+str(l['fecha']))
 
+        logging.warn(lineas)
         return { 'lineas': lineas, 'totales': totales }
 
     @api.model
