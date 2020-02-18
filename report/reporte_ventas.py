@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from odoo import api, models
+from odoo.exceptions import UserError
 import logging
 
 class ReporteVentas(models.AbstractModel):
@@ -16,12 +17,13 @@ class ReporteVentas(models.AbstractModel):
         totales['combustible'] = {'exento':0,'neto':0,'iva':0,'total':0}
 
         journal_ids = [x for x in datos['diarios_id']]
-        facturas = self.env['account.invoice'].search([
-            ('state','in',['open','paid','cancel']),
+        facturas = self.env['account.move'].search([
+            ('state','in',['posted','cancel']),
+            ('type','in',['out_invoice','out_refund']),
             ('journal_id','in',journal_ids),
-            ('date_invoice','<=',datos['fecha_hasta']),
-            ('date_invoice','>=',datos['fecha_desde']),
-        ], order='date_invoice, move_name')
+            ('date','<=',datos['fecha_hasta']),
+            ('date','>=',datos['fecha_desde']),
+        ])
 
         lineas = []
         for f in facturas:
@@ -30,10 +32,11 @@ class ReporteVentas(models.AbstractModel):
             tipo_cambio = 1
             if f.currency_id.id != f.company_id.currency_id.id:
                 total = 0
-                for l in f.move_id.line_ids:
+                for l in f.line_ids:
                     if l.account_id.id == f.account_id.id:
                         total += l.debit - l.credit
-                tipo_cambio = abs(total / f.amount_total)
+                if f.amount_total != 0:
+                    tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
             if f.type != 'out_invoice':
@@ -41,24 +44,24 @@ class ReporteVentas(models.AbstractModel):
             if f.nota_debito:
                 tipo = 'ND'
 
-            numero = f.number or '-'
+            numero = f.name or '-'
 
             # Por si es un diario de rango de facturas
             if f.journal_id.facturas_por_rangos or f.journal_id.usar_referencia:
-                numero = f.name
+                numero = f.ref
 
             # Por si usa factura electrónica
             if ('firma_gface' in f.fields_get() and f.firma_gface) or ('firma_fel' in f.fields_get() and f.firma_fel):
-                numero = f.name
+                numero = f.ref
 
             # Por si usa tickets
             if 'requiere_resolucion' in f.journal_id.fields_get() and f.journal_id.requiere_resolucion:
-                numero = f.name
+                numero = f.ref
 
             linea = {
                 'estado': f.state,
                 'tipo': tipo,
-                'fecha': f.date_invoice,
+                'fecha': f.date,
                 'numero': numero,
                 'cliente': f.partner_id.name,
                 'nit': f.partner_id.vat,
@@ -76,7 +79,7 @@ class ReporteVentas(models.AbstractModel):
             }
 
             if f.state == 'cancel':
-                linea['numero'] = f.numero_viejo or f.name
+                linea['numero'] = f.name
                 lineas.append(linea)
                 continue
 
@@ -92,13 +95,13 @@ class ReporteVentas(models.AbstractModel):
                     else:
                         tipo_linea = 'servicio'
 
-                r = l.invoice_line_tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
+                r = l.tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
-                linea['base'] += r['base']
-                totales[tipo_linea]['total'] += r['base']
-                if len(l.invoice_line_tax_ids) > 0:
-                    linea[tipo_linea] += r['base']
-                    totales[tipo_linea]['neto'] += r['base']
+                linea['base'] += r['total_excluded']
+                totales[tipo_linea]['total'] += r['total_excluded']
+                if len(l.tax_ids) > 0:
+                    linea[tipo_linea] += r['total_excluded']
+                    totales[tipo_linea]['neto'] += r['total_excluded']
                     for i in r['taxes']:
                         if i['id'] == datos['impuesto_id'][0]:
                             linea['iva'] += i['amount']
@@ -108,12 +111,14 @@ class ReporteVentas(models.AbstractModel):
                             linea[tipo_linea+'_exento'] += i['amount']
                             totales[tipo_linea]['exento'] += i['amount']
                 else:
-                    linea[tipo_linea+'_exento'] += r['base']
-                    totales[tipo_linea]['exento'] += r['base']
+                    linea[tipo_linea+'_exento'] += r['total_excluded']
+                    totales[tipo_linea]['exento'] += r['total_excluded']
 
                 linea['total'] += precio * l.quantity
 
             lineas.append(linea)
+            
+        lineas = sorted(lineas, key = lambda i: (i['fecha'], i['numero']))
 
         if datos['resumido']:
             lineas_resumidas = {}
@@ -149,12 +154,11 @@ class ReporteVentas(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        return self.get_report_values(docids, data)
-
-    @api.model
-    def get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
+
+        if len(data['form']['diarios_id']) == 0:
+            raise UserError("Por favor ingrese al menos un diario.")
 
         diario = self.env['account.journal'].browse(data['form']['diarios_id'][0])
 

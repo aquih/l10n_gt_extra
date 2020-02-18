@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from odoo import api, models
+from odoo.exceptions import UserError
 import logging
 
 class ReporteCompras(models.AbstractModel):
@@ -17,12 +18,13 @@ class ReporteCompras(models.AbstractModel):
         totales['pequeño'] = {'exento':0,'neto':0,'iva':0,'total':0}
 
         journal_ids = [x for x in datos['diarios_id']]
-        facturas = self.env['account.invoice'].search([
-            ('state','in',['open','paid']),
+        facturas = self.env['account.move'].search([
+            ('state','in',['posted']),
+            ('type','in',['in_invoice','in_refund']),
             ('journal_id','in',journal_ids),
             ('date','<=',datos['fecha_hasta']),
             ('date','>=',datos['fecha_desde']),
-        ], order='date_invoice, reference')
+        ])
 
         lineas = []
         for f in facturas:
@@ -31,10 +33,11 @@ class ReporteCompras(models.AbstractModel):
             tipo_cambio = 1
             if f.currency_id.id != f.company_id.currency_id.id:
                 total = 0
-                for l in f.move_id.line_ids:
+                for l in f.line_ids:
                     if l.account_id.id == f.account_id.id:
-                        total += l.credit - l.debit
-                tipo_cambio = abs(total / f.amount_total)
+                        total += l.debit - l.credit
+                if f.amount_total != 0:
+                    tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
             if f.type != 'in_invoice':
@@ -47,8 +50,8 @@ class ReporteCompras(models.AbstractModel):
             linea = {
                 'estado': f.state,
                 'tipo': tipo,
-                'fecha': f.date_invoice,
-                'numero': f.reference or '',
+                'fecha': f.date,
+                'numero': f.ref or '',
                 'proveedor': f.partner_id,
                 'compra': 0,
                 'compra_exento': 0,
@@ -76,16 +79,17 @@ class ReporteCompras(models.AbstractModel):
                         tipo_linea = 'compra'
                     else:
                         tipo_linea = 'servicio'
+
                 if f.partner_id.pequenio_contribuyente:
                     tipo_linea = 'pequeño'
 
-                r = l.invoice_line_tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
+                r = l.tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
-                linea['base'] += r['base']
-                totales[tipo_linea]['total'] += r['base']
-                if len(l.invoice_line_tax_ids) > 0:
-                    linea[tipo_linea] += r['base']
-                    totales[tipo_linea]['neto'] += r['base']
+                linea['base'] += r['total_excluded']
+                totales[tipo_linea]['total'] += r['total_excluded']
+                if len(l.tax_ids) > 0:
+                    linea[tipo_linea] += r['total_excluded']
+                    totales[tipo_linea]['neto'] += r['total_excluded']
                     for i in r['taxes']:
                         if i['id'] == datos['impuesto_id'][0]:
                             linea['iva'] += i['amount']
@@ -95,8 +99,8 @@ class ReporteCompras(models.AbstractModel):
                             linea[tipo_linea+'_exento'] += i['amount']
                             totales[tipo_linea]['exento'] += i['amount']
                 else:
-                    linea[tipo_linea+'_exento'] += r['base']
-                    totales[tipo_linea]['exento'] += r['base']
+                    linea[tipo_linea+'_exento'] += r['total_excluded']
+                    totales[tipo_linea]['exento'] += r['total_excluded']
 
                 linea['total'] += precio * l.quantity
 
@@ -106,12 +110,11 @@ class ReporteCompras(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        return self.get_report_values(docids, data)
-
-    @api.model
-    def get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
+
+        if len(data['form']['diarios_id']) == 0:
+            raise UserError("Por favor ingrese al menos un diario.")
 
         diario = self.env['account.journal'].browse(data['form']['diarios_id'][0])
 
