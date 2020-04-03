@@ -30,9 +30,9 @@
                         <t t-if="data['agrupado_por_dia'] == true">
                             <thead>
                                 <tr>
-                                    <th>codigo</th>
-                                    <th>cuenta</th>
-                                    <th>fecha</th>
+                                    <th>Codigo</th>
+                                    <th>Cuenta</th>
+                                    <th>Fecha</th>
                                     <th class="text-right">Saldo Inicial</th>
                                     <th class="text-right">Debe</th>
                                     <th class="text-right">Haber</th>

@@ -7,12 +7,12 @@ import logging
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    cui = fields.Char(string="CUI")
     no_validar_nit = fields.Boolean(string="No validar NIT")
+    pequenio_contribuyente = fields.Boolean(string="Pequeño Contribuyente")
 
-    @api.multi
     @api.constrains('vat')
     def _validar_nit(self):
-        logging.warn('validar_nit')
         for p in self:
             if p.vat == 'CF' or p.vat == 'C/F' or not p.vat:
                 return True
@@ -25,7 +25,7 @@ class ResPartner(models.Model):
 
             nit = p.vat.replace('-','')
             verificador = nit[-1]
-            if verificador.upper() == 'K':
+            if verificador == 'K':
                 verificador = '10'
             secuencia = nit[:-1]
 
@@ -40,10 +40,8 @@ class ResPartner(models.Model):
             if str(resultante) != verificador:
                 raise ValidationError("El NIT " + p.vat + " no es correcto (según lineamientos de la SAT)")
 
-    @api.multi
     @api.constrains('vat')
     def _validar_duplicado(self):
-        logging.warn('validar_duplicado')
         for p in self:
             if not p.parent_id and p.vat and p.vat != 'CF' and p.vat != 'C/F' and not p.no_validar_nit:
                 repetidos = p.search([('vat','=',p.vat), ('id','!=',p.id), ('parent_id','=',False)])
@@ -58,5 +56,3 @@ class ResPartner(models.Model):
         res2 = records.name_get()
 
         return res1+res2
-
-    pequenio_contribuyente = fields.Boolean(string="Pequeño Contribuyente")

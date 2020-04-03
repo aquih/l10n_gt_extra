@@ -3,9 +3,10 @@
 from openerp import models, fields, api, _
 from openerp.exceptions import UserError, ValidationError
 import time
-import xlwt
+import xlsxwriter
 import base64
 import io
+import logging
 
 class AsistenteReporteCompras(models.TransientModel):
     _name = 'l10n_gt_extra.asistente_reporte_compras'
@@ -38,12 +39,11 @@ class AsistenteReporteCompras(models.TransientModel):
             res = self.env['report.l10n_gt_extra.reporte_compras'].lineas(dict)
             lineas = res['lineas']
             totales = res['totales']
-            libro = xlwt.Workbook()
-            hoja = libro.add_sheet('reporte')
 
-            xlwt.add_palette_colour("custom_colour", 0x21)
-            libro.set_colour_RGB(0x21, 200, 200, 200)
-            estilo = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
+            f = io.BytesIO()
+            libro = xlsxwriter.Workbook(f)
+            hoja = libro.add_worksheet('Reporte')
+
             hoja.write(0, 0, 'LIBRO DE COMPRAS Y SERVICIOS')
             hoja.write(2, 0, 'NUMERO DE IDENTIFICACION TRIBUTARIA')
             hoja.write(2, 1, w.diarios_id[0].company_id.partner_id.vat)
@@ -151,10 +151,9 @@ class AsistenteReporteCompras(models.TransientModel):
             hoja.write(y, 5, totales['compra']['iva']+totales['servicio']['iva']+totales['combustible']['iva']+totales['importacion']['iva']+totales['pequeño']['iva'])
             hoja.write(y, 6, totales['compra']['total']+totales['servicio']['total']+totales['combustible']['total']+totales['importacion']['total']+totales['pequeño']['total'])
 
-            f = io.BytesIO()
-            libro.save(f)
+            libro.close()
             datos = base64.b64encode(f.getvalue())
-            self.write({'archivo':datos, 'name':'libro_de_compras.xls'})
+            self.write({'archivo':datos, 'name':'libro_de_compras.xlsx'})
 
         return {
             'view_type': 'form',

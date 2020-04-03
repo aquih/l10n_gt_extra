@@ -22,7 +22,6 @@ class AccountInvoice(models.Model):
             suma_monto += impuesto.amount
         return suma_monto
 
-    @api.multi
     def impuesto_global(self):
         impuestos = self.env['l10n_gt_extra.impuestos'].search([['active','=',True],['tipo','=','compra']])
         impuestos_valores = []
@@ -77,7 +76,6 @@ class AccountInvoice(models.Model):
 
             self.name = "{}-{} al {}-{}".format(self.serie_rango, self.inicial_rango, self.serie_rango, self.final_rango)
 
-    @api.multi
     def action_cancel(self):
         for rec in self:
             rec.numero_viejo = rec.number
@@ -93,13 +91,11 @@ class AccountPayment(models.Model):
     anulado = fields.Boolean('Anulado')
     fecha_anulacion = fields.Date('Fecha anulación')
 
-    @api.multi
     def cancel(self):
         for rec in self:
             rec.write({'numero_viejo': rec.name})
         return super(AccountPayment, self).cancel()
 
-    @api.multi
     def anular(self):
         for rec in self:
             for move in rec.move_line_ids.mapped('move_id'):
@@ -119,3 +115,4 @@ class AccountJournal(models.Model):
     direccion = fields.Many2one('res.partner', string='Dirección')
     codigo_establecimiento = fields.Integer(string='Código de establecimiento')
     facturas_por_rangos = fields.Boolean(string='Las facturas se ingresan por rango', help='Cada factura realmente es un rango de factura y el rango se ingresa en Referencia/Descripción')
+    usar_referencia = fields.Boolean(string='Usar referencia para libro de ventas', help='El número de la factua se ingresa en Referencia/Descripción')

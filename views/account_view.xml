@@ -86,6 +86,7 @@
                     <field name="direccion" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
                     <field name="codigo_establecimiento" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
                     <field name="facturas_por_rangos" attrs="{'invisible': [('type', 'not in', ['sale'])]}"/>
+                    <field name="usar_referencia" attrs="{'invisible': [('type', 'not in', ['sale'])]}"/>
                 </field>
             </field>
         </record>

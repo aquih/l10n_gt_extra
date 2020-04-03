@@ -21,7 +21,7 @@ class ReporteVentas(models.AbstractModel):
             ('journal_id','in',journal_ids),
             ('date_invoice','<=',datos['fecha_hasta']),
             ('date_invoice','>=',datos['fecha_desde']),
-        ], order='date_invoice, number')
+        ], order='date_invoice, move_name')
 
         lineas = []
         for f in facturas:
@@ -33,7 +33,8 @@ class ReporteVentas(models.AbstractModel):
                 for l in f.move_id.line_ids:
                     if l.account_id.id == f.account_id.id:
                         total += l.debit - l.credit
-                tipo_cambio = abs(total / f.amount_total)
+                if f.amount_total != 0:
+                    tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
             if f.type != 'out_invoice':
@@ -41,10 +42,10 @@ class ReporteVentas(models.AbstractModel):
             if f.nota_debito:
                 tipo = 'ND'
 
-            numero = f.number or f.numero_viejo or '-',
+            numero = f.number or '-'
 
             # Por si es un diario de rango de facturas
-            if f.journal_id.facturas_por_rangos:
+            if f.journal_id.facturas_por_rangos or f.journal_id.usar_referencia:
                 numero = f.name
 
             # Por si usa factura electrónica
@@ -53,6 +54,9 @@ class ReporteVentas(models.AbstractModel):
 
             # Por si usa tickets
             if 'requiere_resolucion' in f.journal_id.fields_get() and f.journal_id.requiere_resolucion:
+                numero = f.name
+
+            if f.journal_id.usar_referencia:
                 numero = f.name
 
             linea = {
@@ -76,6 +80,7 @@ class ReporteVentas(models.AbstractModel):
             }
 
             if f.state == 'cancel':
+                linea['numero'] = f.numero_viejo or f.name
                 lineas.append(linea)
                 continue
 
@@ -84,9 +89,9 @@ class ReporteVentas(models.AbstractModel):
                 if tipo == 'NC':
                     precio = precio * -1
 
-                tipo_linea = f.tipo_gasto
-                if f.tipo_gasto == 'mixto':
-                    if l.product_id.type == 'product':
+                tipo_linea = f.tipo_gasto or 'mixto'
+                if tipo_linea == 'mixto':
+                    if l.product_id.type != 'service':
                         tipo_linea = 'compra'
                     else:
                         tipo_linea = 'servicio'
@@ -104,7 +109,7 @@ class ReporteVentas(models.AbstractModel):
                             totales[tipo_linea]['iva'] += i['amount']
                             totales[tipo_linea]['total'] += i['amount']
                         elif i['amount'] > 0:
-                            linea[f.tipo_gasto+'_exento'] += i['amount']
+                            linea[tipo_linea+'_exento'] += i['amount']
                             totales[tipo_linea]['exento'] += i['amount']
                 else:
                     linea[tipo_linea+'_exento'] += r['base']
@@ -113,11 +118,13 @@ class ReporteVentas(models.AbstractModel):
                 linea['total'] += precio * l.quantity
 
             lineas.append(linea)
-
+            if f.journal_id.usar_referencia:
+                lineas = sorted(lineas, key = lambda i: (i['fecha'], i['numero']))
+                
         if datos['resumido']:
             lineas_resumidas = {}
             for l in lineas:
-                llave = l['tipo']+l['fecha']
+                llave = l['tipo']+str(l['fecha'])
                 if llave not in lineas_resumidas:
                     lineas_resumidas[llave] = dict(l)
                     lineas_resumidas[llave]['estado'] = 'open'
@@ -140,10 +147,11 @@ class ReporteVentas(models.AbstractModel):
 
             for l in lineas_resumidas.values():
                 facturas = sorted(l['facturas'])
-                l['numero'] = l['facturas'][0] + ' al ' + l['facturas'][-1]
+                l['numero'] = str(l['facturas'][0]) + ' al ' + str(l['facturas'][-1])
 
-            lineas = sorted(lineas_resumidas.values(), key=lambda l: l['tipo']+l['fecha'])
+            lineas = sorted(lineas_resumidas.values(), key=lambda l: l['tipo']+str(l['fecha']))
 
+        logging.warn(lineas)
         return { 'lineas': lineas, 'totales': totales }
 
     @api.model

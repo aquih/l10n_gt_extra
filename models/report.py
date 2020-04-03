@@ -14,5 +14,4 @@ class Report(models.Model):
             command_args.extend(['--page-offset', str(int(specific_paperformat_args['data-report-page-offset'])-1)])
             command_args.extend(['--header-left', 'Folio: [page]'])
 
-        logging.warn(command_args)
         return command_args
