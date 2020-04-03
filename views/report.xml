@@ -55,6 +55,9 @@
                             <field name="fecha_hasta"/>
                         </group>
                     </group>
+                    <group>
+                        <field name="journal_ids"/>
+                    </group>
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
                         o

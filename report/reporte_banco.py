@@ -1,13 +1,16 @@
 # -*- encoding: utf-8 -*-
 
 from odoo import api, models
+import logging
 
 class ReporteBanco(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_banco'
 
     def lineas(self, datos):
+        journal_ids = [x for x in datos['journal_ids']]
+        logging.getLogger('journal_ids.......').warn(journal_ids)
         lineas = []
-        for linea in self.env['account.move.line'].search([('account_id','=',datos['cuenta_bancaria_id'][0]), ('date','>=',datos['fecha_desde']), ('date','<=',datos['fecha_hasta'])], order='date'):
+        for linea in self.env['account.move.line'].search([('account_id','=',datos['cuenta_bancaria_id'][0]), ('date','>=',datos['fecha_desde']), ('date','<=',datos['fecha_hasta']), ('journal_id','not in',journal_ids)], order='date'):
             detalle = {
                 'fecha': linea.date,
                 'documento': linea.move_id.name if linea.move_id else '',
