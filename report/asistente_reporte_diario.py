@@ -3,9 +3,10 @@
 from openerp import models, fields, api, _
 from openerp.exceptions import UserError, ValidationError
 import time
-import xlwt
-import base64
+from datetime import datetime
+import xlsxwriter
 import io
+import base64
 import logging
 
 class AsistenteReporteDiario(models.TransientModel):
@@ -43,12 +44,14 @@ class AsistenteReporteDiario(models.TransientModel):
             dict['cuentas_id'] =[x.id for x in w.cuentas_id]
             res = self.env['report.l10n_gt_extra.reporte_diario'].lineas(dict)
 
-            libro = xlwt.Workbook()
-            hoja = libro.add_sheet('reporte')
+            f = io.BytesIO()
+            libro = xlsxwriter.Workbook(f)
+            hoja = libro.add_worksheet('reporte')
+            formato_fecha = libro.add_format({'num_format': 'dd/mm/yy'})
 
-            xlwt.add_palette_colour("custom_colour", 0x21)
-            libro.set_colour_RGB(0x21, 200, 200, 200)
-            estilo = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
+            fecha_desde = datetime.strptime(w.fecha_desde,'%Y-%m-%d')
+            fecha_hasta = datetime.strptime(w.fecha_desde,'%Y-%m-%d')
+
             hoja.write(0, 0, 'LIBRO DIARIO')
             hoja.write(2, 0, 'NUMERO DE IDENTIFICACION TRIBUTARIA')
             hoja.write(2, 1, w.cuentas_id[0].company_id.partner_id.vat)
@@ -57,7 +60,9 @@ class AsistenteReporteDiario(models.TransientModel):
             hoja.write(2, 3, 'DOMICILIO FISCAL')
             hoja.write(2, 4, w.cuentas_id[0].company_id.partner_id.street)
             hoja.write(3, 3, 'REGISTRO DEL')
-            hoja.write(3, 4, w.fecha_desde + ' al ' + w.fecha_hasta)
+            hoja.write_datetime(3, 4, fecha_desde,formato_fecha)
+            hoja.write(3, 5, 'al')
+            hoja.write_datetime(3, 6, fecha_hasta,formato_fecha)
 
             y = 5
             if w['agrupado_por_dia']:
@@ -71,7 +76,8 @@ class AsistenteReporteDiario(models.TransientModel):
 
                 for fechas in lineas:
                     y += 1
-                    hoja.write(y, 0, fechas['fecha'])
+                    fecha = datetime.strptime(fechas['fecha'],'%Y-%m-%d')
+                    hoja.write_datetime(y, 0, fecha,formato_fecha)
                     for cuentas in fechas['cuentas']:
                         y += 1
                         hoja.write(y, 1, cuentas['codigo'])
@@ -104,12 +110,7 @@ class AsistenteReporteDiario(models.TransientModel):
                 hoja.write(y, 2, totales['debe'])
                 hoja.write(y, 3, totales['haber'])
 
-            xlwt.add_palette_colour("custom_colour", 0x21)
-            libro.set_colour_RGB(0x21, 200, 200, 200)
-            estilo = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
-
-            f = io.BytesIO()
-            libro.save(f)
+            libro.close()
             datos = base64.b64encode(f.getvalue())
             self.write({'archivo':datos, 'name':'libro_diario.xls'})
 

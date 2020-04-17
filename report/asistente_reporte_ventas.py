@@ -3,7 +3,9 @@
 from openerp import models, fields, api, _
 from openerp.exceptions import UserError, ValidationError
 import time
-import xlwt
+from datetime import datetime
+import xlsxwriter
+import io
 import base64
 import StringIO
 
@@ -36,16 +38,19 @@ class AsistenteReporteVentas(models.TransientModel):
             dict['impuesto_id'] = [w.impuesto_id.id, w.impuesto_id.name]
             dict['diarios_id'] =[x.id for x in w.diarios_id]
             dict['resumido'] = w['resumido']
-            
+
             res = self.env['report.l10n_gt_extra.reporte_ventas'].lineas(dict)
             lineas = res['lineas']
             totales = res['totales']
-            libro = xlwt.Workbook()
-            hoja = libro.add_sheet('reporte')
 
-            xlwt.add_palette_colour("custom_colour", 0x21)
-            libro.set_colour_RGB(0x21, 200, 200, 200)
-            estilo = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
+            f = io.BytesIO()
+            libro = xlsxwriter.Workbook(f)
+            hoja = libro.add_worksheet('reporte')
+            formato_fecha = libro.add_format({'num_format': 'dd/mm/yy'})
+
+            fecha_desde = datetime.strptime(w.fecha_desde,'%Y-%m-%d')
+            fecha_hasta = datetime.strptime(w.fecha_desde,'%Y-%m-%d')
+
             hoja.write(0, 0, 'LIBRO DE VENTAS Y SERVICIOS')
             hoja.write(2, 0, 'NUMERO DE IDENTIFICACION TRIBUTARIA')
             hoja.write(2, 1, w.diarios_id[0].company_id.partner_id.vat)
@@ -54,7 +59,9 @@ class AsistenteReporteVentas(models.TransientModel):
             hoja.write(2, 3, 'DOMICILIO FISCAL')
             hoja.write(2, 4, w.diarios_id[0].company_id.partner_id.street)
             hoja.write(3, 3, 'REGISTRO DEL')
-            hoja.write(3, 4, w.fecha_desde + ' al ' + w.fecha_hasta)
+            hoja.write_datetime(3, 4, fecha_desde,formato_fecha)
+            hoja.write(3, 5, 'al')
+            hoja.write_datetime(3, 6, fecha_hasta,formato_fecha)
 
             y = 5
             hoja.write(y, 0, 'Tipo')
@@ -72,8 +79,9 @@ class AsistenteReporteVentas(models.TransientModel):
 
             for linea in lineas:
                 y += 1
+                fecha = datetime.strptime(linea['fecha'],'%Y-%m-%d')
                 hoja.write(y, 0, linea['tipo'])
-                hoja.write(y, 1, linea['fecha'])
+                hoja.write_datetime(y, 1, fecha,formato_fecha)
                 hoja.write(y, 2, linea['numero'])
                 hoja.write(y, 3, linea['cliente'])
                 hoja.write(y, 4, linea['nit'])
@@ -101,7 +109,7 @@ class AsistenteReporteVentas(models.TransientModel):
             y += 1
             hoja.write(y, 0, 'Total credito fiscal')
             hoja.write(y, 1, totales['compra']['iva'] + totales['servicio']['iva'] + totales['importacion']['iva'])
-            
+
             y += 2
             hoja.write(y, 3, 'EXENTO')
             hoja.write(y, 4, 'NETO')
@@ -138,8 +146,7 @@ class AsistenteReporteVentas(models.TransientModel):
             hoja.write(y, 5, totales['compra']['iva']+totales['servicio']['iva']+totales['combustible']['iva']+totales['importacion']['iva'])
             hoja.write(y, 6, totales['compra']['total']+totales['servicio']['total']+totales['combustible']['total']+totales['importacion']['total'])
 
-            f = StringIO.StringIO()
-            libro.save(f)
+            libro.close()
             datos = base64.b64encode(f.getvalue())
             self.write({'archivo':datos, 'name':'libro_de_ventas.xls'})
 
@@ -152,4 +159,3 @@ class AsistenteReporteVentas(models.TransientModel):
             'type': 'ir.actions.act_window',
             'target': 'new',
         }
-
