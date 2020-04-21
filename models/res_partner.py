@@ -23,6 +23,10 @@ class ResPartner(models.Model):
             if p.no_validar_nit:
                 return True
 
+            # No validar NIT si el partner fue creado desde un sitio web, para evitar errores
+            if 'website_id' in p.env.context:
+                return True
+
             nit = p.vat.replace('-','')
             verificador = nit[-1]
             if verificador == 'K':
@@ -43,6 +47,10 @@ class ResPartner(models.Model):
     @api.constrains('vat')
     def _validar_duplicado(self):
         for p in self:
+            # No validar NIT si el partner fue creado desde un sitio web, para evitar errores
+            if 'website_id' in p.env.context:
+                return True
+
             if not p.parent_id and p.vat and p.vat != 'CF' and p.vat != 'C/F' and not p.no_validar_nit:
                 repetidos = p.search([('vat','=',p.vat), ('id','!=',p.id), ('parent_id','=',False)])
                 if len(repetidos) > 0:
