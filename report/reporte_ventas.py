@@ -117,8 +117,8 @@ class ReporteVentas(models.AbstractModel):
                 linea['total'] += precio * l.quantity
 
             lineas.append(linea)
-            
-        lineas = sorted(lineas, key = lambda i: (i['fecha'], i['numero']))
+
+        lineas = sorted(lineas, key = lambda i: str(i['fecha']) + str(i['numero']))
 
         if datos['resumido']:
             lineas_resumidas = {}
