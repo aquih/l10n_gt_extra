@@ -119,8 +119,8 @@ class ReporteVentas(models.AbstractModel):
 
             lineas.append(linea)
             if f.journal_id.usar_referencia:
-                lineas = sorted(lineas, key = lambda i: (i['fecha'], i['numero']))
-                
+                lineas = sorted(lineas, key = lambda i:  str(i['fecha']) + str(i['numero']))
+
         if datos['resumido']:
             lineas_resumidas = {}
             for l in lineas:
