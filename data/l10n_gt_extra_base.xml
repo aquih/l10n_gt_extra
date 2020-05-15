@@ -90,9 +90,9 @@ else:
             <field name="python_compute">
 if base_amount &gt; 30000:
     result = 30000 * -0.05
-    result += (price_unit/1.12 - 30000) * -0.07
+    result += (base_amount - 30000) * -0.07
 else:
-    result = price_unit/1.12 * -0.05
+    result = base_amount * -0.05
             </field>
         </record>
 
@@ -105,7 +105,7 @@ else:
             <field name="type_tax_use">purchase</field>
             <field name="price_include" eval="True"/>
             <field name="python_compute">
-result = price_unit / 1.12 * 0.005
+result = base_amount * 0.005
             </field>
         </record>
 
@@ -177,9 +177,9 @@ else:
             <field name="python_compute">
 if base_amount &gt; 30000:
     result = 30000 * -0.05
-    result += (price_unit/1.12 - 30000) * -0.07
+    result += (base_amount - 30000) * -0.07
 else:
-    result = price_unit/1.12 * -0.05
+    result = base_amount * -0.05
             </field>
         </record>
 
