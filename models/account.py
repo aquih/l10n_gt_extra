@@ -53,27 +53,28 @@ class AccountMove(models.Model):
 
     @api.constrains('ref')
     def _validar_factura_proveedor(self):
-        if self.ref:
-            facturas = self.search([('ref','=',self.ref), ('partner_id','=',self.partner_id.id), ('type','=','in_invoice')])
+        for factura in self:
+            facturas = self.search([('ref','=',factura.ref), ('partner_id','=',factura.partner_id.id), ('type','=','in_invoice')])
             if len(facturas) > 1:
                 raise ValidationError("Ya existe una factura con ese mismo numero.")
 
     @api.constrains('inicial_rango', 'final_rango')
     def _validar_rango(self):
-        if self.diario_facturas_por_rangos:
-            if int(self.final_rango) < int(self.inicial_rango):
-                raise ValidationError('El número inicial del rango es mayor que el final.')
-            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','<=',self.inicial_rango), ('final_rango','>=',self.inicial_rango)])
-            if len(cruzados) > 1:
-                raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
-            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','<=',self.final_rango), ('final_rango','>=',self.final_rango)])
-            if len(cruzados) > 1:
-                raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
-            cruzados = self.search([('serie_rango','=',self.serie_rango), ('inicial_rango','>=',self.inicial_rango), ('inicial_rango','<=',self.final_rango)])
-            if len(cruzados) > 1:
-                raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
+        for factura in self:
+            if factura.diario_facturas_por_rangos:
+                if int(factura.final_rango) < int(factura.inicial_rango):
+                    raise ValidationError('El número inicial del rango es mayor que el final.')
+                cruzados = factura.search([('serie_rango','=',factura.serie_rango), ('inicial_rango','<=',factura.inicial_rango), ('final_rango','>=',factura.inicial_rango)])
+                if len(cruzados) > 1:
+                    raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
+                cruzados = self.search([('serie_rango','=',factura.serie_rango), ('inicial_rango','<=',factura.final_rango), ('final_rango','>=',factura.final_rango)])
+                if len(cruzados) > 1:
+                    raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
+                cruzados = self.search([('serie_rango','=',factura.serie_rango), ('inicial_rango','>=',factura.inicial_rango), ('inicial_rango','<=',factura.final_rango)])
+                if len(cruzados) > 1:
+                    raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
 
-            self.name = "{}-{} al {}-{}".format(self.serie_rango, self.inicial_rango, self.serie_rango, self.final_rango)
+                self.name = "{}-{} al {}-{}".format(factura.serie_rango, factura.inicial_rango, factura.serie_rango, factura.final_rango)
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
