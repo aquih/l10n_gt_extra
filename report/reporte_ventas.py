@@ -33,7 +33,7 @@ class ReporteVentas(models.AbstractModel):
             if f.currency_id.id != f.company_id.currency_id.id:
                 total = 0
                 for l in f.line_ids:
-                    if l.account_id.id == f.account_id.id:
+                    if l.account_id.reconcile:
                         total += l.debit - l.credit
                 if f.amount_total != 0:
                     tipo_cambio = abs(total / f.amount_total)
