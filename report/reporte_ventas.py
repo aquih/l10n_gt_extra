@@ -169,6 +169,7 @@ class ReporteVentas(models.AbstractModel):
             'docs': docs,
             'lineas': self.lineas,
             'direccion_diario': diario.direccion and diario.direccion.street,
+            'current_company_id': self.env.company,
         }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

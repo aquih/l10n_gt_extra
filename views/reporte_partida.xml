@@ -7,7 +7,7 @@
                     <t t-foreach="docs" t-as="o">
 
                         <div>
-                            <h2><span t-esc="res_company.name"/>: Partida</h2>
+                            <h2><span t-esc="current_company_id.name"/>: Partida</h2>
 
                             <div class="row mt32">
                                 <div class="col-xs-4">
