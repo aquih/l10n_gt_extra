@@ -14,11 +14,11 @@
 
                     <div class="row mt32">
                         <div class="col-xs-4">
-                            <strong>Número de identificación tributaria:</strong> <span t-esc="user.company_id.vat"/><br/>
-                            <strong>Nombre comercial:</strong> <span t-esc="user.company_id.partner_id.name"/><br/>
+                            <strong>Número de identificación tributaria:</strong> <span t-esc="self.env.company.vat"/><br/>
+                            <strong>Nombre comercial:</strong> <span t-esc="self.env.company.partner_id.name"/><br/>
                         </div>
                         <div class="col-xs-4">
-                            <strong>Domicilio fiscal:</strong> <span t-esc="user.company_id.partner_id.street"/><br/>
+                            <strong>Domicilio fiscal:</strong> <span t-esc="self.env.company.partner_id.street"/><br/>
                             <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-esc-options='{"widget": "date"}'/> al: <span t-esc="data['fecha_hasta']" t-esc-options='{"widget": "date"}'/><br/>
                         </div>
                     </div>
@@ -56,8 +56,8 @@
                                             <td></td>
                                             <td><span t-esc="ld['codigo']"/></td>
                                             <td><span t-esc="ld['cuenta']"/></td>
-                                            <td class="text-right"><span t-esc="ld['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
-                                            <td class="text-right"><span t-esc="ld['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                            <td class="text-right"><span t-esc="ld['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': self.env.company.currency_id}"/></td>
+                                            <td class="text-right"><span t-esc="ld['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': self.env.company.currency_id}"/></td>
                                         </tr>
                                     </t>
                                     <tr>
@@ -69,10 +69,10 @@
                                             <b>Totales</b>
                                         </td>
                                         <td class="text-right">
-                                            <b><span t-esc="l['total_debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                                            <b><span t-esc="l['total_debe']" t-esc-options="{'widget': 'monetary', 'display_currency': self.env.company.currency_id}"/></b>
                                         </td>
                                         <td class="text-right">
-                                            <b><span t-esc="l['total_haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                                            <b><span t-esc="l['total_haber']" t-esc-options="{'widget': 'monetary', 'display_currency': self.env.company.currency_id}"/></b>
                                         </td>
                                     </tr>
                                 </t>
@@ -96,10 +96,10 @@
                                         <span t-esc="l['cuenta']"/>
                                     </td>
                                     <td class="text-right">
-                                        <span t-esc="l['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                        <span t-esc="l['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': self.env.company.currency_id}"/>
                                     </td>
                                     <td class="text-right">
-                                        <span t-esc="l['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                        <span t-esc="l['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': self.env.company.currency_id}"/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -109,10 +109,10 @@
                                     <td class="text-right">
                                     </td>
                                     <td class="text-right">
-                                        <b><span t-esc="result['totales']['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                                        <b><span t-esc="result['totales']['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': self.env.company.currency_id}"/></b>
                                     </td>
                                     <td class="text-right">
-                                        <b><span t-esc="result['totales']['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b>
+                                        <b><span t-esc="result['totales']['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': self.env.company.currency_id}"/></b>
                                     </td>
                                 </tr>
                             </tbody>
