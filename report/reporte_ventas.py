@@ -21,7 +21,7 @@ class ReporteVentas(models.AbstractModel):
             ('journal_id','in',journal_ids),
             ('date_invoice','<=',datos['fecha_hasta']),
             ('date_invoice','>=',datos['fecha_desde']),
-        ], order='date_invoice, number')
+        ], order='date_invoice, move_name')
         logging.warn(facturas)
 
         lineas = []
