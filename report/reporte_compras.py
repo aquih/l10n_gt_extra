@@ -92,8 +92,7 @@ class ReporteCompras(models.AbstractModel):
                     linea[tipo_linea+'_exento'] += r['base']
                     totales[tipo_linea]['exento'] += r['base']
 
-                # linea['total'] += r['base']
-                linea['total'] += l.price_unit * l.quantity * ( 100 - l.discount ) / 100
+                linea['total'] += precio * l.quantity
 
             if f.partner_id.pequenio_contribuyente:
                 totales['pequenio_contribuyente'] += linea['base']

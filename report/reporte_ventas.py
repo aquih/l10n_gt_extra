@@ -112,7 +112,6 @@ class ReporteVentas(models.AbstractModel):
                     linea[tipo_linea+'_exento'] += r['base']
                     totales[tipo_linea]['exento'] += r['base']
 
-                # linea['total'] += r['base']
                 linea['total'] += precio * l.quantity
 
             lineas.append(linea)
