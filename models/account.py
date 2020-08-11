@@ -51,12 +51,12 @@ class AccountMove(models.Model):
             account_invoice_tax.create({'invoice_id': self.id,'tax_id':impuesto['impuesto_id'],'name': impuesto['nombre'],'account_id': impuesto['account_id'],'amount':impuesto['total'] })
         return True
 
-    @api.constrains('ref')
-    def _validar_factura_proveedor(self):
-        for factura in self:
-            facturas = self.search([('ref','=',factura.ref), ('partner_id','=',factura.partner_id.id), ('type','=','in_invoice')])
-            if len(facturas) > 1:
-                raise ValidationError("Ya existe una factura con ese mismo numero.")
+    #@api.constrains('ref')
+    #def _validar_factura_proveedor(self):
+    #    for factura in self:
+    #        facturas = self.search([('ref','=',factura.ref), ('partner_id','=',factura.partner_id.id), ('type','=','in_invoice')])
+    #        if len(facturas) > 1:
+    #            raise ValidationError("Ya existe una factura con ese mismo numero.")
 
     @api.constrains('inicial_rango', 'final_rango')
     def _validar_rango(self):
