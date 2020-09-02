@@ -6,6 +6,9 @@ class ReporteBanco(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_banco'
 
     def lineas(self, datos):
+
+        cuenta = self.env['account.account'].browse(datos['cuenta_bancaria_id'][0])
+
         lineas = []
         for linea in self.env['account.move.line'].search([('account_id','=',datos['cuenta_bancaria_id'][0]), ('date','>=',datos['fecha_desde']), ('date','<=',datos['fecha_hasta'])], order='date'):
             detalle = {
@@ -27,7 +30,8 @@ class ReporteBanco(models.AbstractModel):
                 else:
                     detalle['credito'] = -1 * linea.amount_currency
 
-            lineas.append(detalle)
+            if not cuenta.currency_id or (linea.currency_id.id == cuenta.currency_id.id):
+                lineas.append(detalle)
 
         balance_inicial = self.balance_inicial(datos)
         if balance_inicial['balance_moneda']:
