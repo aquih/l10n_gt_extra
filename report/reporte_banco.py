@@ -8,8 +8,8 @@ class ReporteBanco(models.AbstractModel):
 
     def lineas(self, datos):
         journal_ids = [x for x in datos['journal_ids']]
-        logging.getLogger('journal_ids.......').warn(journal_ids)
         lineas = []
+        cuenta = self.env['account.account'].browse(datos['cuenta_bancaria_id'][0])
         for linea in self.env['account.move.line'].search([('account_id','=',datos['cuenta_bancaria_id'][0]), ('date','>=',datos['fecha_desde']), ('date','<=',datos['fecha_hasta']), ('journal_id','not in',journal_ids)], order='date'):
             detalle = {
                 'fecha': linea.date,
@@ -30,7 +30,16 @@ class ReporteBanco(models.AbstractModel):
                 else:
                     detalle['credito'] = -1 * linea.amount_currency
 
-            lineas.append(detalle)
+            #Si la cuenta no tiene moneda o la moneda de la cuenta es la misma de la compañía
+            if not cuenta.currency_id or (cuenta.currency_id.id == linea.company_id.currency_id.id):
+                #Se agregan lineas que no tiene moneda
+                if not linea.currency_id:
+                    lineas.append(detalle)
+            #Sino, Si la cuenta si tienen moneda y la moneda de la cuenta es diferente que la de la compañía
+            elif cuenta.currency_id and (cuenta.currency_id.id != linea.company_id.currency_id.id):
+                #Se agregan lineas que tienen la moneda de la cuenta
+                if linea.currency_id.id == cuenta.currency_id.id:
+                    lineas.append(detalle)
 
         balance_inicial = self.balance_inicial(datos)
         if balance_inicial['balance_moneda']:
