@@ -30,8 +30,16 @@ class ReporteBanco(models.AbstractModel):
                 else:
                     detalle['credito'] = -1 * linea.amount_currency
 
-            if not cuenta.currency_id or (linea.currency_id.id == cuenta.currency_id.id):
-                lineas.append(detalle)
+            #Si la cuenta no tiene moneda o la moneda de la cuenta es la misma de la compañía
+            if not cuenta.currency_id or (cuenta.currency_id.id == linea.company_id.currency_id.id):
+                #Se agregan lineas que no tiene moneda
+                if not linea.currency_id:
+                    lineas.append(detalle)
+            #Sino, Si la cuenta si tienen moneda y la moneda de la cuenta es diferente que la de la compañía
+            elif cuenta.currency_id and (cuenta.currency_id.id != linea.company_id.currency_id.id):
+                #Se agregan lineas que tienen la moneda de la cuenta
+                if linea.currency_id.id == cuenta.currency_id.id:
+                    lineas.append(detalle)
 
         balance_inicial = self.balance_inicial(datos)
         if balance_inicial['balance_moneda']:
