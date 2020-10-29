@@ -88,11 +88,11 @@ class ReporteVentas(models.AbstractModel):
 
                 tipo_linea = f.tipo_gasto
                 if f.tipo_gasto == 'mixto':
-                    if l.product_id.type == 'product':
+                    if l.product_id.type != 'service':
                         tipo_linea = 'compra'
                     else:
                         tipo_linea = 'servicio'
-
+                        
                 r = l.invoice_line_tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
                 linea['base'] += r['base']
@@ -106,7 +106,7 @@ class ReporteVentas(models.AbstractModel):
                             totales[tipo_linea]['iva'] += i['amount']
                             totales[tipo_linea]['total'] += i['amount']
                         elif i['amount'] > 0:
-                            linea[f.tipo_gasto+'_exento'] += i['amount']
+                            linea[tipo_linea+'_exento'] += i['amount']
                             totales[tipo_linea]['exento'] += i['amount']
                 else:
                     linea[tipo_linea+'_exento'] += r['base']

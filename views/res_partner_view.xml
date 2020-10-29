@@ -11,6 +11,7 @@
                 <field name="website" position="after">
                     <field name="vat" string="NIT"></field>
                     <field name="pequenio_contribuyente"></field>
+                    <field name="cui"></field>
                 </field>
             </field>
         </record>

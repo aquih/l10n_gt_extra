@@ -52,3 +52,4 @@ class ResPartner(models.Model):
         return res1+res2
 
     pequenio_contribuyente = fields.Boolean(string="Pequeño Contribuyente")
+    cui = fields.Char(string="CUI")
