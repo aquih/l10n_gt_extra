@@ -8,12 +8,12 @@ import logging
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    tipo_gasto = fields.Selection([('mixto', 'Mixto'), ('compra', 'Compra/Bien'), ('servicio', 'Servicio'), ('importacion', 'Importación/Exportación'), ('combustible', 'Combustible')], string="Tipo de Gasto", default="mixto")
+    tipo_gasto = fields.Selection([("mixto", "Mixto"), ("compra", "Compra/Bien"), ("servicio", "Servicio"), ("importacion", "Importación/Exportación"), ("combustible", "Combustible")], string="Tipo de Gasto", default="mixto")
     serie_rango = fields.Char(string="Serie Rango")
     inicial_rango = fields.Integer(string="Inicial Rango")
     final_rango = fields.Integer(string="Final Rango")
-    diario_facturas_por_rangos = fields.Boolean(string='Las facturas se ingresan por rango', help='Cada factura realmente es un rango de factura y el rango se ingresa en Referencia/Descripción', related="journal_id.facturas_por_rangos")
-    nota_debito = fields.Boolean(string='Nota de debito')
+    diario_facturas_por_rangos = fields.Boolean(string="Las facturas se ingresan por rango", help="Cada factura realmente es un rango de factura y el rango se ingresa en Referencia/Descripción", related="journal_id.facturas_por_rangos")
+    nota_debito = fields.Boolean(string="Nota de debito")
 
     def suma_impuesto(self,impuestos_ids):
         suma_monto = 0

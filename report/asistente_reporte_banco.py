@@ -14,8 +14,8 @@ class AsistenteReporteBanco(models.TransientModel):
             return None
 
     cuenta_bancaria_id = fields.Many2one("account.account", string="Cuenta", required=True, default=_default_cuenta)
-    fecha_desde = fields.Date(string="Fecha Inicial", required=True, default=lambda self: time.strftime('%Y-%m-01'))
-    fecha_hasta = fields.Date(string="Fecha Final", required=True, default=lambda self: time.strftime('%Y-%m-%d'))
+    fecha_desde = fields.Date(string="Fecha Inicial", required=True, default=lambda self: time.strftime("%Y-%m-01"))
+    fecha_hasta = fields.Date(string="Fecha Final", required=True, default=lambda self: time.strftime("%Y-%m-%d"))
 
     def print_report(self):
         data = {
