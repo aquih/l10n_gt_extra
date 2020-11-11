@@ -39,6 +39,8 @@
                 </script>
             </script>
         </template>
+        
+        <menuitem id="menu_informes" name="Informes de Guatemala" parent="account.menu_finance_reports"/>
 
         <record id="asistente_reporte_banco" model="ir.ui.view">
             <field name="name">l10n_gt_extra.asistente_reporte_banco</field>
@@ -57,7 +59,6 @@
                     </group>
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
-                        o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
                 </form>
@@ -65,7 +66,7 @@
         </record>
 
         <act_window id="window_reporte_banco" name="Libro de banco" res_model="l10n_gt_extra.asistente_reporte_banco" binding_model="account.account" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_banco" id="menu_asistente_reporte_banco" parent="account.menu_finance_reports"/>
+        <menuitem action="window_reporte_banco" id="menu_asistente_reporte_banco" parent="menu_informes"/>
         <report id="action_reporte_banco" model="l10n_gt_extra.asistente_reporte_banco" string="Libro de banco" report_type="qweb-pdf" name="l10n_gt_extra.reporte_banco" file="l10n_gt_extra.reporte_banco"/>
 
         <report id="action_reporte_partida" model="account.move" string="Partida" report_type="qweb-pdf" name="l10n_gt_extra.reporte_partida" file="l10n_gt_extra.reporte_partida"/>
@@ -97,7 +98,6 @@
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
                         <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
-                        o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
                 </form>
@@ -105,7 +105,7 @@
         </record>
 
         <act_window id="window_reporte_compras" name="Libro de compras" res_model="l10n_gt_extra.asistente_reporte_compras" binding_model="account.journal" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_compras" id="menu_asistente_reporte_compras" parent="account.menu_finance_reports"/>
+        <menuitem action="window_reporte_compras" id="menu_asistente_reporte_compras" parent="menu_informes"/>
         <report id="action_reporte_compras" model="l10n_gt_extra.asistente_reporte_compras" string="Libro de compras" report_type="qweb-pdf" name="l10n_gt_extra.reporte_compras" file="l10n_gt_extra.reporte_compras"/>
 
         <record id="asistente_ventas_reporte" model="ir.ui.view">
@@ -136,7 +136,6 @@
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
                         <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
-                        o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
                 </form>
@@ -144,7 +143,7 @@
         </record>
 
         <act_window id="window_reporte_ventas" name="Libro de ventas" res_model="l10n_gt_extra.asistente_reporte_ventas" binding_model="account.journal" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_ventas" id="menu_asistente_reporte_ventas" parent="account.menu_finance_reports"/>
+        <menuitem action="window_reporte_ventas" id="menu_asistente_reporte_ventas" parent="menu_informes"/>
         <report id="action_reporte_ventas" model="l10n_gt_extra.asistente_reporte_ventas" string="Libro de ventas" report_type="qweb-pdf" name="l10n_gt_extra.reporte_ventas" file="l10n_gt_extra.reporte_ventas"/>
 
         <record id="asistente_reporte_diario" model="ir.ui.view">
@@ -174,7 +173,6 @@
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
                         <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
-                        o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
                 </form>
@@ -182,7 +180,7 @@
         </record>
 
         <act_window id="window_reporte_diario" name="Libro diario" res_model="l10n_gt_extra.asistente_reporte_diario" binding_model="account.account" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_diario" id="menu_asistente_reporte_diario" parent="account.menu_finance_reports"/>
+        <menuitem action="window_reporte_diario" id="menu_asistente_reporte_diario" parent="menu_informes"/>
         <report id="action_reporte_diario" model="l10n_gt_extra.asistente_reporte_diario" string="Libro Diario" report_type="qweb-pdf" name="l10n_gt_extra.reporte_diario" file="l10n_gt_extra.reporte_diario"/>
 
         <record id="asistente_reporte_mayor" model="ir.ui.view">
@@ -212,7 +210,6 @@
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
                         <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
-                        o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
                 </form>
@@ -220,7 +217,7 @@
         </record>
 
         <act_window id="window_reporte_mayor" name="Libro mayor" res_model="l10n_gt_extra.asistente_reporte_mayor" binding_model="account.account" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_mayor" id="menu_asistente_reporte_mayor" parent="account.menu_finance_reports"/>
+        <menuitem action="window_reporte_mayor" id="menu_asistente_reporte_mayor" parent="menu_informes"/>
         <report id="action_reporte_mayor" model="l10n_gt_extra.asistente_reporte_mayor" string="Libro Mayor" report_type="qweb-pdf" name="l10n_gt_extra.reporte_mayor" file="l10n_gt_extra.reporte_mayor"/>
 
         <record id="asistente_reporte_inventario" model="ir.ui.view">
@@ -243,7 +240,6 @@
                     </group>
                     <footer>
                         <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
-                        o
                         <button special="cancel" string="Cancel" class="oe_link"/>
                     </footer>
                 </form>
@@ -251,7 +247,7 @@
         </record>
 
         <act_window id="window_reporte_inventario" name="Libro inventario" res_model="l10n_gt_extra.asistente_reporte_inventario" binding_model="account.account" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_inventario" id="menu_asistente_reporte_inventario" parent="account.menu_finance_reports"/>
+        <menuitem action="window_reporte_inventario" id="menu_asistente_reporte_inventario" parent="menu_informes"/>
         <report id="action_reporte_inventario" model="l10n_gt_extra.asistente_reporte_inventario" string="Libro Inventario" report_type="qweb-pdf" name="l10n_gt_extra.reporte_inventario" file="l10n_gt_extra.reporte_inventario"/>
 
     </data>

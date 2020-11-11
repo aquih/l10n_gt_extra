@@ -44,6 +44,7 @@ class AsistenteReporteVentas(models.TransientModel):
             f = io.BytesIO()
             libro = xlsxwriter.Workbook(f)
             hoja = libro.add_worksheet('Reporte')
+            formato_fecha = libro.add_format({'num_format': 'dd/mm/yy'})
 
             hoja.write(0, 0, 'LIBRO DE VENTAS Y SERVICIOS')
             hoja.write(2, 0, 'NUMERO DE IDENTIFICACION TRIBUTARIA')
@@ -53,7 +54,9 @@ class AsistenteReporteVentas(models.TransientModel):
             hoja.write(2, 3, 'DOMICILIO FISCAL')
             hoja.write(2, 4, w.diarios_id[0].company_id.partner_id.street)
             hoja.write(3, 3, 'REGISTRO DEL')
-            hoja.write(3, 4, str(w.fecha_desde) + ' al ' + str(w.fecha_hasta))
+            hoja.write(3, 4, w.fecha_desde, formato_fecha)
+            hoja.write(3, 5, 'AL')
+            hoja.write(3, 6, w.fecha_hasta, formato_fecha)
 
             y = 5
             hoja.write(y, 0, 'Tipo')
