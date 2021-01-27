@@ -110,7 +110,6 @@ class ReporteInventario(models.AbstractModel):
         return {'lineas': lineas,'totales': totales }
 
     def fecha_desde(self,fecha_hasta):
-        fecha_desde = ''
         anio = str(datetime.datetime.strptime(str(fecha_hasta), '%Y-%m-%d').date().strftime('%Y'))
         fecha_desde =  str(anio + '-' + '01' + '-' + '01')
         return fecha_desde
