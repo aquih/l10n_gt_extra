@@ -36,9 +36,8 @@ class ReporteInventario(models.AbstractModel):
         totales['haber'] = 0
         totales['saldo_inicial'] = 0
         totales['saldo_final'] = 0
-        fecha_desde = ''
+        fecha_desde = self.fecha_desde(datos['fecha_hasta'])
 
-        fecha_desde =  str(datetime.date.today().strftime("%Y") + '-' + '01' + '-' + '01')
         account_ids = [x for x in datos['cuentas_id']]
         movimientos = self.env['account.move.line'].search([
             ('account_id','in',account_ids),
@@ -110,9 +109,9 @@ class ReporteInventario(models.AbstractModel):
 
         return {'lineas': lineas,'totales': totales }
 
-    def fecha_desde(self):
-        fecha_desde = ''
-        fecha_desde =  str(datetime.date.today().strftime("%Y") + '-' + '01' + '-' + '01')
+    def fecha_desde(self,fecha_hasta):
+        anio = str(datetime.datetime.strptime(str(fecha_hasta), '%Y-%m-%d').date().strftime('%Y'))
+        fecha_desde =  str(anio + '-' + '01' + '-' + '01')
         return fecha_desde
 
     @api.model
