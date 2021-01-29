@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
+        
         <record id="l10n_gt_view_move_form" model="ir.ui.view">
             <field name="name">l10n_gt_extra.account.move.form</field>
             <field name="model">account.move</field>
@@ -20,7 +20,7 @@
                 </field>
             </field>
         </record>
-
+        
         <record id="l10n_gt_view_account_payment_form" model="ir.ui.view">
             <field name="name">l10n_gt_extra.account.payment.form</field>
             <field name="model">account.payment</field>
@@ -43,7 +43,7 @@
                 </data>
             </field>
         </record>
-
+        
         <record id="l10n_gt_view_account_payment_tree" model="ir.ui.view">
             <field name="name">l10n_gt_extra.account.supplier.payment.tree</field>
             <field name="model">account.payment</field>
@@ -54,7 +54,7 @@
                 </field>
             </field>
         </record>
-
+        
         <record id="l10n_gt_view_account_supplier_payment_tree" model="ir.ui.view">
             <field name="name">l10n_gt_extra.account.supplier.payment.tree</field>
             <field name="model">account.payment</field>
@@ -65,21 +65,27 @@
                 </field>
             </field>
         </record>
-
+        
         <record id="l10n_gt_view_account_journal_form" model="ir.ui.view">
             <field name="name">l10n_gt_extra.view_account_journal_form</field>
             <field name="model">account.journal</field>
             <field name="type">form</field>
             <field name="inherit_id" ref="account.view_account_journal_form"/>
             <field name="arch" type="xml">
-                <field name="currency_id" position="after">
-                    <field name="direccion" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
-                    <field name="codigo_establecimiento" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
-                    <field name="facturas_por_rangos" attrs="{'invisible': [('type', 'not in', ['sale'])]}"/>
-                    <field name="usar_referencia" attrs="{'invisible': [('type', 'not in', ['sale'])]}"/>
-                </field>
+                <notebook position="inside">
+                    <page string="Extra">
+                        <group name="extra" string="Extra">
+                            <group>
+                                <field name="direccion" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
+                                <field name="codigo_establecimiento" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
+                                <field name="facturas_por_rangos" attrs="{'invisible': [('type', 'not in', ['sale'])]}"/>
+                                <field name="usar_referencia" attrs="{'invisible': [('type', 'not in', ['sale'])]}"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
             </field>
         </record>
-
+        
     </data>
 </odoo>
