@@ -25,9 +25,9 @@ class ReporteVentas(models.AbstractModel):
         ]
         
         if 'type' in factura.fields_get():
-            filtro.append(('type','in',['out_invoice','out_refund'])
+            filtro.append(('type','in',['out_invoice','out_refund']))
         else:
-            filtro.append(('move_type','in',['out_invoice','out_refund'])
+            filtro.append(('move_type','in',['out_invoice','out_refund']))
 
         facturas = self.env['account.move'].search(filtro)
 
