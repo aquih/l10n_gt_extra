@@ -25,7 +25,7 @@ class ReporteCompras(models.AbstractModel):
             ('date','>=',datos['fecha_desde']),
         ]
         
-        if 'type' in factura.fields_get():
+        if 'type' in self.env['account.move'].fields_get():
             filtro.append(('type','in',['in_invoice','in_refund']))
         else:
             filtro.append(('move_type','in',['in_invoice','in_refund']))
@@ -46,7 +46,8 @@ class ReporteCompras(models.AbstractModel):
                     tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
-            if f.type != 'in_invoice':
+            tipo_interno_factura = f.type if 'type' in f.fields_get() else f.move_type
+            if tipo_interno_factura != 'in_invoice':
                 tipo = 'NC'
             if f.nota_debito:
                 tipo = 'ND'

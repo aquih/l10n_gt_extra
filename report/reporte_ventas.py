@@ -24,7 +24,7 @@ class ReporteVentas(models.AbstractModel):
             ('date','>=',datos['fecha_desde']),
         ]
         
-        if 'type' in factura.fields_get():
+        if 'type' in self.env['account.move'].fields_get():
             filtro.append(('type','in',['out_invoice','out_refund']))
         else:
             filtro.append(('move_type','in',['out_invoice','out_refund']))
@@ -45,7 +45,7 @@ class ReporteVentas(models.AbstractModel):
                     tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
-            tipo_interno_factura = factura.type if 'type' in factura.fields_get() else factura.move_type
+            tipo_interno_factura = f.type if 'type' in f.fields_get() else f.move_type
             if tipo_interno_factura != 'out_invoice':
                 tipo = 'NC'
             if f.nota_debito:
