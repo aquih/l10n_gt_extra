@@ -9,7 +9,7 @@ class ReporteBanco(models.AbstractModel):
         cuenta = self.env['account.account'].browse(datos['cuenta_bancaria_id'][0])
 
         lineas = []
-        for linea in self.env['account.move.line'].search([('account_id','=',datos['cuenta_bancaria_id'][0]), ('date','>=',datos['fecha_desde']), ('date','<=',datos['fecha_hasta'])], order='date'):
+        for linea in self.env['account.move.line'].search([('account_id','=',datos['cuenta_bancaria_id'][0]), ('parent_state','=','posted'), ('date','>=',datos['fecha_desde']), ('date','<=',datos['fecha_hasta'])], order='date'):
             detalle = {
                 'fecha': linea.date,
                 'documento': linea.move_id.name if linea.move_id else '',
