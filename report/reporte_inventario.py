@@ -64,11 +64,12 @@ class ReporteInventario(models.AbstractModel):
                 'saldo_final': 0,
                 'balance_inicial': r['balance_inicial']
             }
-            if r['id_cuenta'] in [1,3,7,8]:
+
+            if r['id_cuenta'] in [self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
                 lineas['activo'].append(linea)
-            elif r['id_cuenta'] in [9,4,2,10]:
+            elif r['id_cuenta'] in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id]:
                 lineas['pasivo'].append(linea)
-            elif r['id_cuenta'] in [11]:
+            elif r['id_cuenta'] in [self.env.ref('account.data_account_type_equity').id]:
                 lineas['capital'].append(linea)
 
         for l in lineas['activo']:
