@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from odoo import api, models
+import logging
 
 class ReporteBanco(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_banco'
@@ -9,7 +10,7 @@ class ReporteBanco(models.AbstractModel):
         cuenta = self.env['account.account'].browse(datos['cuenta_bancaria_id'][0])
 
         lineas = []
-        for linea in self.env['account.move.line'].search([('account_id','=',datos['cuenta_bancaria_id'][0]), ('parent_state','=','posted'), ('date','>=',datos['fecha_desde']), ('date','<=',datos['fecha_hasta'])], order='date'):
+        for linea in self.env['account.move.line'].search([('account_id','=',cuenta.id), ('parent_state','=','posted'), ('date','>=',datos['fecha_desde']), ('date','<=',datos['fecha_hasta'])], order='date'):
             detalle = {
                 'fecha': linea.date,
                 'documento': linea.move_id.name if linea.move_id else '',
@@ -29,14 +30,17 @@ class ReporteBanco(models.AbstractModel):
                 else:
                     detalle['credito'] = -1 * linea.amount_currency
 
-            #Si la cuenta no tiene moneda o la moneda de la cuenta es la misma de la compañía
+            # Si la cuenta no tiene moneda o la moneda de la cuenta es la misma de la compañía
             if not cuenta.currency_id or (cuenta.currency_id.id == linea.company_id.currency_id.id):
-                #Se agregan lineas que no tiene moneda
-                if not linea.currency_id:
+            
+                # Se agregan lineas que no tiene moneda o tienen la misma moneda que la compañía
+                if not linea.currency_id or linea.currency_id.id == linea.company_id.currency_id.id:
                     lineas.append(detalle)
-            #Sino, Si la cuenta si tienen moneda y la moneda de la cuenta es diferente que la de la compañía
-            elif cuenta.currency_id and (cuenta.currency_id.id != linea.company_id.currency_id.id):
-                #Se agregan lineas que tienen la moneda de la cuenta
+                    
+            # Sino, si la cuenta si tienen moneda y la moneda de la cuenta es diferente que la de la compañía
+            else:
+            
+                # Se agregan lineas que tienen la moneda de la cuenta
                 if linea.currency_id.id == cuenta.currency_id.id:
                     lineas.append(detalle)
 
