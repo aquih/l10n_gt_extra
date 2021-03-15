@@ -50,7 +50,7 @@ class ReporteInventario(models.AbstractModel):
         # 	'join account_account_type t on (t.id = a.user_type_id)' \
         # 	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.id,t.include_initial_balance ORDER BY a.code',
         # (fecha_desde, datos['fecha_hasta']))
-        
+
         self.env.cr.execute(
             'select id, codigo, cuenta, id_cuenta,MAX(debe) as debe, MAX(haber) as haber, balance_inicial '\
             'from ( '\
