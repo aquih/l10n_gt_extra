@@ -11,7 +11,7 @@ class AsistenteReporteInventario(models.TransientModel):
         if len(self.env.context.get('active_ids', [])) > 0:
             return self.env.context.get('active_ids')
         else:
-            return self.env['account.account'].search([]).ids
+            return self.env['account.account'].search([('company_id','=',self.env.user.company_id.id)]).ids
 
     cuentas_id = fields.Many2many("account.account", string="Diario", required=True, default=_default_cuenta)
     folio_inicial = fields.Integer(string="Folio Inicial", required=True, default=1)

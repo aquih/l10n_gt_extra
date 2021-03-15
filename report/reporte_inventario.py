@@ -56,13 +56,13 @@ class ReporteInventario(models.AbstractModel):
             'from ( '\
             'select a.id, a.code as codigo, a.name as cuenta,t.id as id_cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
         	'from account_move_line l ' \
-        	'join account_account a on(l.account_id = a.id) ' \
+        	'join account_account a on(l.account_id = a.id) and a.id in ('+accounts_str+')' \
             'join account_account_type t on (t.id = a.user_type_id) '\
             'group by a.id, a.code, a.name,t.id,t.include_initial_balance '\
             'UNION '\
             'select a.id, a.code as codigo, a.name as cuenta, t.id as id_cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber '\
             'from account_move_line l '\
-            'join account_account  a on(l.account_id = a.id) '\
+            'join account_account  a on(l.account_id = a.id) and a.id in ('+accounts_str+')'\
             'join account_account_type t on (t.id = a.user_type_id) '\
         	  'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s and l.company_id = %s group by a.id, a.code, a.name,t.id,t.include_initial_balance order by codigo) cuenta '\
             'group by id, codigo, cuenta, id_cuenta,balance_inicial order by codigo',(fecha_desde, datos['fecha_hasta'],self.env.user.company_id.id))
