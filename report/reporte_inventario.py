@@ -73,7 +73,7 @@ class ReporteInventario(models.AbstractModel):
                     elif r['id_cuenta'] in [self.env.ref('account.data_account_type_equity').id]:
                         lineas['capital'].append(linea)
 
-            if existe == False:
+            if not existe:
                 cuenta_id = self.env['account.account'].search([('id','=',cuenta)])
                 linea = {
                     'id': cuenta_id.id,
