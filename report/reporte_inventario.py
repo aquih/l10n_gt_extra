@@ -39,54 +39,59 @@ class ReporteInventario(models.AbstractModel):
         fecha_desde = self.fecha_desde(datos['fecha_hasta'])
 
         account_ids = [x for x in datos['cuentas_id']]
-        movimientos = self.env['account.move.line'].search([
-            ('account_id','in',account_ids),
-            ('date','<=',datos['fecha_hasta']),
-            ('date','>=',fecha_desde)])
+
 
         accounts_str = ','.join([str(x) for x in datos['cuentas_id']])
-        # self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta,t.id as id_cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
-        # 	'from account_move_line l join account_account a on(l.account_id = a.id)' \
-        # 	'join account_account_type t on (t.id = a.user_type_id)' \
-        # 	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.id,t.include_initial_balance ORDER BY a.code',
-        # (fecha_desde, datos['fecha_hasta']))
+        self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta,t.id as id_cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
+        	'from account_move_line l join account_account a on(l.account_id = a.id)' \
+        	'join account_account_type t on (t.id = a.user_type_id)' \
+        	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.id,t.include_initial_balance ORDER BY a.code',
+        (fecha_desde, datos['fecha_hasta']))
 
-        self.env.cr.execute(
-            'select id, codigo, cuenta, id_cuenta,MAX(debe) as debe, MAX(haber) as haber, balance_inicial '\
-            'from ( '\
-            'select a.id, a.code as codigo, a.name as cuenta,t.id as id_cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
-        	'from account_move_line l ' \
-        	'join account_account a on(l.account_id = a.id) and a.id in ('+accounts_str+')' \
-            'join account_account_type t on (t.id = a.user_type_id) '\
-            'group by a.id, a.code, a.name,t.id,t.include_initial_balance '\
-            'UNION '\
-            'select a.id, a.code as codigo, a.name as cuenta, t.id as id_cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber '\
-            'from account_move_line l '\
-            'join account_account  a on(l.account_id = a.id) and a.id in ('+accounts_str+')'\
-            'join account_account_type t on (t.id = a.user_type_id) '\
-        	  'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s and l.company_id = %s group by a.id, a.code, a.name,t.id,t.include_initial_balance order by codigo) cuenta '\
-            'group by id, codigo, cuenta, id_cuenta,balance_inicial order by codigo',(fecha_desde, datos['fecha_hasta'],self.env.user.company_id.id))
+        for cuenta in account_ids:
+            existe = False
+            for r in self.env.cr.dictfetchall():
+                if int(cuenta) == (r['id']):
+                    existe = True
+                    totales['debe'] += r['debe']
+                    totales['haber'] += r['haber']
+                    linea = {
+                        'id': r['id'],
+                        'codigo': r['codigo'],
+                        'cuenta': r['cuenta'],
+                        'saldo_inicial': 0,
+                        'debe': r['debe'],
+                        'haber': r['haber'],
+                        'saldo_final': 0,
+                        'balance_inicial': r['balance_inicial']
+                    }
 
-        for r in self.env.cr.dictfetchall():
-            totales['debe'] += r['debe']
-            totales['haber'] += r['haber']
-            linea = {
-                'id': r['id'],
-                'codigo': r['codigo'],
-                'cuenta': r['cuenta'],
-                'saldo_inicial': 0,
-                'debe': r['debe'],
-                'haber': r['haber'],
-                'saldo_final': 0,
-                'balance_inicial': r['balance_inicial']
-            }
+                    if r['id_cuenta'] in [self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
+                        lineas['activo'].append(linea)
+                    elif r['id_cuenta'] in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id]:
+                        lineas['pasivo'].append(linea)
+                    elif r['id_cuenta'] in [self.env.ref('account.data_account_type_equity').id]:
+                        lineas['capital'].append(linea)
 
-            if r['id_cuenta'] in [self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
-                lineas['activo'].append(linea)
-            elif r['id_cuenta'] in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id]:
-                lineas['pasivo'].append(linea)
-            elif r['id_cuenta'] in [self.env.ref('account.data_account_type_equity').id]:
-                lineas['capital'].append(linea)
+            if not existe:
+                cuenta_id = self.env['account.account'].search([('id','=',cuenta)])
+                linea = {
+                    'id': cuenta_id.id,
+                    'codigo': cuenta_id.code,
+                    'cuenta': cuenta_id.name,
+                    'saldo_inicial': 0,
+                    'debe': 0,
+                    'haber': 0,
+                    'saldo_final': 0,
+                    'balance_inicial': 0
+                }
+
+                if cuenta_id.user_type_id.id in [self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
+                    lineas['activo'].append(linea)
+                elif cuenta_id.user_type_id.id in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id]:
+                    lineas['pasivo'].append(linea)
+                elif cuenta_id.user_type_id.id in [self.env.ref('account.data_account_type_equity').id]:
+                    lineas['capital'].append(linea)
 
         for l in lineas['activo']:
             if not l['balance_inicial']:
