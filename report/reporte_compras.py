@@ -18,13 +18,19 @@ class ReporteCompras(models.AbstractModel):
         totales['pequeño'] = {'exento':0,'neto':0,'iva':0,'total':0}
 
         journal_ids = [x for x in datos['diarios_id']]
-        facturas = self.env['account.move'].search([
-            ('state','in',['posted']),
-            ('type','in',['in_invoice','in_refund']),
+        filtro = [
+            ('state','in',['posted','cancel']),
             ('journal_id','in',journal_ids),
             ('date','<=',datos['fecha_hasta']),
             ('date','>=',datos['fecha_desde']),
-        ])
+        ]
+        
+        if 'type' in self.env['account.move'].fields_get():
+            filtro.append(('type','in',['in_invoice','in_refund']))
+        else:
+            filtro.append(('move_type','in',['in_invoice','in_refund']))
+        
+        facturas = self.env['account.move'].search(filtro)
 
         lineas = []
         for f in facturas:
@@ -40,7 +46,8 @@ class ReporteCompras(models.AbstractModel):
                     tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
-            if f.type != 'in_invoice':
+            tipo_interno_factura = f.type if 'type' in f.fields_get() else f.move_type
+            if tipo_interno_factura != 'in_invoice':
                 tipo = 'NC'
             if f.nota_debito:
                 tipo = 'ND'

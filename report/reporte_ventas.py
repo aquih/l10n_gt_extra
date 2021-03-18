@@ -15,15 +15,21 @@ class ReporteVentas(models.AbstractModel):
         totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
         totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
         totales['combustible'] = {'exento':0,'neto':0,'iva':0,'total':0}
-
+        
         journal_ids = [x for x in datos['diarios_id']]
-        facturas = self.env['account.move'].search([
+        filtro = [
             ('state','in',['posted','cancel']),
-            ('type','in',['out_invoice','out_refund']),
             ('journal_id','in',journal_ids),
             ('date','<=',datos['fecha_hasta']),
             ('date','>=',datos['fecha_desde']),
-        ])
+        ]
+        
+        if 'type' in self.env['account.move'].fields_get():
+            filtro.append(('type','in',['out_invoice','out_refund']))
+        else:
+            filtro.append(('move_type','in',['out_invoice','out_refund']))
+
+        facturas = self.env['account.move'].search(filtro)
 
         lineas = []
         for f in facturas:
@@ -39,7 +45,8 @@ class ReporteVentas(models.AbstractModel):
                     tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
-            if f.type != 'out_invoice':
+            tipo_interno_factura = f.type if 'type' in f.fields_get() else f.move_type
+            if tipo_interno_factura != 'out_invoice':
                 tipo = 'NC'
             if f.nota_debito:
                 tipo = 'ND'
@@ -51,8 +58,10 @@ class ReporteVentas(models.AbstractModel):
                 numero = f.ref
 
             # Por si usa factura electrónica
-            if ('firma_gface' in f.fields_get() and f.firma_gface) or ('firma_fel' in f.fields_get() and f.firma_fel):
-                numero = f.ref
+            if 'firma_gface' in f.fields_get() and f.firma_gface:
+                numero = str(f.ref)
+            if 'firma_fel' in f.fields_get() and f.firma_fel:
+                numero = str(f.serie_fel) + '-' + str(f.numero_fel)
 
             # Por si usa tickets
             if 'requiere_resolucion' in f.journal_id.fields_get() and f.journal_id.requiere_resolucion:
