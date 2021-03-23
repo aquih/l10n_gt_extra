@@ -31,12 +31,12 @@
 
                     <table class="table table-condensed">
                         <tbody>
-                            <thead>
+                            <th>
                                 <tr>
                                     <td><b>ACTIVO</b></td>
                                     <td colspan="2"></td>
                                 </tr>
-                            </thead>
+                            </th>
                             <tr>
                                 <th>Codigo</th>
                                 <th>Cuenta</th>
@@ -59,12 +59,12 @@
                                 <td><b>Total activo</b></td>
                                 <td class="text-right"><b><span t-esc="total_activo" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b></td>
                             </tr>
-                            <thead>
+                            <th>
                                 <tr>
                                     <td><b>PASIVO</b></td>
                                     <td colspan="2"></td>
                                 </tr>
-                            </thead>
+                            </th>
                             <tr>
                                 <th>Codigo</th>
                                 <th>Cuenta</th>
@@ -87,12 +87,12 @@
                                 <td><b>Total pasivo</b></td>
                                 <td class="text-right"><b><span t-esc="total_pasivo" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b></td>
                             </tr>
-                            <thead>
+                            <th>
                                 <tr>
                                     <td><b>CAPITAL</b></td>
                                     <td colspan="2"></td>
                                 </tr>
-                            </thead>
+                            </th>
                             <tr>
                                 <th>Codigo</th>
                                 <th>Cuenta</th>

@@ -48,10 +48,11 @@ class ReporteInventario(models.AbstractModel):
         	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.id,t.include_initial_balance ORDER BY a.code',
         (fecha_desde, datos['fecha_hasta']))
 
-        for cuenta in account_ids:
+        dictfetchall = self.env.cr.dictfetchall()
+        for cuenta in datos['cuentas_id']:
             existe = False
-            for r in self.env.cr.dictfetchall():
-                if int(cuenta) == (r['id']):
+            for r in dictfetchall:
+                if cuenta == r['id']:
                     existe = True
                     totales['debe'] += r['debe']
                     totales['haber'] += r['haber']
