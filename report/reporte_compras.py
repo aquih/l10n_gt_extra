@@ -53,12 +53,18 @@ class ReporteCompras(models.AbstractModel):
                 tipo = 'ND'
             if f.partner_id.pequenio_contribuyente:
                 tipo += ' PEQ'
+           
+            numero = f.ref or ''
+            
+            # Por si usa factura electrónica
+            if 'firma_fel' in f.fields_get() and f.firma_fel:
+                numero = str(f.serie_fel) + '-' + str(f.numero_fel)
 
             linea = {
                 'estado': f.state,
                 'tipo': tipo,
                 'fecha': f.date,
-                'numero': f.ref or '',
+                'numero': numero,
                 'proveedor': f.partner_id,
                 'compra': 0,
                 'compra_exento': 0,
