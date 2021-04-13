@@ -29,18 +29,9 @@ class ReporteInventario(models.AbstractModel):
         return saldo_inicial
 
     def lineas(self, datos):
-        totales = {}
-        lineas_resumidas = {}
-        lineas = {'activo':[],'total_activo': 0,'pasivo': [],'total_pasivo': 0,'capital': [],'total_capital': 0,}
-        agrupado = {'activo':[],'pasivo': [],'capital': []}
-        totales['debe'] = 0
-        totales['haber'] = 0
-        totales['saldo_inicial'] = 0
-        totales['saldo_final'] = 0
+        totales = {'debe':0,'haber':0,'saldo_inicial':0,'saldo_final':0}
+        lineas = {'activo':[],'total_activo': 0,'pasivo': [],'total_pasivo': 0,'capital': [],'total_capital': 0}
         fecha_desde = self.fecha_desde(datos['fecha_hasta'])
-        precision_decimal = self.env.user.company_id.currency_id.rounding
-        account_ids = [x for x in datos['cuentas_id']]
-
 
         accounts_str = ','.join([str(x) for x in datos['cuentas_id']])
         self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta,t.id as id_cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
@@ -50,11 +41,10 @@ class ReporteInventario(models.AbstractModel):
         (fecha_desde, datos['fecha_hasta']))
 
         dictfetchall = self.env.cr.dictfetchall()
-        for cuenta in datos['cuentas_id']:
-            existe = False
+        for cuenta in self.env['account.account'].search([('id','in',datos['cuentas_id'])]):
+            linea = {}
             for r in dictfetchall:
-                if cuenta == r['id']:
-                    existe = True
+                if cuenta.id == r['id']:
                     totales['debe'] += r['debe']
                     totales['haber'] += r['haber']
                     linea = {
@@ -68,34 +58,25 @@ class ReporteInventario(models.AbstractModel):
                         'balance_inicial': r['balance_inicial']
                     }
 
-                    if r['id_cuenta'] in [self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
-                        lineas['activo'].append(linea)
-                    elif r['id_cuenta'] in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id,self.env.ref('account.data_account_type_payable').id]:
-                        lineas['pasivo'].append(linea)
-                    elif r['id_cuenta'] in [self.env.ref('account.data_account_type_equity').id]:
-                        lineas['capital'].append(linea)
-
-            if not existe:
-                cuenta_id = self.env['account.account'].search([('id','=',cuenta)])
+            if not linea:
                 linea = {
-                    'id': cuenta_id.id,
-                    'codigo': cuenta_id.code,
-                    'cuenta': cuenta_id.name,
+                    'id': cuenta.id,
+                    'codigo': cuenta.code,
+                    'cuenta': cuenta.name,
                     'saldo_inicial': 0,
                     'debe': 0,
                     'haber': 0,
                     'saldo_final': 0,
-                    'balance_inicial': cuenta_id.user_type_id.include_initial_balance
+                    'balance_inicial': cuenta.user_type_id.include_initial_balance
                 }
 
-                if cuenta_id.user_type_id.id in [self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
-                    lineas['activo'].append(linea)
-                elif cuenta_id.user_type_id.id in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id,self.env.ref('account.data_account_type_payable').id]:
-                    lineas['pasivo'].append(linea)
-                elif cuenta_id.user_type_id.id in [self.env.ref('account.data_account_type_equity').id]:
-                    lineas['capital'].append(linea)
+            if cuenta.user_type_id.id in [self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
+                lineas['activo'].append(linea)
+            elif cuenta.user_type_id.id in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id,self.env.ref('account.data_account_type_payable').id]:
+                lineas['pasivo'].append(linea)
+            elif cuenta.user_type_id.id in [self.env.ref('account.data_account_type_equity').id]:
+                lineas['capital'].append(linea)
 
-        cuentas_no_mostrar_activo = []
         for l in lineas['activo']:
             if not l['balance_inicial']:
                 l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], fecha_desde)
@@ -108,10 +89,6 @@ class ReporteInventario(models.AbstractModel):
                 totales['saldo_inicial'] += l['saldo_inicial']
                 totales['saldo_final'] += l['saldo_final']
 
-            if float_is_zero( l['saldo_final'], precision_rounding=precision_decimal):
-                 cuentas_no_mostrar_activo.append(l)
-
-        cuentas_no_mostrar_pasivo = []
         for l in lineas['pasivo']:
             if not l['balance_inicial']:
                 l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], fecha_desde)
@@ -124,10 +101,6 @@ class ReporteInventario(models.AbstractModel):
                 totales['saldo_inicial'] += l['saldo_inicial']
                 totales['saldo_final'] += l['saldo_final']
 
-            if float_is_zero( l['saldo_final'], precision_rounding=precision_decimal):
-                 cuentas_no_mostrar_pasivo.append(l)
-
-        cuentas_no_mostrar_capital = []
         for l in lineas['capital']:
             if not l['balance_inicial']:
                 l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], fecha_desde)
@@ -139,20 +112,6 @@ class ReporteInventario(models.AbstractModel):
                 l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
                 totales['saldo_inicial'] += l['saldo_inicial']
                 totales['saldo_final'] += l['saldo_final']
-
-            if float_is_zero( l['saldo_final'], precision_rounding=precision_decimal):
-                 cuentas_no_mostrar_capital.append(l)
-
-        # Eliminamos las cuentas que no tienen saldo que estan almacenadas en listas
-        if cuentas_no_mostrar_activo:
-            for cuenta in cuentas_no_mostrar_activo:
-                lineas['activo'].remove(cuenta)
-        if cuentas_no_mostrar_pasivo:
-            for cuenta in cuentas_no_mostrar_pasivo:
-                lineas['pasivo'].remove(cuenta)
-        if cuentas_no_mostrar_capital:
-            for cuenta in cuentas_no_mostrar_capital:
-                lineas['capital'].remove(cuenta)
 
         return {'lineas': lineas,'totales': totales }
 
@@ -169,7 +128,7 @@ class ReporteInventario(models.AbstractModel):
     def get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
-
+        precision_decimal = self.env.user.company_id.currency_id.rounding
         diario = self.env['account.move.line'].browse(data['form']['cuentas_id'][0])
 
         return {
@@ -179,6 +138,8 @@ class ReporteInventario(models.AbstractModel):
             'docs': docs,
             'lineas': self.lineas,
             'fecha_desde': self.fecha_desde,
+            'float_is_zero': float_is_zero,
+            'precision_decimal': precision_decimal
         }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

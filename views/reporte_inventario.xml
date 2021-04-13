@@ -42,7 +42,7 @@
                                 <th>Cuenta</th>
                                 <th class="text-right">Saldo</th>
                             </tr>
-                            <tr t-foreach="result['lineas']['activo']" t-as="activo">
+                            <tr t-foreach="[x for x in result['lineas']['activo'] if not float_is_zero(x['saldo_final'],precision_rounding=precision_decimal)]" t-as="activo">
                                 <td>
                                     <span t-esc="activo['codigo']"/>
                                 </td>
@@ -70,7 +70,7 @@
                                 <th>Cuenta</th>
                                 <th class="text-right">Saldo</th>
                             </tr>
-                            <tr t-foreach="result['lineas']['pasivo']" t-as="pasivo">
+                            <tr t-foreach="[x for x in result['lineas']['pasivo'] if not float_is_zero(x['saldo_final'],precision_rounding=precision_decimal)]" t-as="pasivo">
                                 <td>
                                     <span t-esc="pasivo['codigo']"/>
                                 </td>
@@ -98,7 +98,7 @@
                                 <th>Cuenta</th>
                                 <th class="text-right">Saldo</th>
                             </tr>
-                            <tr t-foreach="result['lineas']['capital']" t-as="capital">
+                            <tr t-foreach="[x for x in result['lineas']['capital'] if not float_is_zero(x['saldo_final'],precision_rounding=precision_decimal)]" t-as="capital">
                                 <td>
                                     <span t-esc="capital['codigo']"/>
                                 </td>
