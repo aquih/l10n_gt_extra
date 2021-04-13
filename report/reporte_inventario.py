@@ -4,6 +4,7 @@ from odoo import api, models, fields
 import time
 import datetime
 import logging
+from odoo.tools import float_is_zero
 
 class ReporteInventario(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_inventario'
@@ -37,7 +38,7 @@ class ReporteInventario(models.AbstractModel):
         totales['saldo_inicial'] = 0
         totales['saldo_final'] = 0
         fecha_desde = self.fecha_desde(datos['fecha_hasta'])
-
+        precision_decimal = self.env.user.company_id.currency_id.rounding
         account_ids = [x for x in datos['cuentas_id']]
 
 
@@ -69,7 +70,7 @@ class ReporteInventario(models.AbstractModel):
 
                     if r['id_cuenta'] in [self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
                         lineas['activo'].append(linea)
-                    elif r['id_cuenta'] in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id]:
+                    elif r['id_cuenta'] in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id,self.env.ref('account.data_account_type_payable').id]:
                         lineas['pasivo'].append(linea)
                     elif r['id_cuenta'] in [self.env.ref('account.data_account_type_equity').id]:
                         lineas['capital'].append(linea)
@@ -84,16 +85,17 @@ class ReporteInventario(models.AbstractModel):
                     'debe': 0,
                     'haber': 0,
                     'saldo_final': 0,
-                    'balance_inicial': 0
+                    'balance_inicial': cuenta_id.user_type_id.include_initial_balance
                 }
 
                 if cuenta_id.user_type_id.id in [self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
                     lineas['activo'].append(linea)
-                elif cuenta_id.user_type_id.id in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id]:
+                elif cuenta_id.user_type_id.id in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id,self.env.ref('account.data_account_type_payable').id]:
                     lineas['pasivo'].append(linea)
                 elif cuenta_id.user_type_id.id in [self.env.ref('account.data_account_type_equity').id]:
                     lineas['capital'].append(linea)
 
+        cuentas_no_mostrar_activo = []
         for l in lineas['activo']:
             if not l['balance_inicial']:
                 l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], fecha_desde)
@@ -106,6 +108,10 @@ class ReporteInventario(models.AbstractModel):
                 totales['saldo_inicial'] += l['saldo_inicial']
                 totales['saldo_final'] += l['saldo_final']
 
+            if float_is_zero( l['saldo_final'], precision_rounding=precision_decimal):
+                 cuentas_no_mostrar_activo.append(l)
+
+        cuentas_no_mostrar_pasivo = []
         for l in lineas['pasivo']:
             if not l['balance_inicial']:
                 l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], fecha_desde)
@@ -118,6 +124,10 @@ class ReporteInventario(models.AbstractModel):
                 totales['saldo_inicial'] += l['saldo_inicial']
                 totales['saldo_final'] += l['saldo_final']
 
+            if float_is_zero( l['saldo_final'], precision_rounding=precision_decimal):
+                 cuentas_no_mostrar_pasivo.append(l)
+
+        cuentas_no_mostrar_capital = []
         for l in lineas['capital']:
             if not l['balance_inicial']:
                 l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], fecha_desde)
@@ -129,6 +139,20 @@ class ReporteInventario(models.AbstractModel):
                 l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
                 totales['saldo_inicial'] += l['saldo_inicial']
                 totales['saldo_final'] += l['saldo_final']
+
+            if float_is_zero( l['saldo_final'], precision_rounding=precision_decimal):
+                 cuentas_no_mostrar_capital.append(l)
+
+        # Eliminamos las cuentas que no tienen saldo que estan almacenadas en listas
+        if cuentas_no_mostrar_activo:
+            for cuenta in cuentas_no_mostrar_activo:
+                lineas['activo'].remove(cuenta)
+        if cuentas_no_mostrar_pasivo:
+            for cuenta in cuentas_no_mostrar_pasivo:
+                lineas['pasivo'].remove(cuenta)
+        if cuentas_no_mostrar_capital:
+            for cuenta in cuentas_no_mostrar_capital:
+                lineas['capital'].remove(cuenta)
 
         return {'lineas': lineas,'totales': totales }
 
