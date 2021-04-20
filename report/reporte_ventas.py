@@ -38,9 +38,20 @@ class ReporteVentas(models.AbstractModel):
 
             tipo_cambio = 1
             if f.currency_id.id != f.company_id.currency_id.id:
+                # Probar con impuesto inicialmente
                 for l in f.invoice_line_ids:
                     if impuesto in l.tax_ids:
-                        tipo_cambio = l.balance/l.amount_currency
+                        if l.amount_currency != 0:
+                            tipo_cambio = l.balance/l.amount_currency
+                
+                # Si la factura no tiene impuesto, entonces usar cuenta por cobrar/pagar
+                if tipo_cambio == 1:
+                    total = 0
+                    for l in f.line_ids:
+                        if l.account_id.reconcile:
+                            total += l.debit - l.credit
+                    if f.amount_total != 0:
+                        tipo_cambio = abs(total / f.amount_total)
 
             tipo = 'FACT'
             tipo_interno_factura = f.type if 'type' in f.fields_get() else f.move_type
