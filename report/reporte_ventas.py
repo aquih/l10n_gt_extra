@@ -30,7 +30,7 @@ class ReporteVentas(models.AbstractModel):
             filtro.append(('move_type','in',['out_invoice','out_refund']))
 
         facturas = self.env['account.move'].search(filtro)
-        impuesto = self.env['account.move'].browse(datos['impuesto_id'][0])
+        impuesto = self.env['account.tax'].browse(datos['impuesto_id'][0])
 
         lineas = []
         for f in facturas:
