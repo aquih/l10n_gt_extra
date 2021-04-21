@@ -12,7 +12,7 @@
                 <div class="page">
                     <h2><span t-esc="res_company.name"/>: Libro Inventario</h2>
 
-                    <t t-set="fecha_desde" t-value="fecha_desde()"/>
+                    <t t-set="fecha_desde" t-value="fecha_desde(data['fecha_hasta'])"/>
                     <div class="row mt32">
                         <div class="col-xs-4">
                             <strong>Número de identificación tributaria:</strong> <span t-esc="user.company_id.vat"/><br/>
@@ -31,18 +31,18 @@
 
                     <table class="table table-condensed">
                         <tbody>
-                            <thead>
+                            <th>
                                 <tr>
                                     <td><b>ACTIVO</b></td>
                                     <td colspan="2"></td>
                                 </tr>
-                            </thead>
+                            </th>
                             <tr>
                                 <th>Codigo</th>
                                 <th>Cuenta</th>
                                 <th class="text-right">Saldo</th>
                             </tr>
-                            <tr t-foreach="result['lineas']['activo']" t-as="activo">
+                            <tr t-foreach="[x for x in result['lineas']['activo'] if not float_is_zero(x['saldo_final'],precision_rounding=precision_decimal)]" t-as="activo">
                                 <td>
                                     <span t-esc="activo['codigo']"/>
                                 </td>
@@ -59,18 +59,18 @@
                                 <td><b>Total activo</b></td>
                                 <td class="text-right"><b><span t-esc="total_activo" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b></td>
                             </tr>
-                            <thead>
+                            <th>
                                 <tr>
                                     <td><b>PASIVO</b></td>
                                     <td colspan="2"></td>
                                 </tr>
-                            </thead>
+                            </th>
                             <tr>
                                 <th>Codigo</th>
                                 <th>Cuenta</th>
                                 <th class="text-right">Saldo</th>
                             </tr>
-                            <tr t-foreach="result['lineas']['pasivo']" t-as="pasivo">
+                            <tr t-foreach="[x for x in result['lineas']['pasivo'] if not float_is_zero(x['saldo_final'],precision_rounding=precision_decimal)]" t-as="pasivo">
                                 <td>
                                     <span t-esc="pasivo['codigo']"/>
                                 </td>
@@ -87,18 +87,18 @@
                                 <td><b>Total pasivo</b></td>
                                 <td class="text-right"><b><span t-esc="total_pasivo" t-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></b></td>
                             </tr>
-                            <thead>
+                            <th>
                                 <tr>
                                     <td><b>CAPITAL</b></td>
                                     <td colspan="2"></td>
                                 </tr>
-                            </thead>
+                            </th>
                             <tr>
                                 <th>Codigo</th>
                                 <th>Cuenta</th>
                                 <th class="text-right">Saldo</th>
                             </tr>
-                            <tr t-foreach="result['lineas']['capital']" t-as="capital">
+                            <tr t-foreach="[x for x in result['lineas']['capital'] if not float_is_zero(x['saldo_final'],precision_rounding=precision_decimal)]" t-as="capital">
                                 <td>
                                     <span t-esc="capital['codigo']"/>
                                 </td>
