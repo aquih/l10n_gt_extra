@@ -19,7 +19,7 @@ class ReporteCompras(models.AbstractModel):
 
         journal_ids = [x for x in datos['diarios_id']]
         filtro = [
-            ('state','in',['posted','cancel']),
+            ('state','in',['posted']),
             ('journal_id','in',journal_ids),
             ('date','<=',datos['fecha_hasta']),
             ('date','>=',datos['fecha_desde']),
