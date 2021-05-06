@@ -45,26 +45,48 @@ class ReporteMayor(models.AbstractModel):
             self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, l.date as fecha, t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
                 'from account_move_line l join account_account a on(l.account_id = a.id)' \
                 'join account_account_type t on (t.id = a.user_type_id)' \
-                'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name, l.date, t.include_initial_balance ORDER BY a.code',
+                'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name, l.date, t.include_initial_balance ORDER BY a.code, l.date',
             (datos['fecha_desde'], datos['fecha_hasta']))
 
-            for r in self.env.cr.dictfetchall():
-                totales['debe'] += r['debe']
-                totales['haber'] += r['haber']
-                linea = {
-                    'id': r['id'],
-                    'fecha': r['fecha'],
-                    'codigo': r['codigo'],
-                    'cuenta': r['cuenta'],
-                    'saldo_inicial': 0,
-                    'debe': r['debe'],
-                    'haber': r['haber'],
-                    'saldo_final': 0,
-                    'balance_inicial': r['balance_inicial']
-                }
-                lineas.append(linea)
-
             cuentas_agrupadas = {}
+            dictfetchall = self.env.cr.dictfetchall()
+            for cuenta in self.env['account.account'].search([('id','in',datos['cuentas_id'])]):
+                linea = {}
+                for r in dictfetchall:
+                    if cuenta.id == r['id']:
+                        totales['debe'] += r['debe']
+                        totales['haber'] += r['haber']
+                        linea = {
+                            'id': r['id'],
+                            'fecha': r['fecha'],
+                            'codigo': r['codigo'],
+                            'cuenta': r['cuenta'],
+                            'saldo_inicial': 0,
+                            'debe': r['debe'],
+                            'haber': r['haber'],
+                            'saldo_final': 0,
+                            'balance_inicial': r['balance_inicial']
+                        }
+                        lineas.append(linea)
+
+                #Si es una cuenta que no tuvo movimientos en el rango de fecha, si el saldo inicial es mayor que 0, se ingresa directamente en el diccionario de cuentas agrupadas.
+                if not linea:
+                    if not cuenta.user_type_id.include_initial_balance:
+                        saldo_inicial = self.retornar_saldo_inicial_inicio_anio(cuenta.id, datos['fecha_desde'])
+                    else:
+                        saldo_inicial = self.retornar_saldo_inicial_todos_anios(cuenta.id, datos['fecha_desde'])
+
+                    if saldo_inicial > 0:
+                        cuentas_agrupadas[cuenta.code] = {
+                            'codigo': cuenta.code,
+                            'cuenta': cuenta.name,
+                            'saldo_inicial': saldo_inicial,
+                            'saldo_final': 0,
+                            'fechas': [],
+                            'total_debe': 0,
+                            'total_haber': 0
+                        }
+
             llave = 'codigo'
             for l in lineas:
                 if l[llave] not in cuentas_agrupadas:
@@ -90,7 +112,7 @@ class ReporteMayor(models.AbstractModel):
                     cuenta['total_haber'] += fecha['haber']
                 cuenta['saldo_final'] += cuenta['saldo_inicial'] + cuenta['total_debe'] - cuenta['total_haber']
 
-            lineas = cuentas_agrupadas.values()
+            lineas = sorted(cuentas_agrupadas.values(), key=lambda l: l['codigo'])
         else:
             self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
             	'from account_move_line l join account_account a on(l.account_id = a.id)' \
@@ -98,32 +120,60 @@ class ReporteMayor(models.AbstractModel):
             	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.include_initial_balance ORDER BY a.code',
             (datos['fecha_desde'], datos['fecha_hasta']))
 
-            for r in self.env.cr.dictfetchall():
-                totales['debe'] += r['debe']
-                totales['haber'] += r['haber']
-                linea = {
-                    'id': r['id'],
-                    'codigo': r['codigo'],
-                    'cuenta': r['cuenta'],
-                    'saldo_inicial': 0,
-                    'debe': r['debe'],
-                    'haber': r['haber'],
-                    'saldo_final': 0,
-                    'balance_inicial': r['balance_inicial']
-                }
-                lineas.append(linea)
+            dictfetchall = self.env.cr.dictfetchall()
+            for cuenta in self.env['account.account'].search([('id','in',datos['cuentas_id'])]):
+                linea = {}
+                for r in dictfetchall:
+                    if cuenta.id == r['id']:
+                        totales['debe'] += r['debe']
+                        totales['haber'] += r['haber']
+                        linea = {
+                            'id': r['id'],
+                            'codigo': r['codigo'],
+                            'cuenta': r['cuenta'],
+                            'saldo_inicial': 0,
+                            'debe': r['debe'],
+                            'haber': r['haber'],
+                            'saldo_final': 0,
+                            'balance_inicial': r['balance_inicial']
+                        }
+                        lineas.append(linea)
+
+                #Si es una cuenta que no tuvo movimientos en el rango de fecha, si el saldo inicial es mayor que 0, se ingresa a la lista.
+                if not linea:
+                    if not cuenta.user_type_id.include_initial_balance:
+                        saldo_inicial = self.retornar_saldo_inicial_inicio_anio(cuenta.id, datos['fecha_desde'])
+                    else:
+                        saldo_inicial = self.retornar_saldo_inicial_todos_anios(cuenta.id, datos['fecha_desde'])
+
+                    if saldo_inicial > 0:
+                        linea = {
+                            'id': cuenta.id,
+                            'codigo': cuenta.code,
+                            'cuenta': cuenta.name,
+                            'saldo_inicial': saldo_inicial,
+                            'debe': 0,
+                            'haber': 0,
+                            'saldo_final': saldo_inicial,
+                            'balance_inicial': r['balance_inicial']
+                        }
+                        lineas.append(linea)
+                        
+                        totales['saldo_inicial'] += saldo_inicial
+                        totales['saldo_final'] += saldo_inicial
 
             for l in lineas:
-                if not l['balance_inicial']:
-                    l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], datos['fecha_desde'])
-                    l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
-                    totales['saldo_inicial'] += l['saldo_inicial']
-                    totales['saldo_final'] += l['saldo_final']
-                else:
-                    l['saldo_inicial'] += self.retornar_saldo_inicial_todos_anios(l['id'], datos['fecha_desde'])
-                    l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
-                    totales['saldo_inicial'] += l['saldo_inicial']
-                    totales['saldo_final'] += l['saldo_final']
+                if l['saldo_inicial'] == 0:
+                    if not l['balance_inicial']:
+                        l['saldo_inicial'] += self.retornar_saldo_inicial_inicio_anio(l['id'], datos['fecha_desde'])
+                        l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
+                        totales['saldo_inicial'] += l['saldo_inicial']
+                        totales['saldo_final'] += l['saldo_final']
+                    else:
+                        l['saldo_inicial'] += self.retornar_saldo_inicial_todos_anios(l['id'], datos['fecha_desde'])
+                        l['saldo_final'] += l['saldo_inicial'] + l['debe'] - l['haber']
+                        totales['saldo_inicial'] += l['saldo_inicial']
+                        totales['saldo_final'] += l['saldo_final']
 
         return {'lineas': lineas,'totales': totales }
 
