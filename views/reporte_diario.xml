@@ -11,15 +11,14 @@
                 <div class="page">
                     <h2><span t-field="current_company_id.name"/>: Libro Diario</h2>
 
-
                     <div class="row mt32">
-                        <div class="col-xs-4">
+                        <div class="col-auto mw-100 mb-2">
                             <strong>Número de identificación tributaria:</strong> <span t-field="current_company_id.vat"/><br/>
                             <strong>Nombre comercial:</strong> <span t-field="current_company_id.partner_id.name"/><br/>
                         </div>
-                        <div class="col-xs-4">
+                        <div class="col-auto mw-100 mb-2">
                             <strong>Domicilio fiscal:</strong> <span t-field="current_company_id.partner_id.street"/><br/>
-                            <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-esc-options='{"widget": "date"}'/> al: <span t-esc="data['fecha_hasta']" t-esc-options='{"widget": "date"}'/><br/>
+                            <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-options="{'widget': 'datetime'}"/> al: <span t-esc="data['fecha_hasta']" t-options="{'widget': 'datetime'}"/><br/>
                         </div>
                     </div>
 
@@ -40,7 +39,7 @@
                                 <t t-foreach="result['lineas']" t-as="l">
                                     <tr>
                                         <td>
-                                            <span t-esc="l['fecha']" t-esc-options='{"widget": "date"}'/>
+                                            <span t-esc="l['fecha']" t-options="{'widget': 'datetime'}"/>/>
                                         </td>
                                         <td>
                                         </td>
@@ -56,8 +55,8 @@
                                             <td></td>
                                             <td><span t-esc="ld['codigo']"/></td>
                                             <td><span t-esc="ld['cuenta']"/></td>
-                                            <td class="text-right"><span t-esc="ld['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></td>
-                                            <td class="text-right"><span t-esc="ld['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></td>
+                                            <td class="text-right"><span t-esc="ld['debe']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></td>
+                                            <td class="text-right"><span t-esc="ld['haber']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></td>
                                         </tr>
                                     </t>
                                     <tr>
@@ -69,10 +68,10 @@
                                             <b>Totales</b>
                                         </td>
                                         <td class="text-right">
-                                            <b><span t-esc="l['total_debe']" t-esc-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
+                                            <b><span t-esc="l['total_debe']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
                                         </td>
                                         <td class="text-right">
-                                            <b><span t-esc="l['total_haber']" t-esc-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
+                                            <b><span t-esc="l['total_haber']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
                                         </td>
                                     </tr>
                                 </t>
@@ -96,10 +95,10 @@
                                         <span t-esc="l['cuenta']"/>
                                     </td>
                                     <td class="text-right">
-                                        <span t-esc="l['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                        <span t-esc="l['debe']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                     </td>
                                     <td class="text-right">
-                                        <span t-esc="l['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                        <span t-esc="l['haber']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -109,10 +108,10 @@
                                     <td class="text-right">
                                     </td>
                                     <td class="text-right">
-                                        <b><span t-esc="result['totales']['debe']" t-esc-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
+                                        <b><span t-esc="result['totales']['debe']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
                                     </td>
                                     <td class="text-right">
-                                        <b><span t-esc="result['totales']['haber']" t-esc-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
+                                        <b><span t-esc="result['totales']['haber']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
                                     </td>
                                 </tr>
                             </tbody>
