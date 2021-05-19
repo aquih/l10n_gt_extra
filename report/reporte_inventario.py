@@ -70,11 +70,11 @@ class ReporteInventario(models.AbstractModel):
                     'balance_inicial': cuenta.user_type_id.include_initial_balance
                 }
 
-            if cuenta.user_type_id.id in [self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
+            if cuenta.user_type_id.id in [self.env.ref('account.data_account_type_non_current_assets').id,self.env.ref('account.data_account_type_receivable').id,self.env.ref('account.data_account_type_liquidity').id,self.env.ref('account.data_account_type_current_assets').id,self.env.ref('account.data_account_type_fixed_assets').id]:
                 lineas['activo'].append(linea)
             elif cuenta.user_type_id.id in [self.env.ref('account.data_account_type_credit_card').id,self.env.ref('account.data_account_type_current_liabilities').id,self.env.ref('account.data_account_type_non_current_liabilities').id,self.env.ref('account.data_account_type_payable').id]:
                 lineas['pasivo'].append(linea)
-            elif cuenta.user_type_id.id in [self.env.ref('account.data_account_type_equity').id]:
+            elif cuenta.user_type_id.id in [self.env.ref('account.data_account_type_equity').id,self.env.ref('account.data_unaffected_earnings').id]:
                 lineas['capital'].append(linea)
 
         for l in lineas['activo']:
