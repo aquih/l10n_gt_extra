@@ -39,7 +39,7 @@
                                 <t t-foreach="result['lineas']" t-as="l">
                                     <tr>
                                         <td>
-                                            <span t-esc="l['fecha']" t-options="{'widget': 'datetime'}"/>/>
+                                            <span t-esc="l['fecha']" t-options="{'widget': 'date'}"/>
                                         </td>
                                         <td>
                                         </td>
