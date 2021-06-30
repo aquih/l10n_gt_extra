@@ -18,7 +18,7 @@
                         </div>
                         <div class="col-auto mw-100 mb-2">
                             <strong>Domicilio fiscal:</strong> <span t-field="current_company_id.partner_id.street"/><br/>
-                            <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-options="{'widget': 'datetime'}"/> al: <span t-esc="data['fecha_hasta']" t-options="{'widget': 'datetime'}"/><br/>
+                            <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-options="{'widget': 'date'}"/> al: <span t-esc="data['fecha_hasta']" t-options="{'widget': 'date'}"/><br/>
                         </div>
                     </div>
 
