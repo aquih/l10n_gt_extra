@@ -61,7 +61,7 @@
                                     <span t-esc="l['proveedor'].name"/>
                                 </td>
                                 <td>
-                                    <span t-esc="l['proveedor'].vat"/>
+                                    <span t-esc="l['proveedor'].vat or l['proveedor'].cui"/>
                                 </td>
                                 <td class="text-right">
                                      <span t-esc="l['compra']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
