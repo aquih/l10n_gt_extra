@@ -2,6 +2,8 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
+from odoo.addons.l10n_gt_extra import a_letras
+
 import datetime
 import logging
 
@@ -86,6 +88,9 @@ class AccountPayment(models.Model):
     anulado = fields.Boolean('Anulado')
     fecha_anulacion = fields.Date('Fecha anulación')
 
+    def a_letras(self, monto):
+        return a_letras.num_a_letras(monto)
+    
     def cancel(self):
         for rec in self:
             rec.write({'numero_viejo': rec.name})
