@@ -91,7 +91,11 @@ def num_a_letras(num, completo=True):
     elif int(entero) < 1000000:
         miles = int(entero.rjust(6)[0:3])
         cientos = entero.rjust(6)[3:7]
-        num_en_letras = num_a_letras(str(miles), False) + ' ' + en_letras['xxxxxx']
+        num_en_letras = num_a_letras(str(miles), False)
+        # Un mil
+        if num_en_letras[-3:] == 'uno':
+            num_en_letras = num_en_letras[0:-1]
+        num_en_letras = num_en_letras + ' ' + en_letras['xxxxxx']
         if cientos != '000':
             num_en_letras = num_en_letras + ' ' + num_a_letras(cientos, False)
     elif int(entero) < 2000000:
