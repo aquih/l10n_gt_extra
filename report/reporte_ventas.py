@@ -128,6 +128,7 @@ class ReporteVentas(models.AbstractModel):
                         elif i['amount'] > 0:
                             linea[tipo_linea+'_exento'] += i['amount']
                             totales[tipo_linea]['exento'] += i['amount']
+                            totales[tipo_linea]['total'] += i['amount']
                 else:
                     linea[tipo_linea+'_exento'] += r['total_excluded']
                     totales[tipo_linea]['exento'] += r['total_excluded']
