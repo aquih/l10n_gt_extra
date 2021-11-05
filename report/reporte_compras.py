@@ -99,7 +99,7 @@ class ReporteCompras(models.AbstractModel):
                 r = l.tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
                 linea['base'] += r['total_excluded']
-                totales[tipo_linea]['total'] += r['total_excluded']
+                totales[tipo_linea]['total'] += precio * l.quantity
                 if len(l.tax_ids) > 0:
                     linea[tipo_linea] += r['total_excluded']
                     totales[tipo_linea]['neto'] += r['total_excluded']
@@ -115,7 +115,7 @@ class ReporteCompras(models.AbstractModel):
                     linea[tipo_linea+'_exento'] += r['total_excluded']
                     totales[tipo_linea]['exento'] += r['total_excluded']
 
-                linea['total'] += precio * l.quantity
+                linea['total'] += totales[tipo_linea]['total']
 
             lineas.append(linea)
             
