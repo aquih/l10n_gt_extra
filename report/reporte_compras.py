@@ -63,7 +63,7 @@ class ReporteCompras(models.AbstractModel):
             linea = {
                 'estado': f.state,
                 'tipo': tipo,
-                'fecha': f.date,
+                'fecha': f.invoice_date,
                 'numero': numero,
                 'proveedor': f.partner_id,
                 'compra': 0,
