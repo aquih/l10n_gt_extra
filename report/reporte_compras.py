@@ -140,7 +140,7 @@ class ReporteCompras(models.AbstractModel):
             'data': data['form'],
             'docs': docs,
             'lineas': self.lineas,
-            'direccion': diario.direccion and diario.direccion.street,
+            'direccion_diario': diario.direccion and diario.direccion.street,
             'current_company_id': self.env.company,
         }
 
