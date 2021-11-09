@@ -187,7 +187,7 @@ class ReporteVentas(models.AbstractModel):
             'data': data['form'],
             'docs': docs,
             'lineas': self.lineas,
-            'direccion_diario': diario.direccion and diario.direccion.street,
+            'direccion_diario': diario.direccion,
             'current_company_id': self.env.company,
         }
 
