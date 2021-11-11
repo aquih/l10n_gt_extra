@@ -19,7 +19,7 @@
                             <strong>Nombre comercial:</strong> <span t-esc="direccion_diario.name if direccion_diario else current_company_id.partner_id.name"/><br/>
                         </div>
                         <div class="col-xs-4">
-                           <strong>Domicilio fiscal:</strong> <span t-esc="direccion_diario.street if direccion_diario else current_company_id.partner_id.street"/><br/>
+                            <strong>Domicilio fiscal:</strong> <span t-esc="direccion_diario.street if direccion_diario else current_company_id.partner_id.street"/><br/>
                             <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-options='{"widget": "date"}'/> al: <span t-esc="data['fecha_hasta']" t-options='{"widget": "date"}'/><br/>
                         </div>
                     </div>
