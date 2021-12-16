@@ -88,7 +88,7 @@ class ReporteDiario(models.AbstractModel):
                     la['total_debe'] += l['debe']
                     la['total_haber'] += l['haber']
 
-            lineas = cuentas_agrupadas.values()
+            lineas = sorted(cuentas_agrupadas.values(), key=lambda l: l['fecha'])
         else:
             self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
             	'from account_move_line l join account_account a on(l.account_id = a.id)' \
