@@ -10,7 +10,7 @@
             <field name="amount" eval="0.5"/>
             <field name="amount_type">code</field>
             <field name="type_tax_use">purchase</field>
-            <field name="price_include" eval="True"/>
+            <field name="price_include" eval="False"/>
             <field name="python_compute">
 result = base_amount * 0.005
             </field>
@@ -103,7 +103,7 @@ else:
             <field name="amount" eval="0.5"/>
             <field name="amount_type">code</field>
             <field name="type_tax_use">purchase</field>
-            <field name="price_include" eval="True"/>
+            <field name="price_include" eval="False"/>
             <field name="python_compute">
 result = base_amount * 0.005
             </field>
