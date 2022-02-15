@@ -10,7 +10,7 @@ class ReporteDiario(models.AbstractModel):
         saldo_inicial = 0
         self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, sum(l.debit) as debe, sum(l.credit) as haber '\
         'from account_move_line l join account_account a on(l.account_id = a.id)'\
-        'where l.parent_state = 'posted' and a.id = %s and l.date < %s group by a.id, a.code, a.name,l.debit,l.credit', (cuenta,fecha_desde))
+        'where l.parent_state = \'posted\' and a.id = %s and l.date < %s group by a.id, a.code, a.name,l.debit,l.credit', (cuenta,fecha_desde))
         for m in self.env.cr.dictfetchall():
             saldo_inicial += m['debe'] - m['haber']
         return saldo_inicial
@@ -20,7 +20,7 @@ class ReporteDiario(models.AbstractModel):
         fecha = fields.Date.from_string(fecha_desde)
         self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, sum(l.debit) as debe, sum(l.credit) as haber '\
         'from account_move_line l join account_account a on(l.account_id = a.id)'\
-        'where l.parent_state = 'posted' and a.id = %s and l.date < %s and l.date >= %s group by a.id, a.code, a.name,l.debit,l.credit', (cuenta,fecha_desde,fecha.strftime('%Y-1-1')))
+        'where l.parent_state = \'posted\' and a.id = %s and l.date < %s and l.date >= %s group by a.id, a.code, a.name,l.debit,l.credit', (cuenta,fecha_desde,fecha.strftime('%Y-1-1')))
         for m in self.env.cr.dictfetchall():
             saldo_inicial += m['debe'] - m['haber']
         return saldo_inicial
@@ -45,7 +45,7 @@ class ReporteDiario(models.AbstractModel):
             self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, l.date as fecha, t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
             	'from account_move_line l join account_account a on(l.account_id = a.id)' \
             	'join account_account_type t on (t.id = a.user_type_id)' \
-            	'where l.parent_state = 'posted' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,l.date, t.include_initial_balance ORDER BY l.date,a.code',
+            	'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,l.date, t.include_initial_balance ORDER BY l.date,a.code',
             (datos['fecha_desde'], datos['fecha_hasta']))
 
             for r in self.env.cr.dictfetchall():
@@ -93,7 +93,7 @@ class ReporteDiario(models.AbstractModel):
             self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
             	'from account_move_line l join account_account a on(l.account_id = a.id)' \
             	'join account_account_type t on (t.id = a.user_type_id)' \
-            	'where l.parent_state = 'posted' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.include_initial_balance ORDER BY a.code',
+            	'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.include_initial_balance ORDER BY a.code',
             (datos['fecha_desde'], datos['fecha_hasta']))
 
             for r in self.env.cr.dictfetchall():
