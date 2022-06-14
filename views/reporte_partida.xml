@@ -62,10 +62,10 @@
                                         <td>
                                         </td>
                                         <td class="text-right">
-                                             <span t-esc="total_debe" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                             <span t-esc="total_debe" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                         </td>
                                         <td class="text-right">
-                                            <span t-esc="total_haber" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                            <span t-esc="total_haber" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                         </td>
                                     </tr>
                                 </tbody>
