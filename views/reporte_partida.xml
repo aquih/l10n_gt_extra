@@ -47,10 +47,10 @@
                                             <span t-field="l.analytic_account_id"/>
                                         </td>
                                         <td class="text-right">
-                                             <span t-field="l.debit" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                             <span t-field="l.debit" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                         </td>
                                         <td class="text-right">
-                                            <span t-field="l.credit" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                            <span t-field="l.credit" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                         </td>
                                     </tr>
                                     <tr>
