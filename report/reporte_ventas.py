@@ -97,7 +97,6 @@ class ReporteVentas(models.AbstractModel):
             }
 
             if f.state == 'cancel':
-                linea['numero'] = f.name
                 lineas.append(linea)
                 continue
 
