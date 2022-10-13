@@ -5,7 +5,7 @@
     'version': '3.1',
     'category': 'Localization',
     'description': """ Reportes requeridos por la SAT y otra funcionalidad extra para llevar un contabilidad en Guatemala. """,
-    'author': 'José Rodrigo Fernández Menegazzo',
+    'author': 'aquíH',
     'website': 'http://aquih.com/',
     'depends': ['l10n_gt', 'account_tax_python', 'product'],
     'data': [
