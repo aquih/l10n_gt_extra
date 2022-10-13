@@ -2,7 +2,7 @@
 
 {
     'name': 'Guatemala - Reportes y funcionalidad extra',
-    'version': '3.0',
+    'version': '3.1',
     'category': 'Localization',
     'description': """ Reportes requeridos por la SAT y otra funcionalidad extra para llevar un contabilidad en Guatemala. """,
     'author': 'José Rodrigo Fernández Menegazzo',
