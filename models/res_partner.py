@@ -19,6 +19,9 @@ class ResPartner(models.Model):
 
             if p.country_id and p.country_id.code != 'GT':
                 return True
+            
+            if p.company_id and p.company_id.country_id and p.company_id.country_id.code != 'GT':
+                return True
 
             if p.no_validar_nit:
                 return True
