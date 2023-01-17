@@ -20,13 +20,18 @@ class ResPartner(models.Model):
             if p.country_id and p.country_id.code != 'GT':
                 return True
             
+            if p.no_validar_nit:
+                return True
+            
             if p.company_id and p.company_id.country_id and p.company_id.country_id.code != 'GT':
                 return True
 
-            if p.no_validar_nit:
+            # Si es un CUI no validarlo
+            if len(p.vat) > 9:
                 return True
 
-            # No validar NIT si el partner fue creado desde un sitio web, para evitar errores
+            # No validar NIT si el partner fue creado desde un sitio web,
+            # para evitar errores
             if 'website_id' in p.env.context:
                 return True
 
