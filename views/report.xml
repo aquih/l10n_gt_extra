@@ -1,254 +1,310 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <template id="l10n_gt_extra_minimal" inherit_id="web.minimal_layout">
-            <script position="replace">
-                <script>
-                    function subst() {
-                        var vars = {};
-                        var x = document.location.search.substring(1).split('&amp;');
-                        for (var i in x) {
-                            var z = x[i].split('=', 2);
-                            vars[z[0]] = unescape(z[1]);
-                        }
-                        var fromPage = document.getElementsByClassName('page');
-                        for(var j = 0; j&lt;fromPage.length; j++) {
-                            var offset = fromPage[j].textContent || 0;
-                            fromPage[j].textContent = parseInt(vars['sitepage']) + parseInt(offset);
-                        }
-                        var toPage = document.getElementsByClassName('topage');
-                        for(var j = 0; j&lt;toPage.length; j++) {
-                            var offset = fromPage[j].textContent || 0;
-                            toPage[j].textContent = vars['sitepages'];
-                        }
-                        var index = vars['webpage'].split('.', 4)[3]
-                        var header = document.getElementById('minimal_layout_report_headers');
-                        if(header !== null){
-                            var companyHeader = header.children[index];
-                            header.textContent = '';
-                            header.appendChild(companyHeader);
-                        }
-                        var footer = document.getElementById('minimal_layout_report_footers');
-                        if(footer !== null){
-                            var companyFooter = footer.children[index];
-                            footer.textContent = '';
-                            footer.appendChild(companyFooter);
-                        }
+    <template id="l10n_gt_extra_minimal" inherit_id="web.minimal_layout">
+        <script position="replace">
+            <script>
+                function subst() {
+                    var vars = {};
+                    var x = document.location.search.substring(1).split('&amp;');
+                    for (var i in x) {
+                        var z = x[i].split('=', 2);
+                        vars[z[0]] = unescape(z[1]);
                     }
-                </script>
+                    var fromPage = document.getElementsByClassName('page');
+                    for(var j = 0; j&lt;fromPage.length; j++) {
+                        var offset = fromPage[j].textContent || 0;
+                        fromPage[j].textContent = parseInt(vars['sitepage']) + parseInt(offset);
+                    }
+                    var toPage = document.getElementsByClassName('topage');
+                    for(var j = 0; j&lt;toPage.length; j++) {
+                        var offset = fromPage[j].textContent || 0;
+                        toPage[j].textContent = vars['sitepages'];
+                    }
+                    var index = vars['webpage'].split('.', 4)[3]
+                    var header = document.getElementById('minimal_layout_report_headers');
+                    if(header !== null){
+                        var companyHeader = header.children[index];
+                        header.textContent = '';
+                        header.appendChild(companyHeader);
+                    }
+                    var footer = document.getElementById('minimal_layout_report_footers');
+                    if(footer !== null){
+                        var companyFooter = footer.children[index];
+                        footer.textContent = '';
+                        footer.appendChild(companyFooter);
+                    }
+                }
             </script>
-        </template>
-        
-        <menuitem id="menu_informes" name="Informes de Guatemala" parent="account.menu_finance_reports"/>
+        </script>
+    </template>
+    
+    <menuitem id="menu_informes" name="Informes de Guatemala" parent="account.menu_finance_reports"/>
 
-        <record id="asistente_reporte_banco" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.asistente_reporte_banco</field>
-            <field name="model">l10n_gt_extra.asistente_reporte_banco</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Seleccione cuenta y rango de fecha">
+    <record id="asistente_reporte_banco" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.asistente_reporte_banco</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_banco</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Seleccione cuenta y rango de fecha">
+                <group>
                     <group>
-                        <group>
-                            <field name="cuenta_bancaria_id"/>
-                        </group>
-                        <group>
-                            <field name="fecha_desde"/>
-                            <field name="fecha_hasta"/>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
-                        <button special="cancel" string="Cancel" class="oe_link"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
-
-        <act_window id="window_reporte_banco" name="Libro de banco" res_model="l10n_gt_extra.asistente_reporte_banco" binding_model="account.account" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_banco" id="menu_asistente_reporte_banco" parent="menu_informes"/>
-        <report id="action_reporte_banco" model="l10n_gt_extra.asistente_reporte_banco" string="Libro de banco" report_type="qweb-pdf" name="l10n_gt_extra.reporte_banco" file="l10n_gt_extra.reporte_banco"/>
-
-        <report id="action_reporte_partida" model="account.move" string="Partida" report_type="qweb-pdf" name="l10n_gt_extra.reporte_partida" file="l10n_gt_extra.reporte_partida"/>
-
-        <record id="asistente_compras_reporte" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.asistente_reporte_compras</field>
-            <field name="model">l10n_gt_extra.asistente_reporte_compras</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Seleccione diario y rango de fecha">
-                    <group>
-                        <group>
-                            <field name="folio_inicial"/>
-                            <field name="impuesto_id" domain="[('type_tax_use','in',['purchase'])]"/>
-                        </group>
-                        <group>
-                            <field name="fecha_desde"/>
-                            <field name="fecha_hasta"/>
-                        </group>
+                        <field name="cuenta_bancaria_id"/>
                     </group>
                     <group>
-                        <separator colspan="4" string="Diarios"/>
-                        <field name="diarios_id" nolabel="1" domain="[('type','in',['purchase','purchase_refund'])]"/>
+                        <field name="fecha_desde"/>
+                        <field name="fecha_hasta"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                    <button special="cancel" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="window_reporte_banco" model="ir.actions.act_window">
+        <field name="name">Libro de Banco</field>
+        <field name="res_model">l10n_gt_extra.asistente_reporte_banco</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="account.model_account_account"/>
+        <field name="target">new</field>
+    </record>
+    <record id="action_reporte_banco" model="ir.actions.report">
+        <field name="name">l10n_gt_extra.reporte_banco</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_banco</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_gt_extra.reporte_banco</field>
+        <field name="report_file">l10n_gt_extra.reporte_banco</field>
+    </record>
+    <menuitem action="window_reporte_banco" id="menu_asistente_reporte_banco" parent="menu_informes"/>
+
+    <record id="action_reporte_partida" model="ir.actions.report">
+        <field name="name">l10n_gt_extra.reporte_partida</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_gt_extra.reporte_partida</field>
+        <field name="report_file">l10n_gt_extra.reporte_partida</field>
+    </record>
+
+    <record id="asistente_compras_reporte" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.asistente_reporte_compras</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_compras</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Seleccione diarios y rango de fecha">
+                <group>
+                    <group>
+                        <field name="folio_inicial"/>
+                        <field name="fecha_desde"/>
+                        <field name="fecha_hasta"/>
                     </group>
                     <group>
+                        <field name="impuesto_id" domain="[('type_tax_use','in',['purchase'])]"/>
+                        <field name="diarios_id" domain="[('type','in',['purchase','purchase_refund'])]" widget="many2many_tags"/>
+                        <field name="archivo" readonly="1" filename="name"/>
+                        <field name="name" invisible="1"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                    <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
+                    <button special="cancel" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="window_reporte_compras" model="ir.actions.act_window">
+        <field name="name">Libro de Compras</field>
+        <field name="res_model">l10n_gt_extra.asistente_reporte_compras</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="account.model_account_journal"/>
+        <field name="target">new</field>
+    </record>
+    <record id="action_reporte_compras" model="ir.actions.report">
+        <field name="name">l10n_gt_extra.reporte_compras</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_compras</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_gt_extra.reporte_compras</field>
+        <field name="report_file">l10n_gt_extra.reporte_compras</field>
+    </record>
+    <menuitem action="window_reporte_compras" id="menu_asistente_reporte_compras" parent="menu_informes"/>
+
+    <record id="asistente_ventas_reporte" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.asistente_reporte_ventas</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_ventas</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Seleccione diarios y rango de fecha">
+                <group>
+                    <group>
+                        <field name="folio_inicial"/>
+                        <field name="fecha_desde"/>
+                        <field name="fecha_hasta"/>
+                        <field name="resumido"/>
+                    </group>
+                    <group>
+                        <field name="impuesto_id" domain="[('type_tax_use','in',['sale'])]"/>
+                        <field name="diarios_id" domain="[('type','in',['sale','sale_refund'])]" widget="many2many_tags"/>
                         <field name="name" invisible="1"/>
                         <field name="archivo" readonly="1" filename="name"/>
                     </group>
-                    <footer>
-                        <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
-                        <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
-                        <button special="cancel" string="Cancel" class="oe_link"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+                </group>
+                <footer>
+                    <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                    <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
+                    <button special="cancel" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
-        <act_window id="window_reporte_compras" name="Libro de compras" res_model="l10n_gt_extra.asistente_reporte_compras" binding_model="account.journal" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_compras" id="menu_asistente_reporte_compras" parent="menu_informes"/>
-        <report id="action_reporte_compras" model="l10n_gt_extra.asistente_reporte_compras" string="Libro de compras" report_type="qweb-pdf" name="l10n_gt_extra.reporte_compras" file="l10n_gt_extra.reporte_compras"/>
+    <record id="window_reporte_ventas" model="ir.actions.act_window">
+        <field name="name">Libro de Ventas</field>
+        <field name="res_model">l10n_gt_extra.asistente_reporte_ventas</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="account.model_account_journal"/>
+        <field name="target">new</field>
+    </record>
+    <record id="action_reporte_ventas" model="ir.actions.report">
+        <field name="name">l10n_gt_extra.reporte_ventas</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_ventas</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_gt_extra.reporte_ventas</field>
+        <field name="report_file">l10n_gt_extra.reporte_ventas</field>
+    </record>
+    <menuitem action="window_reporte_ventas" id="menu_asistente_reporte_ventas" parent="menu_informes"/>
 
-        <record id="asistente_ventas_reporte" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.asistente_reporte_ventas</field>
-            <field name="model">l10n_gt_extra.asistente_reporte_ventas</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Seleccione diario peridodos">
+    <record id="asistente_reporte_diario" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.asistente_reporte_diario</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_diario</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Seleccione cuentas y rango de fecha">
+                <group>
                     <group>
-                        <group>
-                            <field name="folio_inicial"/>
-                            <field name="impuesto_id" domain="[('type_tax_use','in',['sale'])]"/>
-                            <field name="resumido"/>
-                        </group>
-                        <group>
-                            <field name="fecha_desde"/>
-                            <field name="fecha_hasta"/>
-                        </group>
+                        <field name="folio_inicial"/>
+                        <field name="fecha_desde"/>
+                        <field name="fecha_hasta"/>
                     </group>
                     <group>
-                        <separator colspan="4" string="Diarios"/>
-                        <field name="diarios_id" nolabel="1" domain="[('type','in',['sale','sale_refund'])]"/>
-                    </group>
-                    <group>
+                        <field name="agrupado_por_dia"/>
                         <field name="name" invisible="1"/>
                         <field name="archivo" readonly="1" filename="name"/>
                     </group>
-                    <footer>
-                        <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
-                        <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
-                        <button special="cancel" string="Cancel" class="oe_link"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+                </group>
+                <separator colspan="4" string="Cuentas"/>
+                <field name="cuentas_id" nolabel="1"/>
+                <footer>
+                    <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                    <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
+                    <button special="cancel" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
-        <act_window id="window_reporte_ventas" name="Libro de ventas" res_model="l10n_gt_extra.asistente_reporte_ventas" binding_model="account.journal" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_ventas" id="menu_asistente_reporte_ventas" parent="menu_informes"/>
-        <report id="action_reporte_ventas" model="l10n_gt_extra.asistente_reporte_ventas" string="Libro de ventas" report_type="qweb-pdf" name="l10n_gt_extra.reporte_ventas" file="l10n_gt_extra.reporte_ventas"/>
+    <record id="window_reporte_diario" model="ir.actions.act_window">
+        <field name="name">Libro de Diario</field>
+        <field name="res_model">l10n_gt_extra.asistente_reporte_diario</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="account.model_account_account"/>
+        <field name="target">new</field>
+    </record>
+    <record id="action_reporte_diario" model="ir.actions.report">
+        <field name="name">l10n_gt_extra.reporte_diario</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_diario</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_gt_extra.reporte_diario</field>
+        <field name="report_file">l10n_gt_extra.reporte_diario</field>
+    </record>
+    <menuitem action="window_reporte_diario" id="menu_asistente_reporte_diario" parent="menu_informes"/>
 
-        <record id="asistente_reporte_diario" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.asistente_reporte_diario</field>
-            <field name="model">l10n_gt_extra.asistente_reporte_diario</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Seleccione Cuentas y rango de fecha">
+    <record id="asistente_reporte_mayor" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.asistente_reporte_mayor</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_mayor</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Seleccione cuentas y rango de fecha">
+                <group>
                     <group>
-                        <group>
-                            <field name="folio_inicial"/>
-                            <field name="agrupado_por_dia"/>
-                        </group>
-                        <group>
-                            <field name="fecha_desde"/>
-                            <field name="fecha_hasta"/>
-                        </group>
+                        <field name="folio_inicial"/>
+                        <field name="fecha_desde"/>
+                        <field name="fecha_hasta"/>
                     </group>
                     <group>
-                        <separator colspan="4" string="Cuentas"/>
-                        <field name="cuentas_id" nolabel="1"/>
-                    </group>
-                    <group>
+                        <field name="agrupado_por_dia"/>
                         <field name="name" invisible="1"/>
                         <field name="archivo" readonly="1" filename="name"/>
                     </group>
-                    <footer>
-                        <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
-                        <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
-                        <button special="cancel" string="Cancel" class="oe_link"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+                </group>
+                <separator colspan="4" string="Cuentas"/>
+                <field name="cuentas_id" nolabel="1"/>
+                <footer>
+                    <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                    <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
+                    <button special="cancel" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
-        <act_window id="window_reporte_diario" name="Libro diario" res_model="l10n_gt_extra.asistente_reporte_diario" binding_model="account.account" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_diario" id="menu_asistente_reporte_diario" parent="menu_informes"/>
-        <report id="action_reporte_diario" model="l10n_gt_extra.asistente_reporte_diario" string="Libro Diario" report_type="qweb-pdf" name="l10n_gt_extra.reporte_diario" file="l10n_gt_extra.reporte_diario"/>
+    <record id="window_reporte_mayor" model="ir.actions.act_window">
+        <field name="name">Libro de Mayor</field>
+        <field name="res_model">l10n_gt_extra.asistente_reporte_mayor</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="account.model_account_account"/>
+        <field name="target">new</field>
+    </record>
+    <record id="action_reporte_mayor" model="ir.actions.report">
+        <field name="name">l10n_gt_extra.reporte_mayor</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_mayor</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_gt_extra.reporte_mayor</field>
+        <field name="report_file">l10n_gt_extra.reporte_mayor</field>
+    </record>
+    <menuitem action="window_reporte_mayor" id="menu_asistente_reporte_mayor" parent="menu_informes"/>
 
-        <record id="asistente_reporte_mayor" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.asistente_reporte_mayor</field>
-            <field name="model">l10n_gt_extra.asistente_reporte_mayor</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Seleccione Cuentas y rango de fecha">
+    <record id="asistente_reporte_inventario" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.asistente_reporte_inventario</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_inventario</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Seleccione cuentas y rango de fecha">
+                <group>
                     <group>
-                        <group>
-                            <field name="folio_inicial"/>
-                            <field name="agrupado_por_dia"/>
-                        </group>
-                        <group>
-                            <field name="fecha_desde"/>
-                            <field name="fecha_hasta"/>
-                        </group>
+                        <field name="folio_inicial"/>
                     </group>
                     <group>
-                        <separator colspan="4" string="Cuentas"/>
-                        <field name="cuentas_id" nolabel="1"/>
+                        <field name="fecha_hasta"/>
                     </group>
-                    <group>
-                        <field name="name" invisible="1"/>
-                        <field name="archivo" readonly="1" filename="name"/>
-                    </group>
-                    <footer>
-                        <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
-                        <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
-                        <button special="cancel" string="Cancel" class="oe_link"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+                </group>
+                <separator colspan="4" string="Cuentas"/>
+                <field name="cuentas_id" nolabel="1"/>
+                <footer>
+                    <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                    <button special="cancel" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
-        <act_window id="window_reporte_mayor" name="Libro mayor" res_model="l10n_gt_extra.asistente_reporte_mayor" binding_model="account.account" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_mayor" id="menu_asistente_reporte_mayor" parent="menu_informes"/>
-        <report id="action_reporte_mayor" model="l10n_gt_extra.asistente_reporte_mayor" string="Libro Mayor" report_type="qweb-pdf" name="l10n_gt_extra.reporte_mayor" file="l10n_gt_extra.reporte_mayor"/>
+    <record id="window_reporte_inventario" model="ir.actions.act_window">
+        <field name="name">Libro de Inventario</field>
+        <field name="res_model">l10n_gt_extra.asistente_reporte_inventario</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="account.model_account_account"/>
+        <field name="target">new</field>
+    </record>
+    <record id="action_reporte_inventario" model="ir.actions.report">
+        <field name="name">l10n_gt_extra.reporte_inventario</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_inventario</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_gt_extra.reporte_inventario</field>
+        <field name="report_file">l10n_gt_extra.reporte_inventario</field>
+    </record>
+    <menuitem action="window_reporte_inventario" id="menu_asistente_reporte_inventario" parent="menu_informes"/>
 
-        <record id="asistente_reporte_inventario" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.asistente_reporte_inventario</field>
-            <field name="model">l10n_gt_extra.asistente_reporte_inventario</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Seleccione Cuentas y rango de fecha">
-                    <group>
-                        <group>
-                            <field name="folio_inicial"/>
-                        </group>
-                        <group>
-                            <field name="fecha_hasta"/>
-                        </group>
-                    </group>
-                    <group>
-                        <separator colspan="4" string="Cuentas"/>
-                        <field name="cuentas_id" nolabel="1"/>
-                    </group>
-                    <footer>
-                        <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
-                        <button special="cancel" string="Cancel" class="oe_link"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
-
-        <act_window id="window_reporte_inventario" name="Libro inventario" res_model="l10n_gt_extra.asistente_reporte_inventario" binding_model="account.account" view_mode="form" target="new"/>
-        <menuitem action="window_reporte_inventario" id="menu_asistente_reporte_inventario" parent="menu_informes"/>
-        <report id="action_reporte_inventario" model="l10n_gt_extra.asistente_reporte_inventario" string="Libro Inventario" report_type="qweb-pdf" name="l10n_gt_extra.reporte_inventario" file="l10n_gt_extra.reporte_inventario"/>
-
-    </data>
 </odoo>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
     <record id="l10n_gt_extra.product_template_form_view" model="ir.ui.view">
         <field name="name">l10n_gt_extra.product.template.common.form</field>
@@ -39,7 +38,4 @@
         </field>
     </record>
 
-
-
-    </data>
 </odoo>

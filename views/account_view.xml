@@ -62,11 +62,13 @@
             <field name="inherit_id" ref="account.view_account_journal_form"/>
             <field name="arch" type="xml">
                 <notebook position="inside">
-                    <page string="Extra">
-                        <group name="extra" string="Extra">
+                    <page string="Extra" name="extra">
+                        <group string="Configuración GT">
                             <group>
                                 <field name="direccion" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
                                 <field name="codigo_establecimiento" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
+                            </group>
+                            <group>
                                 <field name="facturas_por_rangos" attrs="{'invisible': [('type', 'not in', ['sale'])]}"/>
                                 <field name="usar_referencia" attrs="{'invisible': [('type', 'not in', ['sale'])]}"/>
                             </group>
