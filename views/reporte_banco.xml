@@ -62,7 +62,7 @@
                                     <span t-esc="l['nombre']"/>
                                 </td>
                                 <td>
-                                    <span t-esc="l['concepto']"/>
+                                    <div style="overflow-wrap: break-word; max-width: 20em"><span t-esc="l['concepto']"/></div>
                                 </td>
                                 <td class="text-right">
                                      <span t-esc="l['debito']" t-options="{'widget': 'monetary', 'display_currency': l['moneda']}"/>

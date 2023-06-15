@@ -38,15 +38,11 @@ class ReporteInventario(models.AbstractModel):
         totales['saldo_final'] = 0
         fecha_desde = ''
 
-        fecha_desde =  str(datetime.date.today().strftime("%Y") + '-' + '01' + '-' + '01')
+        fecha_desde = str(fields.Date.to_date(datos['fecha_hasta']).strftime("%Y") + '-' + '01' + '-' + '01')
         account_ids = [x for x in datos['cuentas_id']]
-        movimientos = self.env['account.move.line'].search([
-            ('account_id','in',account_ids),
-            ('date','<=',datos['fecha_hasta']),
-            ('date','>=',fecha_desde)])
-
         accounts_str = ','.join([str(x) for x in datos['cuentas_id']])
-        self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta,t.id as id_cuenta,t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
+        
+        self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta,t.id as id_cuenta, t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
         	'from account_move_line l join account_account a on(l.account_id = a.id)' \
         	'join account_account_type t on (t.id = a.user_type_id)' \
         	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.id,t.include_initial_balance ORDER BY a.code',
@@ -65,9 +61,9 @@ class ReporteInventario(models.AbstractModel):
                 'saldo_final': 0,
                 'balance_inicial': r['balance_inicial']
             }
-            if r['id_cuenta'] in [1,3,7,8]:
+            if r['id_cuenta'] in [1,3,5,6,7,8]:
                 lineas['activo'].append(linea)
-            elif r['id_cuenta'] in [9,4,2,10]:
+            elif r['id_cuenta'] in [2,4,9,10]:
                 lineas['pasivo'].append(linea)
             elif r['id_cuenta'] in [11]:
                 lineas['capital'].append(linea)
@@ -110,9 +106,8 @@ class ReporteInventario(models.AbstractModel):
 
         return {'lineas': lineas,'totales': totales }
 
-    def fecha_desde(self):
-        fecha_desde =  str(datetime.date.today().strftime("%Y") + '-' + '01' + '-' + '01')
-        return fecha_desde
+    def fecha_desde(self, datos):
+        return str(fields.Date.to_date(datos['fecha_hasta']).strftime("%Y") + '-' + '01' + '-' + '01')
 
     @api.model
     def _get_report_values(self, docids, data=None):
