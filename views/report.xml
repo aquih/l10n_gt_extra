@@ -81,7 +81,7 @@
     <menuitem action="window_reporte_banco" id="menu_asistente_reporte_banco" parent="menu_informes"/>
 
     <record id="action_reporte_partida" model="ir.actions.report">
-        <field name="name">l10n_gt_extra.reporte_partida</field>
+        <field name="name">Partida</field>
         <field name="model">account.move</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">l10n_gt_extra.reporte_partida</field>
