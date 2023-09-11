@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from odoo import api, models, fields
+from odoo.release import version_info
 import logging
 
 class ReporteMayor(models.AbstractModel):
@@ -41,12 +42,20 @@ class ReporteMayor(models.AbstractModel):
             ('date','<=',datos['fecha_hasta']),
             ('date','>=',datos['fecha_desde'])])
 
+        if version_info[0] in [13, 14, 15]:
+            include_initial_balance = 't.include_initial_balance'
+            join_initial_balance = 'join account_account_type t on (t.id = a.user_type_id)'
+        else:
+            include_initial_balance = 'a.include_initial_balance'
+            join_initial_balance = ''
+
         accounts_str = ','.join([str(x) for x in datos['cuentas_id']])
         if datos['agrupado_por_dia']:
-            self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, l.date as fecha, t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
+            
+            self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, l.date as fecha, ' + include_initial_balance + ' as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
                 'from account_move_line l join account_account a on(l.account_id = a.id)' \
-                'join account_account_type t on (t.id = a.user_type_id)' \
-                'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name, l.date, t.include_initial_balance ORDER BY l.date, a.code',
+                + join_initial_balance + \
+                'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name, l.date, ' + include_initial_balance + ' ORDER BY l.date, a.code',
             (datos['fecha_desde'], datos['fecha_hasta']))
 
             for r in self.env.cr.dictfetchall():
@@ -93,10 +102,11 @@ class ReporteMayor(models.AbstractModel):
 
             lineas = sorted(cuentas_agrupadas.values(), key=lambda l: l['codigo'])
         else:
-            self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
+
+            self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, ' + include_initial_balance + ' as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
             	'from account_move_line l join account_account a on(l.account_id = a.id)' \
-            	'join account_account_type t on (t.id = a.user_type_id)' \
-            	'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.include_initial_balance ORDER BY a.code',
+            	+ join_initial_balance + \
+            	'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name, ' + include_initial_balance + ' ORDER BY a.code',
             (datos['fecha_desde'], datos['fecha_hasta']))
 
             for r in self.env.cr.dictfetchall():
