@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.release import version_info
 from odoo.exceptions import UserError, ValidationError
 import time
 import xlsxwriter
@@ -12,10 +13,13 @@ class AsistenteReporteDiario(models.TransientModel):
     _name = 'l10n_gt_extra.asistente_reporte_diario'
 
     def _default_cuenta(self):
-        if len(self.env.context.get('active_ids', [])) > 0:
-            return self.env.context.get('active_ids')
+        if version_info[0] in [13, 14, 15]:
+            if len(self.env.context.get('active_ids', [])) > 0:
+                return self.env.context.get('active_ids')
+            else:
+                return self.env['account.account'].search([]).ids
         else:
-            return self.env['account.account'].search([]).ids
+            return []
 
     cuentas_id = fields.Many2many("account.account", string="Diario", required=True, default=_default_cuenta)
     folio_inicial = fields.Integer(string="Folio Inicial", required=True, default=1)
@@ -26,6 +30,9 @@ class AsistenteReporteDiario(models.TransientModel):
     archivo = fields.Binary('Archivo', filters='.xls')
 
     def print_report(self):
+        if not self.cuentas_id:
+            raise UserError('Debe ingresar las cuentas que serán utilizadas en el reporte')
+
         data = {
              'ids': [],
              'model': 'l10n_gt_extra.asistente_reporte_diario',
@@ -34,6 +41,9 @@ class AsistenteReporteDiario(models.TransientModel):
         return self.env.ref('l10n_gt_extra.action_reporte_diario').report_action(self, data=data)
 
     def print_report_excel(self):
+        if not self.cuentas_id:
+            raise UserError('Debe ingresar las cuentas que serán utilizadas en el reporte')
+
         for w in self:
             dict = {}
             dict['fecha_hasta'] = w['fecha_hasta']
