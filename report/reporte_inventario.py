@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from odoo import api, models, fields
+from odoo.release import version_info
 import time
 import datetime
 import logging
@@ -41,11 +42,20 @@ class ReporteInventario(models.AbstractModel):
         fecha_desde = str(fields.Date.to_date(datos['fecha_hasta']).strftime("%Y") + '-' + '01' + '-' + '01')
         account_ids = [x for x in datos['cuentas_id']]
         accounts_str = ','.join([str(x) for x in datos['cuentas_id']])
-        
-        self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta,t.id as id_cuenta, t.include_initial_balance as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
+
+        if version_info[0] in [13, 14, 15]:
+            include_initial_balance = 't.include_initial_balance'
+            join_initial_balance = 'join account_account_type t on (t.id = a.user_type_id)'
+            account_type = 't.id'
+        else:
+            include_initial_balance = 'a.include_initial_balance'
+            join_initial_balance = ''
+            account_type = 'a.account_type'
+
+        self.env.cr.execute('select a.id, a.code as codigo, a.name as cuenta, ' + account_type + ' as id_cuenta, ' + include_initial_balance + ' as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
         	'from account_move_line l join account_account a on(l.account_id = a.id)' \
-        	'join account_account_type t on (t.id = a.user_type_id)' \
-        	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,t.id,t.include_initial_balance ORDER BY a.code',
+        	+ join_initial_balance + \
+        	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name, ' + account_type + ',' + include_initial_balance + ' ORDER BY a.code',
         (fecha_desde, datos['fecha_hasta']))
 
         for r in self.env.cr.dictfetchall():
@@ -61,12 +71,21 @@ class ReporteInventario(models.AbstractModel):
                 'saldo_final': 0,
                 'balance_inicial': r['balance_inicial']
             }
-            if r['id_cuenta'] in [1,3,5,6,7,8]:
-                lineas['activo'].append(linea)
-            elif r['id_cuenta'] in [2,4,9,10]:
-                lineas['pasivo'].append(linea)
-            elif r['id_cuenta'] in [11]:
-                lineas['capital'].append(linea)
+
+            if version_info[0] in [13, 14, 15]:
+                if r['id_cuenta'] in [1,3,5,6,7,8]:
+                    lineas['activo'].append(linea)
+                elif r['id_cuenta'] in [2,4,9,10]:
+                    lineas['pasivo'].append(linea)
+                elif r['id_cuenta'] in [11]:
+                    lineas['capital'].append(linea)
+            else:
+                if r['id_cuenta'][0:5] == 'asset':
+                    lineas['activo'].append(linea)
+                elif r['id_cuenta'][0:9] == 'liability':
+                    lineas['pasivo'].append(linea)
+                elif r['id_cuenta'][0:6] == 'equity':
+                    lineas['capital'].append(linea)
 
         for l in lineas['activo']:
             if not l['balance_inicial']:
