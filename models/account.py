@@ -3,6 +3,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.addons.l10n_gt_extra import a_letras
+from odoo.release import version_info
 
 import datetime
 import logging
@@ -96,6 +97,11 @@ class AccountPayment(models.Model):
             rec.write({'numero_viejo': rec.name})
         return super(AccountPayment, self).cancel()
 
+    def action_cancel(self):
+        for rec in self:
+            rec.write({'numero_viejo': rec.name})
+        return super(AccountPayment, self).action_cancel()
+
     def anular(self):
         for rec in self:
             move = self.env['account.move']
@@ -109,8 +115,11 @@ class AccountPayment(models.Model):
 
             move.line_ids.remove_move_reconcile()
             move.line_ids.write({ 'debit': 0, 'credit': 0, 'amount_currency': 0 })
-            
-            move.post()
+
+            if version_info[0] > 13:
+                move._post()
+            else:
+                move.post()
 
             rec.anulado = True
             rec.fecha_anulacion = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d')
