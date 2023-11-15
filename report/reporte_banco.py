@@ -30,9 +30,9 @@ class ReporteBanco(models.AbstractModel):
                 else:
                     detalle['credito'] = -1 * linea.amount_currency
 
-            usar_balance_moneda = False
             # Si la cuenta no tiene moneda o la moneda de la cuenta es la misma de la compañía
             if not cuenta.currency_id or (cuenta.currency_id.id == linea.company_id.currency_id.id):
+                usar_balance_moneda = False
             
                 # Se agregan lineas que no tiene moneda o tienen la misma moneda que la compañía
                 if not linea.currency_id or linea.currency_id.id == linea.company_id.currency_id.id:
