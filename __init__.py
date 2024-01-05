@@ -2,5 +2,7 @@
 
 from . import models
 from . import report
+import logging
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+def _update_gt_taxes(env):
+    env['res.company'].update_gt_taxes()

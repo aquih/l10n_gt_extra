@@ -7,16 +7,13 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
-                <button name="button_draft" position="after">
-                    <button name="impuesto_global" id="impuesto_global" string="Generar Impuesto" class="btn-primary" type="object"/>
-                </button>
                 <field name="fiscal_position_id" position="after">
                     <field name="tipo_gasto"/>
                     <field name="nota_debito"/>
                     <field name="diario_facturas_por_rangos" invisible="1"/>
-                    <field name="serie_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
-                    <field name="inicial_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
-                    <field name="final_rango" attrs="{'invisible': [('diario_facturas_por_rangos','=',False)]}"/>
+                    <field name="serie_rango" invisible="not diario_facturas_por_rangos"/>
+                    <field name="inicial_rango" invisible="not diario_facturas_por_rangos"/>
+                    <field name="final_rango" invisible="not diario_facturas_por_rangos"/>
                 </field>
             </field>
         </record>
@@ -27,31 +24,14 @@
             <field name="inherit_id" ref="account.view_account_payment_form"/>
             <field name="arch" type="xml">
                 <data>
-                    <header position="inside">
-                        <button name="anular" states="posted" string="Anular" type="object"/>
-                    </header>
                     <xpath expr="//group/group[3]" position="after">
                         <group>
-                            <field name="anulado" readonly="1"/>
-                            <field name="fecha_anulacion" readonly="1"/>
                             <field name="descripcion"/>
-                            <field name="numero_viejo" attrs="{'invisible':[('state','!=','draft')]}" readonly="True"/>
                             <field name="nombre_impreso"/>
                             <field name="no_negociable"/>
                         </group>
                     </xpath>
                 </data>
-            </field>
-        </record>
-
-        <record id="l10n_gt_view_account_supplier_payment_tree" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.account.supplier.payment.tree</field>
-            <field name="model">account.payment</field>
-            <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
-            <field name="arch" type="xml">
-                <field name="name" position="after">
-                    <field name="fecha_anulacion"/>
-                </field>
             </field>
         </record>
         
@@ -65,12 +45,12 @@
                     <page string="Extra" name="extra">
                         <group string="Configuración GT">
                             <group>
-                                <field name="direccion" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
-                                <field name="codigo_establecimiento" attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"/>
+                                <field name="direccion" invisible="type not in ['sale', 'purchase']"/>
+                                <field name="codigo_establecimiento" invisible="type not in ['sale', 'purchase']"/>
                             </group>
                             <group>
-                                <field name="facturas_por_rangos" attrs="{'invisible': [('type', 'not in', ['sale'])]}"/>
-                                <field name="usar_referencia" attrs="{'invisible': [('type', 'not in', ['sale'])]}"/>
+                                <field name="facturas_por_rangos" invisible="type not in ['sale']"/>
+                                <field name="usar_referencia" invisible="type not in ['sale']"/>
                             </group>
                         </group>
                     </page>
