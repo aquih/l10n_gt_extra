@@ -9,8 +9,4 @@ impuestos_plantilla_isr_retencion,ISR Retención,ISR Retención,ISR Retención,0
     result += (base_amount - 30000) * -0.07
 else:
     result = base_amount * -0.05",ISR Retención,ISR Retención
-impuestos_plantilla_isr_factura_especial,ISR Factura Especial,ISR Factura Especial,ISR Factura Especial,,code,purchase,False,,"if base_amount &gt; 30000:
-    result = 30000 * -0.05
-    result += (base_amount - 30000) * -0.07
-else:
-    result = base_amount * -0.05",ISR Factura Especial,ISR Factura Especial
+impuestos_plantilla_isr_factura_especial,ISR Factura Especial,ISR Factura Especial,ISR Factura Especial,-5,percent,purchase,False,,,ISR Factura Especial,ISR Factura Especial
