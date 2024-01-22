@@ -22,6 +22,7 @@ class ReporteVentas(models.AbstractModel):
             ('journal_id','in',journal_ids),
             ('date','<=',datos['fecha_hasta']),
             ('date','>=',datos['fecha_desde']),
+            ('amount_total','!=',0),
         ]
         
         if 'type' in self.env['account.move'].fields_get():
