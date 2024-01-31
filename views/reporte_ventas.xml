@@ -189,7 +189,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    Importaciones
+                                    Exportaciones
                                 </td>
                                 <td class="text-right">
                                     <span t-esc="result['totales']['importacion']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
