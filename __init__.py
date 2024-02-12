@@ -2,7 +2,7 @@
 
 from . import models
 from . import report
-import logging
 
 def _update_gt_taxes(env):
-    env['res.company'].update_gt_taxes()
+    for company in env['res.company'].search([('chart_template', '=', 'gt')]):
+        company.update_gt_taxes()
