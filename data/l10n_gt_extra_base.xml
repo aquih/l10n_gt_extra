@@ -163,17 +163,10 @@ else:
             <field name="sequence">25</field>
             <field name="name">ISR Factura Especial</field>
             <field name="description">ISR Factura Especial</field>
-            <field name="amount" eval="0.05"/>
-            <field name="amount_type">code</field>
+            <field name="amount" eval="-5"/>
+            <field name="amount_type">percent</field>
             <field name="type_tax_use">purchase</field>
             <field name="price_include" eval="False"/>
-            <field name="python_compute">
-if base_amount &gt; 30000:
-    result = 30000 * -0.05
-    result += (base_amount - 30000) * -0.07
-else:
-    result = base_amount * -0.05
-            </field>
         </record>
 
     </data>
