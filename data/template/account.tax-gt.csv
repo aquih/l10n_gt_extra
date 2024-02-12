@@ -4,7 +4,7 @@ impuestos_plantilla_idp_super,IDP Super,IDP Super,IDP Super,4.7,fixed,purchase,T
 impuestos_plantilla_idp_regular,IDP Regular,IDP Regular,IDP Regular,4.6,fixed,purchase,True,,,IDP Regular,IDP Regular
 impuestos_plantilla_idp_disel,IDP Disel,IDP Disel,IDP Disel,1.3,fixed,purchase,True,,,IDP Disel,IDP Disel
 impuestos_plantilla_iva_especial,IVA Factura Especial,IVA Factura Especial,IVA Factura Especial,-12,percent,purchase,False,,,IVA Factura Especial,IVA Factura Especial
-impuestos_plantilla_isr_retencion,ISR Retención,ISR Retención,ISR Retención,0.05,code,purchase,False,,"if base_amount &gt; 30000:
+impuestos_plantilla_isr_retencion,ISR Retención,ISR Retención,ISR Retención,0.05,code,purchase,False,,"if base_amount > 30000:
     result = 30000 * -0.05
     result += (base_amount - 30000) * -0.07
 else:
