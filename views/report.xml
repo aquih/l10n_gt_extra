@@ -83,6 +83,7 @@
     <record id="action_reporte_partida" model="ir.actions.report">
         <field name="name">Partida</field>
         <field name="model">account.move</field>
+        <field name="binding_model_id" ref="model_account_move"/>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">l10n_gt_extra.reporte_partida</field>
         <field name="report_file">l10n_gt_extra.reporte_partida</field>
