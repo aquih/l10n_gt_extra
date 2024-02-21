@@ -76,7 +76,7 @@ class AsistenteReporteMayor(models.TransientModel):
 
                 hoja.write(y, 0, 'Codigo')
                 hoja.write(y, 1, 'Cuenta')
-                hoja.write(y, 2, 'fecha')
+                hoja.write(y, 2, 'Fecha')
                 hoja.write(y, 3, 'Saldo Inicial')
                 hoja.write(y, 4, 'Debe')
                 hoja.write(y, 5, 'Haber')
@@ -92,7 +92,7 @@ class AsistenteReporteMayor(models.TransientModel):
                     hoja.write(y, 6, cuenta['saldo_final'], formato_numero)
                     for fechas in cuenta['fechas']:
                         y += 1
-                        hoja.write(y, 2, fechas['fecha'])
+                        hoja.write(y, 2, fechas['fecha'], formato_fecha)
                         hoja.write(y, 4, fechas['debe'], formato_numero)
                         hoja.write(y, 5, fechas['haber'], formato_numero)
                     y += 1

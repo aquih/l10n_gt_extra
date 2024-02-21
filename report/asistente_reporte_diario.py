@@ -82,7 +82,7 @@ class AsistenteReporteDiario(models.TransientModel):
 
                 for fechas in lineas:
                     y += 1
-                    hoja.write(y, 0, fechas['fecha'])
+                    hoja.write(y, 0, fechas['fecha'], formato_fecha)
                     for cuentas in fechas['cuentas']:
                         y += 1
                         hoja.write(y, 1, cuentas['codigo'])

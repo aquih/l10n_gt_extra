@@ -76,7 +76,7 @@ class AsistenteReporteVentas(models.TransientModel):
             for linea in lineas:
                 y += 1
                 hoja.write(y, 0, linea['tipo'])
-                hoja.write(y, 1, linea['fecha'])
+                hoja.write(y, 1, linea['fecha'], formato_fecha)
                 hoja.write(y, 2, linea['numero'])
                 hoja.write(y, 3, linea['cliente'])
                 hoja.write(y, 4, linea['nit'])
