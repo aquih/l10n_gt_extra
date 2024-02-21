@@ -56,6 +56,7 @@ class AsistenteReporteDiario(models.TransientModel):
             libro = xlsxwriter.Workbook(f)
             hoja = libro.add_worksheet('Reporte')
             formato_fecha = libro.add_format({'num_format': 'dd/mm/yy'})
+            formato_numero = libro.add_format({'num_format': '#,##0.00'})
 
             hoja.write(0, 0, 'LIBRO DIARIO')
             hoja.write(2, 0, 'NUMERO DE IDENTIFICACION TRIBUTARIA')
@@ -86,11 +87,11 @@ class AsistenteReporteDiario(models.TransientModel):
                         y += 1
                         hoja.write(y, 1, cuentas['codigo'])
                         hoja.write(y, 2, cuentas['cuenta'])
-                        hoja.write(y, 3, cuentas['debe'])
-                        hoja.write(y, 4, cuentas['haber'])
+                        hoja.write(y, 3, cuentas['debe'], formato_numero)
+                        hoja.write(y, 4, cuentas['haber'], formato_numero)
                     y += 1
-                    hoja.write(y, 3, fechas['total_debe'])
-                    hoja.write(y, 4, fechas['total_haber'])
+                    hoja.write(y, 3, fechas['total_debe'], formato_numero)
+                    hoja.write(y, 4, fechas['total_haber'], formato_numero)
 
             else:
                 lineas = res['lineas']
@@ -106,13 +107,13 @@ class AsistenteReporteDiario(models.TransientModel):
 
                     hoja.write(y, 0, linea['codigo'])
                     hoja.write(y, 1, linea['cuenta'])
-                    hoja.write(y, 2, linea['debe'])
-                    hoja.write(y, 3, linea['haber'])
+                    hoja.write(y, 2, linea['debe'], formato_numero)
+                    hoja.write(y, 3, linea['haber'], formato_numero)
 
                 y += 1
                 hoja.write(y, 1, 'Totales')
-                hoja.write(y, 2, totales['debe'])
-                hoja.write(y, 3, totales['haber'])
+                hoja.write(y, 2, totales['debe'], formato_numero)
+                hoja.write(y, 3, totales['haber'], formato_numero)
 
             libro.close()
             datos = base64.b64encode(f.getvalue())

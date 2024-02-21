@@ -1,7 +1,6 @@
 <openerp>
     <data>
 
-        <!--Se agrega el campo VAT (NIT)-->
         <record model="ir.ui.view" id="l10n_gt_extra.l10n_gt_view_res_partner_form">
             <field name="name">l10n_gt_extra.l10n_gt_view_partner_form</field>
             <field name="model">res.partner</field>
