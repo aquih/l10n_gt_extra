@@ -27,7 +27,7 @@ class AsistenteReporteMayor(models.TransientModel):
     fecha_desde = fields.Date(string="Fecha Inicial", required=True, default=lambda self: time.strftime('%Y-%m-01'))
     fecha_hasta = fields.Date(string="Fecha Final", required=True, default=lambda self: time.strftime('%Y-%m-%d'))
     name = fields.Char('Nombre archivo', size=32)
-    archivo = fields.Binary('Archivo', filters='.xls')
+    archivo = fields.Binary('Archivo')
 
     def print_report(self):
         if not self.cuentas_id:
