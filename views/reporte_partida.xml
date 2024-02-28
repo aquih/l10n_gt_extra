@@ -10,14 +10,17 @@
                             <h2><span t-esc="current_company_id.name"/>: Partida</h2>
 
                             <div class="row mt32">
-                                <div class="col-4">
+                                <div class="col-3">
                                     <strong>Partida:</strong> <span t-field="o.name"/><br/>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-3">
                                     <strong>Ref:</strong> <span t-field="o.ref"/><br/>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-3">
                                     <strong>Fecha:</strong> <span t-field="o.date"/>
+                                </div>
+                                <div class="col-3">
+                                    <strong>Diario:</strong> <span t-field="o.journal_id.name"/>
                                 </div>
                             </div>
 
@@ -70,6 +73,10 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <div class="row mt32">
+                                <span t-field="o.narration"/>
+                            </div>
                         </div>
                     </t>
                 </div>
