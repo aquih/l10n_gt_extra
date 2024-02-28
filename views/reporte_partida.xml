@@ -70,6 +70,10 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <div class="row mt32">
+                                <span t-field="o.narration"/>
+                            </div>
                         </div>
                     </t>
                 </div>
