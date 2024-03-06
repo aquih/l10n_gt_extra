@@ -108,7 +108,7 @@ class ReporteCompras(models.AbstractModel):
                             linea['iva'] += i['amount']
                             totales[tipo_linea]['iva'] += i['amount']
                             totales[tipo_linea]['total'] += i['amount']
-                        elif i['amount'] > 0:
+                        elif (i['amount'] > 0 and tipo != 'NC') or (i['amount'] < 0 and tipo == 'NC'):
                             linea[tipo_linea+'_exento'] += i['amount']
                             totales[tipo_linea]['exento'] += i['amount']
                             totales[tipo_linea]['total'] += i['amount']
@@ -116,7 +116,7 @@ class ReporteCompras(models.AbstractModel):
                     linea[tipo_linea+'_exento'] += r['total_excluded']
                     totales[tipo_linea]['exento'] += r['total_excluded']
 
-                linea['total'] += precio * l.quantity
+                linea['total'] += linea['base'] + linea['iva'] + linea[tipo_linea+'_exento'] 
 
             lineas.append(linea)
             
