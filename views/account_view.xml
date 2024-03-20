@@ -7,9 +7,11 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
+                <!--                 
                 <button name="button_draft" position="after">
-                    <button name="impuesto_global" id="impuesto_global" string="Generar Impuesto" class="btn-primary" type="object"/>
+                    <button name="impuesto_global" id="impuesto_global" string="Generar Impuesto" type="object"/>
                 </button>
+                -->
                 <field name="fiscal_position_id" position="after">
                     <field name="tipo_gasto"/>
                     <field name="nota_debito"/>
