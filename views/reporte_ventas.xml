@@ -15,11 +15,11 @@
 
 
                     <div class="row mt32">
-                        <div class="col-xs-4">
+                        <div class="col-6">
                             <strong>Número de identificación tributaria:</strong> <span t-field="current_company_id.vat"/><br/>
                             <strong>Nombre comercial:</strong> <span t-esc="direccion_diario.name if direccion_diario else current_company_id.partner_id.name"/><br/>
                         </div>
-                        <div class="col-xs-4">
+                        <div class="col-6">
                             <strong>Domicilio fiscal:</strong> <span t-esc="direccion_diario.street if direccion_diario else current_company_id.partner_id.street"/><br/>
                             <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-options='{"widget": "date"}'/> al: <span t-esc="data['fecha_hasta']" t-options='{"widget": "date"}'/><br/>
                         </div>
