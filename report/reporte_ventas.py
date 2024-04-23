@@ -133,7 +133,9 @@ class ReporteVentas(models.AbstractModel):
                     linea[tipo_linea+'_exento'] += r['total_excluded']
                     totales[tipo_linea]['exento'] += r['total_excluded']
 
-            linea['total'] += linea[tipo_linea] + linea['iva'] + linea[tipo_linea+'_exento']
+                linea['total'] += linea[tipo_linea] + linea[tipo_linea+'_exento']
+
+            linea['total'] += linea['iva']
 
             lineas.append(linea)
 
