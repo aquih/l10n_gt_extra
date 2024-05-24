@@ -9,6 +9,7 @@ class ReporteBanco(models.AbstractModel):
     def lineas(self, datos):
         cuenta = self.env['account.account'].browse(datos['cuenta_bancaria_id'][0])
 
+        usar_balance_moneda = False
         lineas = []
         usar_balance_moneda = False
         for linea in self.env['account.move.line'].search([('account_id','=',cuenta.id), ('parent_state','=','posted'), ('date','>=',datos['fecha_desde']), ('date','<=',datos['fecha_hasta'])], order='date'):

@@ -116,7 +116,7 @@ class ReporteCompras(models.AbstractModel):
                     linea[tipo_linea+'_exento'] += r['total_excluded']
                     totales[tipo_linea]['exento'] += r['total_excluded']
 
-            linea['total'] += linea[tipo_linea] + linea['iva'] + linea[tipo_linea+'_exento']
+            linea['total'] += linea['compra'] + linea['compra_exento'] + linea['servicio'] + linea['servicio_exento'] + linea['combustible'] + linea['combustible_exento'] + linea['importacion'] + linea['importacion_exento'] + linea['pequeño'] + linea['pequeño_exento'] + linea['iva']
 
             lineas.append(linea)
             
