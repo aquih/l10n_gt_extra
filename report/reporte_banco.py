@@ -9,6 +9,7 @@ class ReporteBanco(models.AbstractModel):
     def lineas(self, datos):
         cuenta = self.env['account.account'].browse(datos['cuenta_bancaria_id'][0])
 
+        usar_balance_moneda = False
         lineas = []
         for linea in self.env['account.move.line'].search([('account_id','=',cuenta.id), ('parent_state','=','posted'), ('date','>=',datos['fecha_desde']), ('date','<=',datos['fecha_hasta'])], order='date'):
             detalle = {
@@ -30,7 +31,6 @@ class ReporteBanco(models.AbstractModel):
                 else:
                     detalle['credito'] = -1 * linea.amount_currency
 
-            usar_balance_moneda = False
             # Si la cuenta no tiene moneda o la moneda de la cuenta es la misma de la compañía
             if not cuenta.currency_id or (cuenta.currency_id.id == cuenta.company_id.currency_id.id):
                 usar_balance_moneda = False
