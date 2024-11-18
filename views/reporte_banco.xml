@@ -10,7 +10,7 @@
                 <div class="page">
                     <h2><span t-esc="current_company_id.name"/>: Libro de banco</h2>
 
-                    <div class="row mt32">
+                    <div class="row my-2">
                         <div class="col-6">
                             <strong>Cuenta:</strong> <span t-esc="data['cuenta_bancaria_id'][1]"/><br/>
                         </div>

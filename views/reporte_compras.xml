@@ -13,7 +13,7 @@
                     <h2><span t-esc="current_company_id.name"/>: Libro de compras y servicios</h2>
 
 
-                    <div class="row mt32">
+                    <div class="row my-2">
                         <div class="col-6">
                             <strong>Número de identificación tributaria:</strong> <span t-field="current_company_id.vat"/><br/>
                             <strong>Nombre comercial:</strong> <span t-esc="direccion_diario.name if direccion_diario else current_company_id.partner_id.name"/><br/>
