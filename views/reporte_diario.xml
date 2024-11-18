@@ -11,12 +11,12 @@
                 <div class="page">
                     <h2><span t-field="current_company_id.name"/>: Libro Diario</h2>
 
-                    <div class="row mt32">
-                        <div class="col-auto mw-100 mb-2">
+                    <div class="row my-2">
+                        <div class="col-6">
                             <strong>Número de identificación tributaria:</strong> <span t-field="current_company_id.vat"/><br/>
                             <strong>Nombre comercial:</strong> <span t-field="current_company_id.partner_id.name"/><br/>
                         </div>
-                        <div class="col-auto mw-100 mb-2">
+                        <div class="col-6">
                             <strong>Domicilio fiscal:</strong> <span t-field="current_company_id.partner_id.street"/><br/>
                             <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-options="{'widget': 'date'}"/> al: <span t-esc="data['fecha_hasta']" t-options="{'widget': 'date'}"/><br/>
                         </div>
