@@ -82,7 +82,7 @@ class ReporteVentas(models.AbstractModel):
                 'tipo': tipo,
                 'fecha': f.date,
                 'numero': numero,
-                'cliente': f.partner_id.name,
+                'cliente': f.partner_id.nombre_facturacion_fel or f.partner_id.name,
                 'nit': f.partner_id.vat,
                 'compra': 0,
                 'compra_exento': 0,
