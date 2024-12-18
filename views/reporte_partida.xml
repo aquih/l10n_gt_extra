@@ -47,7 +47,7 @@
                                             <span t-field="l.account_id.name"/>
                                         </td>
                                         <td>
-                                            <span t-esc="l.analytic_account_id if 'analytic_account_id' in o.fields_get() else l.analytic_line_ids.account_id.name"/>
+                                            <span t-esc="', '.join(l.analytic_line_ids.account_id.mapped('name'))"/>
                                         </td>
                                         <td class="text-right">
                                              <span t-field="l.debit" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
