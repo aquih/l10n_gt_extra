@@ -7,7 +7,8 @@ import time
 
 class AsistenteReporteInventario(models.TransientModel):
     _name = 'l10n_gt_extra.asistente_reporte_inventario'
-
+    _description = 'Reporte de Inventario'
+    
     def _default_cuenta(self):
         if version_info[0] in [13, 14, 15]:
             if len(self.env.context.get('active_ids', [])) > 0:

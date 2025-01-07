@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="asistente_ventas_reporte" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.asistente_reporte_ventas</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_ventas</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Seleccione diarios y rango de fecha">
+                <group>
+                    <group>
+                        <field name="folio_inicial"/>
+                        <field name="fecha_desde"/>
+                        <field name="fecha_hasta"/>
+                        <field name="resumido"/>
+                    </group>
+                    <group>
+                        <field name="impuesto_id" domain="[('type_tax_use','in',['sale'])]"/>
+                        <field name="diarios_id" domain="[('type','in',['sale','sale_refund'])]" widget="many2many_tags"/>
+                        <field name="name" invisible="1"/>
+                        <field name="archivo" readonly="1" filename="name"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                    <button name="print_report_excel" string="Reporte excel" type="object" class="oe_highlight"/>
+                    <button special="cancel" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="window_reporte_ventas" model="ir.actions.act_window">
+        <field name="name">Libro de Ventas</field>
+        <field name="res_model">l10n_gt_extra.asistente_reporte_ventas</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="account.model_account_journal"/>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_reporte_ventas" model="ir.actions.report">
+        <field name="name">l10n_gt_extra.reporte_ventas</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_ventas</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_gt_extra.reporte_ventas</field>
+        <field name="report_file">l10n_gt_extra.reporte_ventas</field>
+    </record>
+
+    <menuitem action="window_reporte_ventas" id="menu_asistente_reporte_ventas" parent="menu_informes"/>
+
+</odoo>

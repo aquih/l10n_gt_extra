@@ -6,6 +6,7 @@ import time
 
 class AsistenteReporteBanco(models.TransientModel):
     _name = 'l10n_gt_extra.asistente_reporte_banco'
+    _description = 'Reporte de Bancos'
 
     def _default_cuenta(self):
         if len(self.env.context.get('active_ids', [])) > 0:

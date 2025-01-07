@@ -6,6 +6,7 @@ import logging
 
 class ReporteCompras(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_compras'
+    _description = 'Libro de Compras'
 
     def lineas(self, datos):
         totales = {}

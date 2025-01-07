@@ -5,6 +5,7 @@ import logging
 
 class ReportePartida(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_partida'
+    _description = 'Reporte de Partida'
 
     @api.model
     def _get_report_values(self, docids, data=None):

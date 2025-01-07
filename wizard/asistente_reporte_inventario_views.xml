@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="asistente_reporte_inventario" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.asistente_reporte_inventario</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_inventario</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Seleccione cuentas y rango de fecha">
+                <group>
+                    <group>
+                        <field name="folio_inicial"/>
+                    </group>
+                    <group>
+                        <field name="fecha_hasta"/>
+                    </group>
+                </group>
+                <separator colspan="4" string="Cuentas"/>
+                <field name="cuentas_id" nolabel="1"/>
+                <footer>
+                    <button name="print_report" string="Reporte" type="object" class="oe_highlight"/>
+                    <button special="cancel" string="Cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="window_reporte_inventario" model="ir.actions.act_window">
+        <field name="name">Libro de Inventario</field>
+        <field name="res_model">l10n_gt_extra.asistente_reporte_inventario</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="account.model_account_account"/>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_reporte_inventario" model="ir.actions.report">
+        <field name="name">l10n_gt_extra.reporte_inventario</field>
+        <field name="model">l10n_gt_extra.asistente_reporte_inventario</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_gt_extra.reporte_inventario</field>
+        <field name="report_file">l10n_gt_extra.reporte_inventario</field>
+    </record>
+    
+    <menuitem action="window_reporte_inventario" id="menu_asistente_reporte_inventario" parent="menu_informes"/>
+
+</odoo>

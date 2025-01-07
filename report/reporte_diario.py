@@ -6,6 +6,7 @@ import logging
 
 class ReporteDiario(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_diario'
+    _description = 'Reporte Diario'
 
     def retornar_saldo_inicial_todos_anios(self, cuenta, fecha_desde):
         saldo_inicial = 0

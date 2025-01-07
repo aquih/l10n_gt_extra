@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 from . import models
+from . import wizard
 from . import report
 
 def _update_gt_taxes(env):
