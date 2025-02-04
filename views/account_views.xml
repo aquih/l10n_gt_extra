@@ -1,62 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         
-        <record id="l10n_gt_view_move_form" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.account.move.form</field>
-            <field name="model">account.move</field>
-            <field name="inherit_id" ref="account.view_move_form"/>
-            <field name="arch" type="xml">
-                <field name="fiscal_position_id" position="after">
-                    <field name="tipo_gasto"/>
-                    <field name="nota_debito"/>
-                    <field name="diario_facturas_por_rangos" invisible="1"/>
-                    <field name="serie_rango" invisible="not diario_facturas_por_rangos"/>
-                    <field name="inicial_rango" invisible="not diario_facturas_por_rangos"/>
-                    <field name="final_rango" invisible="not diario_facturas_por_rangos"/>
-                </field>
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.l10n_gt_extra</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="fiscal_position_id" position="after">
+                <field name="tipo_gasto"/>
+                <field name="nota_debito"/>
+                <field name="diario_facturas_por_rangos" invisible="1"/>
+                <field name="serie_rango" invisible="not diario_facturas_por_rangos"/>
+                <field name="inicial_rango" invisible="not diario_facturas_por_rangos"/>
+                <field name="final_rango" invisible="not diario_facturas_por_rangos"/>
             </field>
-        </record>
-        
-        <record id="l10n_gt_view_account_payment_form" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.account.payment.form</field>
-            <field name="model">account.payment</field>
-            <field name="inherit_id" ref="account.view_account_payment_form"/>
-            <field name="arch" type="xml">
-                <data>
-                    <xpath expr="//group/group[3]" position="after">
+        </field>
+    </record>
+    
+    <record id="view_account_payment_form" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit.l10n_gt_extra</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//group/group[3]" position="after">
+                    <group>
+                        <field name="descripcion"/>
+                        <field name="nombre_impreso"/>
+                        <field name="no_negociable"/>
+                    </group>
+                </xpath>
+            </data>
+        </field>
+    </record>
+    
+    <record id="view_account_journal_form" model="ir.ui.view">
+        <field name="name">account.journal.form.inherit.l10n_gt_extra</field>
+        <field name="model">account.journal</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Extra" name="extra">
+                    <group string="Configuración GT">
                         <group>
-                            <field name="descripcion"/>
-                            <field name="nombre_impreso"/>
-                            <field name="no_negociable"/>
+                            <field name="direccion" invisible="type not in ['sale', 'purchase']"/>
+                            <field name="codigo_establecimiento" invisible="type not in ['sale', 'purchase']"/>
                         </group>
-                    </xpath>
-                </data>
-            </field>
-        </record>
-        
-        <record id="l10n_gt_view_account_journal_form" model="ir.ui.view">
-            <field name="name">l10n_gt_extra.view_account_journal_form</field>
-            <field name="model">account.journal</field>
-            <field name="type">form</field>
-            <field name="inherit_id" ref="account.view_account_journal_form"/>
-            <field name="arch" type="xml">
-                <notebook position="inside">
-                    <page string="Extra" name="extra">
-                        <group string="Configuración GT">
-                            <group>
-                                <field name="direccion" invisible="type not in ['sale', 'purchase']"/>
-                                <field name="codigo_establecimiento" invisible="type not in ['sale', 'purchase']"/>
-                            </group>
-                            <group>
-                                <field name="facturas_por_rangos" invisible="type not in ['sale']"/>
-                                <field name="usar_referencia" invisible="type not in ['sale']"/>
-                            </group>
+                        <group>
+                            <field name="facturas_por_rangos" invisible="type not in ['sale']"/>
+                            <field name="usar_referencia" invisible="type not in ['sale']"/>
                         </group>
-                    </page>
-                </notebook>
-            </field>
-        </record>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
         
-    </data>
 </odoo>

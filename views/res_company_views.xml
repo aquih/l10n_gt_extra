@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <record model="ir.ui.view" id="view_company_form">
-        <field name="name">res.company.form.inherit</field>
+        <field name="name">res.company.form.inherit.l10n_gt_extra</field>
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="model">res.company</field>
         <field name="arch" type="xml">
@@ -10,4 +11,5 @@
             </div>
         </field>
     </record>
+
 </odoo>
