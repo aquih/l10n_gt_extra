@@ -2,7 +2,7 @@
 <odoo>
 
     <record model="ir.ui.view" id="view_partner_form">
-        <field name="name">res.partner.form.inherit.l10n_gt_extra/field>
+        <field name="name">res.partner.form.inherit.l10n_gt_extra</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="type">form</field>
