@@ -103,7 +103,7 @@ class AsistenteReporteVentas(models.TransientModel):
             hoja.write(y, 0, 'Cantidad de facturas')
             hoja.write(y, 1, totales['num_facturas'])
             y += 1
-            hoja.write(y, 0, 'Total credito fiscal')
+            hoja.write(y, 0, 'Total débito fiscal')
             hoja.write(y, 1, totales['compra']['iva'] + totales['servicio']['iva'] + totales['importacion']['iva'], formato_numero)
 
             y += 2

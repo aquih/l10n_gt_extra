@@ -120,18 +120,18 @@
                     </table>
 
                     <div class="row mt-2">
-                        <div class="col">
+                        <div class="col-6">
                             <strong>Cantidad de facturas:</strong>
                         </div>
-                        <div class="col">
+                        <div class="col-6">
                             <span t-esc="'{0:,.0f}'.format(result['totales']['num_facturas'])"/>
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col">
+                        <div class="col-6">
                             <strong>Total débito fiscal:</strong>
                         </div>
-                        <div class="col">
+                        <div class="col-6">
                             <span t-esc="result['totales']['compra']['iva'] + result['totales']['servicio']['iva'] + result['totales']['importacion']['iva']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                         </div>
                     </div>
