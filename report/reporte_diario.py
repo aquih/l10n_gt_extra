@@ -101,7 +101,7 @@ class ReporteDiario(models.AbstractModel):
             lineas = cuentas_agrupadas.values()
         else:
 
-            self.env.cr.execute('select a.id, a.code as codigo, coalesce(a.name->>%s, a.name->>\'en_US\'), ' + include_initial_balance + ' as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
+            self.env.cr.execute('select a.id, a.code as codigo, coalesce(a.name->>%s, a.name->>\'en_US\') as cuenta, ' + include_initial_balance + ' as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
             	'from account_move_line l join account_account a on(l.account_id = a.id)' \
             	+ join_initial_balance + \
             	'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,' + include_initial_balance + ' ORDER BY a.code',
