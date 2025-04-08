@@ -2,10 +2,10 @@
 <odoo>
     <template id="reporte_diario">
         <t t-call="web.html_container">
-            <t t-set="data_report_margin_top" t-value="20"/>
-            <t t-set="data_report_header_spacing" t-value="10"/>
+            <t t-set="data_report_margin_top" t-value="30"/>
+            <t t-set="data_report_header_spacing" t-value="20"/>
             <div class="header">
-                Folio: <span class="page" t-esc="data['folio_inicial']-1"></span>
+                Folio: <span class="page" t-esc="data['folio_inicial']-1"/>
             </div>
             <t t-call="web.external_layout">
                 <div class="page">
@@ -21,7 +21,7 @@
                             <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-options="{'widget': 'date'}"/> al: <span t-esc="data['fecha_hasta']" t-options="{'widget': 'date'}"/><br/>
                         </div>
                     </div>
-
+                    
                     <t t-set="result" t-value="lineas(data)"/>
                     
                     <table class="table table-condensed">
@@ -31,8 +31,8 @@
                                     <th>Fecha</th>
                                     <th>Codigo</th>
                                     <th>Cuenta</th>
-                                    <th class="text-right">Debe</th>
-                                    <th class="text-right">Haber</th>
+                                    <th class="text-right text-end">Debe</th>
+                                    <th class="text-right text-end">Haber</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,11 +52,11 @@
                                     </tr>
                                     <t t-foreach="l['cuentas']" t-as="ld">
                                         <tr>
-                                            <td></td>
+                                            <td/>
                                             <td><span t-esc="ld['codigo']"/></td>
                                             <td><span t-esc="ld['cuenta']"/></td>
-                                            <td class="text-right"><span t-esc="ld['debe']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></td>
-                                            <td class="text-right"><span t-esc="ld['haber']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></td>
+                                            <td class="text-right text-end"><span t-esc="ld['debe']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></td>
+                                            <td class="text-right text-end"><span t-esc="ld['haber']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></td>
                                         </tr>
                                     </t>
                                     <tr>
@@ -67,10 +67,10 @@
                                         <td>
                                             <b>Totales</b>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-right text-end">
                                             <b><span t-esc="l['total_debe']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-right text-end">
                                             <b><span t-esc="l['total_haber']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
                                         </td>
                                     </tr>
@@ -82,8 +82,8 @@
                                 <tr>
                                     <th>Codigo</th>
                                     <th>Cuenta</th>
-                                    <th class="text-right">Debe</th>
-                                    <th class="text-right">Haber</th>
+                                    <th class="text-right text-end">Debe</th>
+                                    <th class="text-right text-end">Haber</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -94,10 +94,10 @@
                                     <td>
                                         <span t-esc="l['cuenta']"/>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-right text-end">
                                         <span t-esc="l['debe']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-right text-end">
                                         <span t-esc="l['haber']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                     </td>
                                 </tr>
@@ -105,12 +105,12 @@
                                     <td>
                                         <b>Totales</b>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-right text-end">
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-right text-end">
                                         <b><span t-esc="result['totales']['debe']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-right text-end">
                                         <b><span t-esc="result['totales']['haber']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b>
                                     </td>
                                 </tr>

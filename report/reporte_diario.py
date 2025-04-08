@@ -10,9 +10,9 @@ class ReporteDiario(models.AbstractModel):
 
     def retornar_saldo_inicial_todos_anios(self, cuenta, fecha_desde):
         saldo_inicial = 0
-        self.env.cr.execute('select a.id, a.code as codigo, coalesce(a.name->>%s, a.name->>\'en_US\') as cuenta, sum(l.debit) as debe, sum(l.credit) as haber '\
+        self.env.cr.execute('select a.id, sum(l.debit) as debe, sum(l.credit) as haber '\
         'from account_move_line l join account_account a on(l.account_id = a.id)'\
-        'where l.parent_state = \'posted\' and a.id = %s and l.date < %s group by a.id, a.code, a.name,l.debit,l.credit', (self.env.user.lang, cuenta, fecha_desde))
+        'where l.parent_state = \'posted\' and a.id = %s and l.date < %s group by a.id, l.debit, l.credit', (cuenta, fecha_desde))
         for m in self.env.cr.dictfetchall():
             saldo_inicial += m['debe'] - m['haber']
         return saldo_inicial
@@ -20,9 +20,9 @@ class ReporteDiario(models.AbstractModel):
     def retornar_saldo_inicial_inicio_anio(self, cuenta, fecha_desde):
         saldo_inicial = 0
         fecha = fields.Date.from_string(fecha_desde)
-        self.env.cr.execute('select a.id, a.code as codigo, coalesce(a.name->>%s, a.name->>\'en_US\') as cuenta, sum(l.debit) as debe, sum(l.credit) as haber '\
+        self.env.cr.execute('select a.id, sum(l.debit) as debe, sum(l.credit) as haber '\
         'from account_move_line l join account_account a on(l.account_id = a.id)'\
-        'where l.parent_state = \'posted\' and a.id = %s and l.date < %s and l.date >= %s group by a.id, a.code, a.name,l.debit,l.credit', (self.env.user.lang, cuenta, fecha_desde, fecha.strftime('%Y-1-1')))
+        'where l.parent_state = \'posted\' and a.id = %s and l.date < %s and l.date >= %s group by a.id, l.debit, l.credit', (cuenta, fecha_desde, fecha.strftime('%Y-1-1')))
         for m in self.env.cr.dictfetchall():
             saldo_inicial += m['debe'] - m['haber']
         return saldo_inicial
@@ -37,42 +37,34 @@ class ReporteDiario(models.AbstractModel):
         totales['saldo_final'] = 0
 
         account_ids = [x for x in datos['cuentas_id']]
-        movimientos = self.env['account.move.line'].search([
-            ('account_id','in',account_ids),
-            ('date','<=',datos['fecha_hasta']),
-            ('date','>=',datos['fecha_desde'])])
-
-        if version_info[0] in [13, 14, 15]:
-            include_initial_balance = 't.include_initial_balance'
-            join_initial_balance = 'join account_account_type t on (t.id = a.user_type_id)'
-        else:
-            include_initial_balance = 'a.include_initial_balance'
-            join_initial_balance = ''
-
         accounts_str = ','.join([str(x) for x in datos['cuentas_id']])
+        
         if datos['agrupado_por_dia']:
 
-            self.env.cr.execute('select a.id, a.code as codigo, coalesce(a.name->>%s, a.name->>\'en_US\') as cuenta, l.date as fecha, ' + include_initial_balance + ' as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
+            self.env.cr.execute('select a.id, l.date as fecha, sum(l.debit) as debe, sum(l.credit) as haber ' \
             	'from account_move_line l join account_account a on(l.account_id = a.id)' \
-            	+ join_initial_balance + \
-            	'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,l.date, ' + include_initial_balance + ' ORDER BY l.date,a.code',
-            (self.env.user.lang, datos['fecha_desde'], datos['fecha_hasta']))
+            	'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.name,l.date order by l.date',
+            (datos['fecha_desde'], datos['fecha_hasta']))
 
             for r in self.env.cr.dictfetchall():
+                cuenta = self.env['account.account'].browse(r['id'])
+                
                 totales['debe'] += r['debe']
                 totales['haber'] += r['haber']
                 linea = {
                     'id': r['id'],
                     'fecha': r['fecha'],
-                    'codigo': r['codigo'],
-                    'cuenta': r['cuenta'],
+                    'codigo': cuenta.code,
+                    'cuenta': cuenta.name,
                     'saldo_inicial': 0,
                     'debe': r['debe'],
                     'haber': r['haber'],
                     'saldo_final': 0,
-                    'balance_inicial': r['balance_inicial']
+                    'balance_inicial': cuenta.include_initial_balance
                 }
                 lineas.append(linea)
+                
+            lineas.sort(key=lambda l: (l['fecha'], l['codigo']))
 
             for l in lineas:
                 if not l['balance_inicial']:
@@ -101,26 +93,29 @@ class ReporteDiario(models.AbstractModel):
             lineas = cuentas_agrupadas.values()
         else:
 
-            self.env.cr.execute('select a.id, a.code as codigo, coalesce(a.name->>%s, a.name->>\'en_US\') as cuenta, ' + include_initial_balance + ' as balance_inicial, sum(l.debit) as debe, sum(l.credit) as haber ' \
+            self.env.cr.execute('select a.id, sum(l.debit) as debe, sum(l.credit) as haber ' \
             	'from account_move_line l join account_account a on(l.account_id = a.id)' \
-            	+ join_initial_balance + \
-            	'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.code, a.name,' + include_initial_balance + ' ORDER BY a.code',
-            (self.env.user.lang, datos['fecha_desde'], datos['fecha_hasta']))
+            	'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id',
+            (datos['fecha_desde'], datos['fecha_hasta']))
 
             for r in self.env.cr.dictfetchall():
+                cuenta = self.env['account.account'].browse(r['id'])
+
                 totales['debe'] += r['debe']
                 totales['haber'] += r['haber']
                 linea = {
                     'id': r['id'],
-                    'codigo': r['codigo'],
-                    'cuenta': r['cuenta'],
+                    'codigo': cuenta.code,
+                    'cuenta': cuenta.name,
                     'saldo_inicial': 0,
                     'debe': r['debe'],
                     'haber': r['haber'],
                     'saldo_final': 0,
-                    'balance_inicial': r['balance_inicial']
+                    'balance_inicial': cuenta.include_initial_balance
                 }
                 lineas.append(linea)
+
+                lineas.sort(key=lambda l: l['codigo'])
 
             for l in lineas:
                 if not l['balance_inicial']:
@@ -140,8 +135,6 @@ class ReporteDiario(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
-
-        diario = self.env['account.move.line'].browse(data['form']['cuentas_id'][0])
 
         return {
             'doc_ids': self.ids,
