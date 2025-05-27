@@ -4,5 +4,12 @@ _logger = logging.getLogger(__name__)
 
 
 def migrate(cr, version):
-    cr.execute("delete from ir_model_data where module = 'l10n_gt_extra' and model = 'ir.ui.view' and name like '%view%';")
-    _logger.info("Referencias a vistas viejas borradas")
+    util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_view_move_form")
+    util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_view_account_payment_form")
+    util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_view_account_journal_form")
+    util.records.remove_view(cr, xml_id="l10n_gt_extra.product_template_form_view")
+    util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_extra_product_variant_easy_edit_view")
+    util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_view_res_partner_form")
+    util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_extra_product_template_tree_view")
+    util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_extra_product_template_tree_view")
+    _logger.info("Vistas viejas borradas")
