@@ -13,5 +13,4 @@ def migrate(cr, version):
     util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_view_res_partner_form")
     util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_view_partner_form")
     util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_extra_product_template_tree_view")
-    util.records.remove_view(cr, xml_id="l10n_gt_extra.l10n_gt_extra_product_template_tree_view")
     _logger.info("Vistas viejas borradas")
