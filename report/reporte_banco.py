@@ -65,7 +65,7 @@ class ReporteBanco(models.AbstractModel):
         cuenta = self.env['account.account'].browse(datos['cuenta_bancaria_id'][0])
         
         # Si la cuenta no tiene moneda o la moneda de la cuenta es la misma de la compañía
-        if not cuenta.currency_id or (cuenta.currency_id.id == cuenta.company_id.currency_id.id):
+        if not cuenta.currency_id or (cuenta.currency_id.id == self.env.company.currency_id.id):
             usar_balance_moneda = False        
         # Si no, si la cuenta si tienen moneda y la moneda de la cuenta es diferente que la de la compañía
         else:
@@ -87,7 +87,7 @@ class ReporteBanco(models.AbstractModel):
             'doc_model': model,
             'data': data['form'],
             'docs': docs,
-            'moneda': docs[0].cuenta_bancaria_id.currency_id or self.env.user.company_id.currency_id,
+            'moneda': docs[0].cuenta_bancaria_id.currency_id or self.env.company_id.currency_id,
             'lineas': self.lineas,
             'balance_inicial': self.balance_inicial(data['form']),
             'current_company_id': self.env.company,
