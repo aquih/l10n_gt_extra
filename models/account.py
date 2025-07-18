@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-from odoo import models, fields, api, _
+from odoo import models, fields, Command, api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.addons.l10n_gt_extra import a_letras
 from odoo.release import version_info
@@ -35,6 +35,17 @@ class AccountMove(models.Model):
                     raise ValidationError('Ya existe otra factura con esta serie y en el mismo rango')
 
                 self.name = "{}-{} al {}-{}".format(factura.serie_rango, factura.inicial_rango, factura.serie_rango, factura.final_rango)
+
+    def agregar_linea_isr(self):
+        for factura in self:
+            result = 0
+            if factura.amount_untaxed > 30000:
+                result += 30000 * -0.05
+                result += (factura.amount_untaxed - 30000) * -0.07
+            else:
+                result += factura.amount_untaxed * -0.05
+            
+            factura.write({ 'invoice_line_ids': [ Command.create({ 'name': 'Retención ISR', 'quantity': 1, 'price_unit': result }) ] })
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"

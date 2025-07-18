@@ -6,6 +6,9 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
+            <button name="button_draft" position="after">
+                <button name="agregar_linea_isr" id="agregar_linea_isr" string="Retención ISR" type="object" invisible="firma_fel != False"/>
+            </button>
             <field name="fiscal_position_id" position="after">
                 <field name="tipo_gasto"/>
                 <field name="nota_debito"/>
