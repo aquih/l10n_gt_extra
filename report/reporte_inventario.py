@@ -43,7 +43,7 @@ class ReporteInventario(models.AbstractModel):
 
         self.env.cr.execute('select a.id, a.account_type as id_cuenta, sum(l.debit) as debe, sum(l.credit) as haber ' \
         	'from account_move_line l join account_account a on(l.account_id = a.id)' \
-        	'where a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.account_type',
+        	'where l.parent_state = \'posted\' and a.id in ('+accounts_str+') and l.date >= %s and l.date <= %s group by a.id, a.account_type',
         (fecha_desde, datos['fecha_hasta']))
 
         for r in self.env.cr.dictfetchall():
