@@ -1,7 +1,7 @@
 # l10n_gt_extra
 Modulo de Odoo para la contabilidad de Guatemala
 
-- Funciona para la versión 17
+- Funciona para la versión 17.0 y 18.0
 
 Si se desea validar el NIT, se debe instalar el módulo base_vat
 
