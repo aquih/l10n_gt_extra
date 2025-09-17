@@ -102,7 +102,9 @@ class ReporteCompras(models.AbstractModel):
 
                 linea['base'] += r['total_excluded']
                 totales[tipo_linea]['total'] += r['total_excluded']
-                if len(l.tax_ids) > 0:
+
+                # No es exenta si trae el impuesto seleccionado en el wizard
+                if len([t for t in l.tax_ids if t.id == datos['impuesto_id'][0]]) > 0:
                     linea[tipo_linea] += r['total_excluded']
                     totales[tipo_linea]['neto'] += r['total_excluded']
                     for i in r['taxes']:
