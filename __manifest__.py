@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 {
     'name': 'Guatemala - reportes y funcionalidad extra',
-    'version': '5.9',
+    'version': '5.10',
     'category': 'Accounting/Localizations/Reporting',
     'description': """ Reportes requeridos por la SAT y otra funcionalidad extra para llevar un contabilidad en Guatemala. """,
     'author': 'aquíH',

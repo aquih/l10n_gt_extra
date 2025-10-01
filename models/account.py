@@ -40,12 +40,15 @@ class AccountMove(models.Model):
         for factura in self:
             result = 0
             if factura.amount_untaxed > 30000:
-                result += 30000 * -0.05
-                result += (factura.amount_untaxed - 30000) * -0.07
+                result += 30000 * 0.05
+                result += (factura.amount_untaxed - 30000) * 0.07
             else:
-                result += factura.amount_untaxed * -0.05
-            
-            factura.write({ 'invoice_line_ids': [ Command.create({ 'name': 'Retención ISR', 'quantity': 1, 'price_unit': result }) ] })
+                result += factura.amount_untaxed * 0.05
+
+            impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_isr_retencion_global')
+
+            if impuesto:
+                factura.write({ 'invoice_line_ids': [ Command.create({ 'name': 'Retención ISR', 'quantity': result, 'price_unit': 0, 'tax_ids': [ Command.set([impuesto.id]) ] }) ] })
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"

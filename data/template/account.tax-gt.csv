@@ -10,3 +10,4 @@ impuestos_plantilla_isr_retencion,ISR Retención,ISR Retención,ISR Retención,0
 else:
     result = base_amount * -0.05",(base/1.12 > 30000) and (30000 * -0.05 + (base/1.12 - 30000) * -0.07) or base/1.12 * -0.05,False,ISR Retención,ISR Retención
 impuestos_plantilla_isr_factura_especial,ISR Factura Especial,ISR Factura Especial,ISR Factura Especial,-5,percent,purchase,False,tax_excluded,,,,False,ISR Factura Especial,ISR Factura Especial
+impuestos_plantilla_isr_retencion_global,ISR Retención Global,ISR Retención Global,ISR Retención Global,0.05,code,purchase,False,tax_excluded,,result = quantity,quantity,False,ISR Retención Global,ISR Retención Global
