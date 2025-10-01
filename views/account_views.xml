@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <button name="button_draft" position="after">
                 <button name="agregar_linea_isr" id="agregar_linea_isr" string="Retención ISR" type="object"/>
+                <button name="agregar_linea_iva" id="agregar_linea_iva" string="Retención IVA" type="object"/>
             </button>
             <field name="fiscal_position_id" position="after">
                 <field name="tipo_gasto"/>

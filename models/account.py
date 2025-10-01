@@ -45,10 +45,21 @@ class AccountMove(models.Model):
             else:
                 result += factura.amount_untaxed * 0.05
 
-            impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_isr_retencion_global')
+            impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_isr_retencion_global', raise_if_not_found=True)
 
-            if impuesto:
+            if impuesto and result != 0:
                 factura.write({ 'invoice_line_ids': [ Command.create({ 'name': 'Retención ISR', 'quantity': result, 'price_unit': 0, 'tax_ids': [ Command.set([impuesto.id]) ] }) ] })
+
+    def agregar_linea_iva(self):
+        for factura in self:
+            result = 0
+            if factura.amount_untaxed > 2500:
+                result = factura.amount_untaxed * 0.12 * 0.8
+
+            impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_iva_retencion_global', raise_if_not_found=True)
+
+            if impuesto and result != 0:
+                factura.write({ 'invoice_line_ids': [ Command.create({ 'name': 'Retención IVA', 'quantity': result, 'price_unit': 0, 'tax_ids': [ Command.set([impuesto.id]) ] }) ] })
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
