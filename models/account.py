@@ -78,3 +78,15 @@ class AccountJournal(models.Model):
     codigo_establecimiento = fields.Integer(string='Código de establecimiento')
     facturas_por_rangos = fields.Boolean(string='Las facturas se ingresan por rango', help='Cada factura realmente es un rango de factura y el rango se ingresa en Referencia/Descripción')
     usar_referencia = fields.Boolean(string='Usar referencia para libro de ventas', help='El número de la factua se ingresa en Referencia/Descripción')
+
+class AccountTax(models.Model):
+    _inherit = "account.tax"
+
+    moneda_id = fields.Many2one('res.currency', string='Moneda para Fórmula')
+
+    @api.model
+    def _eval_tax_amount_formula(self, raw_base, evaluation_context):
+        result = super()._eval_tax_amount_formula(raw_base, evaluation_context)
+        if self.moneda_id:
+            result *= self.moneda_id._get_conversion_rate(self.moneda_id, self.env.company.currency_id)
+        return result

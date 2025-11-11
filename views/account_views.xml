@@ -60,5 +60,16 @@
             </notebook>
         </field>
     </record>
-        
+
+    <record id="view_tax_form_inherited" model="ir.ui.view">
+        <field name="name">account.tax.form.inherited.l10n_gt_extra</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='formula']" position="after">
+                <field name="moneda_id" invisible="amount_type != 'code'"/>
+            </xpath>
+        </field>
+    </record>
+    
 </odoo>
