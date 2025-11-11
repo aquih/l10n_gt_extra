@@ -53,8 +53,8 @@ class AccountMove(models.Model):
     def agregar_linea_iva(self):
         for factura in self:
             result = 0
-            if factura.amount_untaxed > 2500:
-                result = factura.amount_untaxed * 0.12 * 0.8
+            if factura.amount_total >= 2500:
+                result = factura.amount_total * 0.12 * 0.8
 
             impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_iva_retencion_global', raise_if_not_found=True)
 
