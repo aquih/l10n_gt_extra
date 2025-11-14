@@ -37,28 +37,46 @@ class AccountMove(models.Model):
                 self.name = "{}-{} al {}-{}".format(factura.serie_rango, factura.inicial_rango, factura.serie_rango, factura.final_rango)
 
     def agregar_linea_isr(self):
+        quetzal = self.env.ref('base.GTQ', raise_if_not_found=True)
+
         for factura in self:
+            total_sin_impuestos = factura.amount_untaxed
+            if factura.currency_id != quetzal:
+                total_sin_impuestos = factura.currency_id._convert(total_sin_impuestos, quetzal, company=factura.company_id, date=factura.invoice_date, round=False)
+
             result = 0
-            if factura.amount_untaxed > 30000:
+            if total_sin_impuestos > 30000:
                 result += 30000 * 0.05
-                result += (factura.amount_untaxed - 30000) * 0.07
+                result += (total_sin_impuestos - 30000) * 0.07
             else:
-                result += factura.amount_untaxed * 0.05
+                result += total_sin_impuestos * 0.05
 
             impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_isr_retencion_global', raise_if_not_found=True)
 
-            if impuesto and result != 0:
+            if factura.currency_id != quetzal:
+                result = quetzal._convert(result, factura.currency_id, company=factura.company_id, date=factura.invoice_date, round=True)
+
+            if result != 0:
                 factura.write({ 'invoice_line_ids': [ Command.create({ 'name': 'Retención ISR', 'quantity': result, 'price_unit': 0, 'tax_ids': [ Command.set([impuesto.id]) ] }) ] })
 
     def agregar_linea_iva(self):
+        quetzal = self.env.ref('base.GTQ', raise_if_not_found=True)
+
         for factura in self:
+            total_con_impuestos = factura.amount_untaxed
+            if factura.currency_id != quetzal:
+                total_con_impuestos = factura.currency_id._convert(total_con_impuestos, quetzal, company=factura.company_id, date=factura.invoice_date, round=False)
+
             result = 0
-            if factura.amount_total >= 2500:
-                result = factura.amount_total * 0.12 * 0.8
+            if total_con_impuestos >= 2500:
+                result = total_con_impuestos * 0.12 * 0.8
 
             impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_iva_retencion_global', raise_if_not_found=True)
 
-            if impuesto and result != 0:
+            if factura.currency_id != quetzal:
+                result = quetzal._convert(result, factura.currency_id, company=factura.company_id, date=factura.invoice_date, round=True)
+
+            if result != 0:
                 factura.write({ 'invoice_line_ids': [ Command.create({ 'name': 'Retención IVA', 'quantity': result, 'price_unit': 0, 'tax_ids': [ Command.set([impuesto.id]) ] }) ] })
 
 class AccountPayment(models.Model):
@@ -82,7 +100,7 @@ class AccountJournal(models.Model):
 class AccountTax(models.Model):
     _inherit = "account.tax"
 
-    moneda_id = fields.Many2one('res.currency', string='Moneda para Fórmula')
+    moneda_id = fields.Many2one('res.currency', string='Moneda a Convertir')
 
     @api.model
     def _eval_tax_amount_formula(self, raw_base, evaluation_context):
