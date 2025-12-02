@@ -32,7 +32,7 @@ class ReporteVentas(models.AbstractModel):
             filtro.append(('move_type','in',['out_invoice','out_refund']))
 
         facturas = self.env['account.move'].search(filtro)
-        impuesto = self.env['account.tax'].browse(datos['impuesto_id'][0])
+        impuestos = self.env['account.tax'].browse(datos['impuestos_id'])
 
         lineas = []
         for f in facturas:
@@ -42,7 +42,7 @@ class ReporteVentas(models.AbstractModel):
             if f.currency_id.id != f.company_id.currency_id.id:
                 # Probar con impuesto inicialmente
                 for l in f.invoice_line_ids:
-                    if impuesto in l.tax_ids:
+                    if any(impuesto in l.tax_ids for impuesto in impuestos):
                         if l.amount_currency != 0:
                             tipo_cambio = l.balance/l.amount_currency
                 
@@ -54,6 +54,9 @@ class ReporteVentas(models.AbstractModel):
                             total += l.debit - l.credit
                     if f.amount_total != 0:
                         tipo_cambio = abs(total / f.amount_total)
+
+            if f.company_id.id != self.env.company.id:
+                tipo_cambio = self.env['res.currency']._get_conversion_rate(f.company_id.currency_id, self.env.company.currency_id)
 
             tipo = 'FACT'
             tipo_interno_factura = f.type if 'type' in f.fields_get() else f.move_type
@@ -122,7 +125,7 @@ class ReporteVentas(models.AbstractModel):
                     linea[tipo_linea] += r['total_excluded']
                     totales[tipo_linea]['neto'] += r['total_excluded']
                     for i in r['taxes']:
-                        if i['id'] == datos['impuesto_id'][0]:
+                        if i['id'] in [impuesto.id for impuesto in impuestos]:
                             linea['iva'] += i['amount']
                             totales[tipo_linea]['iva'] += i['amount']
                             totales[tipo_linea]['total'] += i['amount']
@@ -191,5 +194,3 @@ class ReporteVentas(models.AbstractModel):
             'direccion_diario': diario.direccion,
             'current_company_id': self.env.company,
         }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

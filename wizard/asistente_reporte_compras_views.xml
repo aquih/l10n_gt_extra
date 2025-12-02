@@ -14,7 +14,7 @@
                         <field name="fecha_hasta"/>
                     </group>
                     <group>
-                        <field name="impuesto_id" domain="[('type_tax_use','in',['purchase'])]"/>
+                        <field name="impuestos_id" domain="[('type_tax_use','in',['purchase'])]" widget="many2many_tags"/>
                         <field name="diarios_id" domain="[('type','in',['purchase','purchase_refund'])]" widget="many2many_tags"/>
                         <field name="archivo" readonly="1" filename="name"/>
                         <field name="name" invisible="1"/>

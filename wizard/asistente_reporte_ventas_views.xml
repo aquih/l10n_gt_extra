@@ -15,7 +15,7 @@
                         <field name="resumido"/>
                     </group>
                     <group>
-                        <field name="impuesto_id" domain="[('type_tax_use','in',['sale'])]"/>
+                        <field name="impuestos_id" domain="[('type_tax_use','in',['sale'])]" widget="many2many_tags"/>
                         <field name="diarios_id" domain="[('type','in',['sale','sale_refund'])]" widget="many2many_tags"/>
                         <field name="name" invisible="1"/>
                         <field name="archivo" readonly="1" filename="name"/>
