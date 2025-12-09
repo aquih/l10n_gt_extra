@@ -36,48 +36,17 @@ class AccountMove(models.Model):
 
                 self.name = "{}-{} al {}-{}".format(factura.serie_rango, factura.inicial_rango, factura.serie_rango, factura.final_rango)
 
-    def agregar_linea_isr(self):
-        quetzal = self.env.ref('base.GTQ', raise_if_not_found=True)
+    def _compute_tax_totals(self):
+        return super(AccountMove, self.with_context(moneda_impuesto_id=self.currency_id.id))._compute_tax_totals()
 
-        for factura in self:
-            total_sin_impuestos = factura.amount_untaxed
-            if factura.currency_id != quetzal:
-                total_sin_impuestos = factura.currency_id._convert(total_sin_impuestos, quetzal, company=factura.company_id, date=factura.invoice_date, round=False)
+    def agregar_linea_impuesto_global(self):
+        tipo_impuesto = self.env.context.get('tipo_impuesto')
+        nombre_linea = self.env.context.get('nombre_linea')
 
-            result = 0
-            if total_sin_impuestos > 30000:
-                result += 30000 * 0.05
-                result += (total_sin_impuestos - 30000) * 0.07
-            else:
-                result += total_sin_impuestos * 0.05
+        impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_{tipo_impuesto}_retencion_global', raise_if_not_found=True)
 
-            impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_isr_retencion_global', raise_if_not_found=True)
-
-            if factura.currency_id != quetzal:
-                result = quetzal._convert(result, factura.currency_id, company=factura.company_id, date=factura.invoice_date, round=True)
-
-            if result != 0:
-                factura.write({ 'invoice_line_ids': [ Command.create({ 'name': 'Retención ISR', 'quantity': result, 'price_unit': 0, 'tax_ids': [ Command.set([impuesto.id]) ] }) ] })
-
-    def agregar_linea_iva(self):
-        quetzal = self.env.ref('base.GTQ', raise_if_not_found=True)
-
-        for factura in self:
-            total_con_impuestos = factura.amount_untaxed
-            if factura.currency_id != quetzal:
-                total_con_impuestos = factura.currency_id._convert(total_con_impuestos, quetzal, company=factura.company_id, date=factura.invoice_date, round=False)
-
-            result = 0
-            if total_con_impuestos >= 2500:
-                result = total_con_impuestos * 0.12 * 0.8
-
-            impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_iva_retencion_global', raise_if_not_found=True)
-
-            if factura.currency_id != quetzal:
-                result = quetzal._convert(result, factura.currency_id, company=factura.company_id, date=factura.invoice_date, round=True)
-
-            if result != 0:
-                factura.write({ 'invoice_line_ids': [ Command.create({ 'name': 'Retención IVA', 'quantity': result, 'price_unit': 0, 'tax_ids': [ Command.set([impuesto.id]) ] }) ] })
+        for factura in self:            
+            factura.write({ 'invoice_line_ids': [ Command.create({ 'name': nombre_linea, 'quantity': factura.amount_untaxed, 'price_unit': 0, 'tax_ids': [ Command.set([impuesto.id]) ] }) ] })
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
@@ -104,7 +73,13 @@ class AccountTax(models.Model):
 
     @api.model
     def _eval_tax_amount_formula(self, raw_base, evaluation_context):
-        result = super()._eval_tax_amount_formula(raw_base, evaluation_context)
+        tasa = 1
+
         if self.moneda_id:
-            result *= self.moneda_id._get_conversion_rate(self.moneda_id, self.env.company.currency_id)
-        return result
+            tasa = self.env['res.currency']._get_conversion_rate(self.env.company.currency_id, self.moneda_id)
+        elif self.env.context.get('moneda_impuesto_id'):
+            moneda = self.env['res.currency'].browse(self.env.context.get('moneda_impuesto_id'))
+            tasa = self.env['res.currency']._get_conversion_rate(self.env.company.currency_id, moneda)
+
+        evaluation_context['product']['tasa_de_conversion'] = tasa
+        return super()._eval_tax_amount_formula(raw_base, evaluation_context)

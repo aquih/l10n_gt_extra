@@ -8,7 +8,12 @@ impuestos_plantilla_isr_retencion,ISR Retención,ISR Retención,ISR Retención,0
     result = 30000 * -0.05
     result += (base_amount - 30000) * -0.07
 else:
-    result = base_amount * -0.05",(base/1.12 > 30000) and (30000 * -0.05 + (base/1.12 - 30000) * -0.07) or base/1.12 * -0.05,False,ISR Retención,ISR Retención
+    result = base_amount * -0.05",(base / 1.12 > 30000) and (30000 * -0.05 + (base / 1.12 - 30000) * -0.07) or base / 1.12 * -0.05,False,ISR Retención,ISR Retención
 impuestos_plantilla_isr_factura_especial,ISR Factura Especial,ISR Factura Especial,ISR Factura Especial,-5,percent,purchase,False,tax_excluded,,,,False,ISR Factura Especial,ISR Factura Especial
-impuestos_plantilla_isr_retencion_global,ISR Retención Global,ISR Retención Global,ISR Retención Global,0.05,code,purchase,False,tax_excluded,,result = -1 * quantity,-1 * quantity,False,ISR Retención Global,ISR Retención Global
-impuestos_plantilla_iva_retencion_global,IVA Retención Global,IVA Retención Global,IVA Retención Global,0.05,code,purchase,False,tax_excluded,,result = -1 * quantity,-1 * quantity,False,IVA Retención Global,IVA Retención Global
+impuestos_plantilla_isr_retencion_global,ISR Retención Global,ISR Retención Global,ISR Retención Global,0.05,code,purchase,False,tax_excluded,,"if quantity/1.12 > 30000:
+    result = 30000 * -0.05 * 
+    result += (quantity - 30000) * -0.07
+else:
+    result = quantity * -0.05",(quantity / product.tasa_de_conversion / 1.12 > 30000) and ((30000 * -0.05 + (quantity / product.tasa_de_conversion / 1.12 - 30000) * -0.07) * product.tasa_de_conversion) or (quantity / product.tasa_de_conversion / 1.12 * -0.05 * product.tasa_de_conversion),False,ISR Retención Global,ISR Retención Global
+impuestos_plantilla_iva_retencion_global,IVA Retención Global,IVA Retención Global,IVA Retención Global,0.05,code,purchase,False,tax_excluded,,"if quantity >= 2500:
+    result = quantity / 1.12 * 0.12 * -0.80",(quantity / product.tasa_de_conversion >= 2500) and (quantity / product.tasa_de_conversion / 1.12 * 0.12 * -0.80) * product.tasa_de_conversion or 0,False,IVA Retención Global,IVA Retención Global
