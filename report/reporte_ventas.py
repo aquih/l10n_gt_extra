@@ -121,7 +121,9 @@ class ReporteVentas(models.AbstractModel):
 
                 linea['base'] += r['total_excluded']
                 totales[tipo_linea]['total'] += r['total_excluded']
-                if len(l.tax_ids) > 0:
+                
+                # No es exenta si trae el impuesto seleccionado en el wizard
+                if any(impuesto in l.tax_ids for impuesto in impuestos):
                     linea[tipo_linea] += r['total_excluded']
                     totales[tipo_linea]['neto'] += r['total_excluded']
                     for i in r['taxes']:
