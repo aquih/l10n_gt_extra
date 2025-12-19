@@ -82,4 +82,4 @@ class AccountTax(models.Model):
             tasa = self.env['res.currency']._get_conversion_rate(self.env.company.currency_id, moneda)
 
         evaluation_context['product']['tasa_de_conversion'] = tasa
-        return super()._eval_tax_amount_formula(raw_base, evaluation_context)
+        return super(AccountTax, self)._eval_tax_amount_formula(raw_base, evaluation_context)
