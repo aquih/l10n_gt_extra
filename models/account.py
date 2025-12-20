@@ -37,10 +37,10 @@ class AccountMove(models.Model):
                 self.name = "{}-{} al {}-{}".format(factura.serie_rango, factura.inicial_rango, factura.serie_rango, factura.final_rango)
 
     def write(self, vals):
-        return super(AccountMove, self.with_context(moneda_impuesto_id=self.currency_id)).write(vals)
+        return super(AccountMove, self.with_context(moneda_impuesto_id=self.currency_id, fecha_factura=self.invoice_date)).write(vals)
 
     def _compute_tax_totals(self):
-        return super(AccountMove, self.with_context(moneda_impuesto_id=self.currency_id))._compute_tax_totals()
+        return super(AccountMove, self.with_context(moneda_impuesto_id=self.currency_id, fecha_factura=self.invoice_date))._compute_tax_totals()
 
     def agregar_linea_impuesto_global(self):
         tipo_impuesto = self.env.context.get('tipo_impuesto')
@@ -55,7 +55,7 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     def _compute_totals(self):
-        return super(AccountMoveLine, self.with_context(moneda_impuesto_id=self.move_id.currency_id))._compute_totals()
+        return super(AccountMoveLine, self.with_context(moneda_impuesto_id=self.move_id.currency_id, fecha_factura=self.invoice_date))._compute_totals()
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
@@ -82,11 +82,12 @@ class AccountTax(models.Model):
 
     def _eval_tax_amount_formula(self, raw_base, evaluation_context):
         tasa = 1
+        fecha_factura = self.env.context.get('fecha_factura')
 
         if self.moneda_id:
-            tasa = self.env['res.currency']._get_conversion_rate(self.env.company.currency_id, self.moneda_id)
+            tasa = self.env['res.currency']._get_conversion_rate(self.env.company.currency_id, self.moneda_id, date=fecha_factura)
         elif self.env.context.get('moneda_impuesto_id'):
-            tasa = self.env['res.currency']._get_conversion_rate(self.env.company.currency_id, self.env.context.get('moneda_impuesto_id'))
+            tasa = self.env['res.currency']._get_conversion_rate(self.env.company.currency_id, self.env.context.get('moneda_impuesto_id'), date=fecha_factura)
 
         if evaluation_context['product']:
             evaluation_context['product']['tasa_de_conversion'] = tasa
