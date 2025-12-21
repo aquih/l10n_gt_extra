@@ -37,10 +37,12 @@ class AccountMove(models.Model):
                 self.name = "{}-{} al {}-{}".format(factura.serie_rango, factura.inicial_rango, factura.serie_rango, factura.final_rango)
 
     def write(self, vals):
-        return super(AccountMove, self.with_context(moneda_impuesto_id=self.currency_id, fecha_factura=self.invoice_date)).write(vals)
+        for f in self:
+            super(AccountMove, self.with_context(moneda_impuesto_id=f.currency_id, fecha_factura=f.invoice_date)).write(vals)
 
     def _compute_tax_totals(self):
-        return super(AccountMove, self.with_context(moneda_impuesto_id=self.currency_id, fecha_factura=self.invoice_date))._compute_tax_totals()
+        for f in self:
+            super(AccountMove, self.with_context(moneda_impuesto_id=f.currency_id, fecha_factura=f.invoice_date))._compute_tax_totals()
 
     def agregar_linea_impuesto_global(self):
         tipo_impuesto = self.env.context.get('tipo_impuesto')
@@ -55,7 +57,8 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     def _compute_totals(self):
-        return super(AccountMoveLine, self.with_context(moneda_impuesto_id=self.move_id.currency_id, fecha_factura=self.invoice_date))._compute_totals()
+        for l in self:
+            super(AccountMoveLine, self.with_context(moneda_impuesto_id=l.move_id.currency_id, fecha_factura=l.invoice_date))._compute_totals()
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
