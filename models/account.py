@@ -64,7 +64,7 @@ class AccountMoveLine(models.Model):
     # necesario, en estos tres lugares, pasar los datos para obtener la tasa.
     def _compute_totals(self):
         for l in self:
-            super(AccountMoveLine, f.with_context(moneda_impuesto_id=l.move_id.currency_id, fecha_factura=l.invoice_date))._compute_totals()
+            super(AccountMoveLine, l.with_context(moneda_impuesto_id=l.move_id.currency_id, fecha_factura=l.invoice_date))._compute_totals()
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
