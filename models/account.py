@@ -36,13 +36,17 @@ class AccountMove(models.Model):
 
                 self.name = "{}-{} al {}-{}".format(factura.serie_rango, factura.inicial_rango, factura.serie_rango, factura.final_rango)
 
+    # Son tres los lugares desde donde se llama el calculo de impuestos (que yo sepa). Por lo cual es
+    # necesario, en estos tres lugares, pasar los datos para obtener la tasa.
     def write(self, vals):
         for f in self:
-            super(AccountMove, self.with_context(moneda_impuesto_id=f.currency_id, fecha_factura=f.invoice_date)).write(vals)
+            super(AccountMove, f.with_context(moneda_impuesto_id=f.currency_id, fecha_factura=f.invoice_date)).write(vals)
 
+    # Son tres los lugares desde donde se llama el calculo de impuestos (que yo sepa). Por lo cual es
+    # necesario, en estos tres lugares, pasar los datos para obtener la tasa.
     def _compute_tax_totals(self):
         for f in self:
-            super(AccountMove, self.with_context(moneda_impuesto_id=f.currency_id, fecha_factura=f.invoice_date))._compute_tax_totals()
+            super(AccountMove, f.with_context(moneda_impuesto_id=f.currency_id, fecha_factura=f.invoice_date))._compute_tax_totals()
 
     def agregar_linea_impuesto_global(self):
         tipo_impuesto = self.env.context.get('tipo_impuesto')
@@ -56,9 +60,11 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+    # Son tres los lugares desde donde se llama el calculo de impuestos (que yo sepa). Por lo cual es
+    # necesario, en estos tres lugares, pasar los datos para obtener la tasa.
     def _compute_totals(self):
         for l in self:
-            super(AccountMoveLine, self.with_context(moneda_impuesto_id=l.move_id.currency_id, fecha_factura=l.invoice_date))._compute_totals()
+            super(AccountMoveLine, f.with_context(moneda_impuesto_id=l.move_id.currency_id, fecha_factura=l.invoice_date))._compute_totals()
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
