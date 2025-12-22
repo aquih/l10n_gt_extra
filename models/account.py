@@ -54,8 +54,15 @@ class AccountMove(models.Model):
 
         impuesto = self.env.ref(f'account.{self.env.company.id}_impuestos_plantilla_{tipo_impuesto}_retencion_global', raise_if_not_found=True)
 
-        for factura in self:            
-            factura.write({ 'invoice_line_ids': [ Command.create({ 'name': nombre_linea, 'quantity': factura.amount_total, 'price_unit': 0, 'tax_ids': [ Command.set([impuesto.id]) ] }) ] })
+        for factura in self:
+            total = factura.amount_total
+            for linea in factura.invoice_line_ids:
+                impuestos = linea.tax_ids.compute_all(linea.price_unit, currency=factura.currency_id, quantity=linea.quantity, product=linea.product_id, partner=factura.partner_id)
+
+                for i in [i for i in impuestos['taxes'] if i['amount'] < 0]:
+                    total += abs(i['amount'])
+
+            factura.write({ 'invoice_line_ids': [ Command.create({ 'name': nombre_linea, 'quantity': total, 'price_unit': 0, 'tax_ids': [ Command.set([impuesto.id]) ] }) ] })
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
