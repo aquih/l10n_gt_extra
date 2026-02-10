@@ -117,6 +117,7 @@ class ReporteVentas(models.AbstractModel):
                     else:
                         tipo_linea = 'servicio'
 
+                # Siempre enviar cantidad y precio correctos. Por qué algunos impuestos se calculan por cantidades.
                 r = l.tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
                 linea['base'] += r['total_excluded']

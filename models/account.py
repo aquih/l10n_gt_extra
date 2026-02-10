@@ -107,4 +107,4 @@ class AccountTax(models.Model):
 
         if evaluation_context['product']:
             evaluation_context['product']['tasa_de_conversion'] = tasa
-        return super(AccountTax, self)._eval_tax_amount_formula(raw_base, evaluation_context)
+        return super()._eval_tax_amount_formula(raw_base, evaluation_context)

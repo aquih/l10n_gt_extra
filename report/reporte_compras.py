@@ -110,6 +110,7 @@ class ReporteCompras(models.AbstractModel):
                 if f.partner_id.pequenio_contribuyente:
                     tipo_linea = 'pequeño'
 
+                # Siempre enviar cantidad y precio correctos. Por qué algunos impuestos se calculan por cantidades.
                 r = l.tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
                 linea['base'] += r['total_excluded']
