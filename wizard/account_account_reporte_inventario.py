@@ -6,7 +6,7 @@ from odoo.exceptions import UserError, ValidationError
 import time
 
 class AsistenteReporteInventario(models.TransientModel):
-    _name = 'l10n_gt_extra.asistente_reporte_inventario'
+    _name = 'l10n_gt_extra.reporte_inventario.wizard'
     _description = 'Reporte de Inventario'
     
     def _default_cuenta(self):
@@ -28,7 +28,7 @@ class AsistenteReporteInventario(models.TransientModel):
 
         data = {
              'ids': [],
-             'model': 'l10n_gt_extra.asistente_reporte_inventario',
+             'model': 'l10n_gt_extra.reporte_inventario.wizard',
              'form': self.read()[0]
         }
-        return self.env.ref('l10n_gt_extra.action_reporte_inventario').report_action(self, data=data)
+        return self.env.ref('l10n_gt_extra.reporte_inventario_wizard_report').report_action(self, data=data)

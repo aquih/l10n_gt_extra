@@ -5,7 +5,7 @@ import logging
 
 class ReporteBanco(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_banco'
-    _description = 'Reporte de Bancos'
+    _description = 'Libro de Banco'
     
     def lineas(self, datos):
         cuenta = self.env['account.account'].browse(datos['cuenta_bancaria_id'][0])

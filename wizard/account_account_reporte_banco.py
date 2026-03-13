@@ -8,7 +8,7 @@ import base64
 import io
 
 class AsistenteReporteBanco(models.TransientModel):
-    _name = 'l10n_gt_extra.asistente_reporte_banco'
+    _name = 'l10n_gt_extra.reporte_banco.wizard'
     _description = 'Reporte de Bancos'
 
     def _default_cuenta(self):
@@ -26,10 +26,10 @@ class AsistenteReporteBanco(models.TransientModel):
     def print_report(self):
         data = {
              'ids': [],
-             'model': 'l10n_gt_extra.asistente_reporte_banco',
+             'model': 'l10n_gt_extra.reporte_banco.wizard',
              'form': self.read()[0]
         }
-        return self.env.ref('l10n_gt_extra.action_reporte_banco').report_action(self, data=data)
+        return self.env.ref('l10n_gt_extra.reporte_banco_wizard_report').report_action(self, data=data)
 
     def print_report_excel(self):
         for w in self:
@@ -87,7 +87,7 @@ class AsistenteReporteBanco(models.TransientModel):
         return {
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'l10n_gt_extra.asistente_reporte_banco',
+            'res_model': 'l10n_gt_extra.reporte_banco.wizard',
             'res_id': self.id,
             'view_id': False,
             'type': 'ir.actions.act_window',

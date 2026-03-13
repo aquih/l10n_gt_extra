@@ -10,7 +10,7 @@ import io
 import logging
 
 class AsistenteReporteDiario(models.TransientModel):
-    _name = 'l10n_gt_extra.asistente_reporte_diario'
+    _name = 'l10n_gt_extra.reporte_diario.wizard'
     _description = 'Reporte Diario'
 
     def _default_cuenta(self):
@@ -36,10 +36,10 @@ class AsistenteReporteDiario(models.TransientModel):
 
         data = {
              'ids': [],
-             'model': 'l10n_gt_extra.asistente_reporte_diario',
+             'model': 'l10n_gt_extra.reporte_diario.wizard',
              'form': self.read()[0]
         }
-        return self.env.ref('l10n_gt_extra.action_reporte_diario').report_action(self, data=data)
+        return self.env.ref('l10n_gt_extra.reporte_diario_wizard_report').report_action(self, data=data)
 
     def print_report_excel(self):
         if not self.cuentas_id:
@@ -123,7 +123,7 @@ class AsistenteReporteDiario(models.TransientModel):
         return {
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'l10n_gt_extra.asistente_reporte_diario',
+            'res_model': 'l10n_gt_extra.reporte_diario.wizard',
             'res_id': self.id,
             'view_id': False,
             'type': 'ir.actions.act_window',

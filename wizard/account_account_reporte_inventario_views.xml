@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="asistente_reporte_inventario" model="ir.ui.view">
-        <field name="name">l10n_gt_extra.asistente_reporte_inventario</field>
-        <field name="model">l10n_gt_extra.asistente_reporte_inventario</field>
+    <record id="reporte_inventario_wizard_view_form" model="ir.ui.view">
+        <field name="name">l10n_gt_extra.reporte_inventario.wizard</field>
+        <field name="model">l10n_gt_extra.reporte_inventario.wizard</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Seleccione cuentas y rango de fecha">
@@ -25,22 +25,22 @@
         </field>
     </record>
 
-    <record id="window_reporte_inventario" model="ir.actions.act_window">
+    <record id="reporte_inventario_wizard_action" model="ir.actions.act_window">
         <field name="name">Libro de Inventario</field>
-        <field name="res_model">l10n_gt_extra.asistente_reporte_inventario</field>
+        <field name="res_model">l10n_gt_extra.reporte_inventario.wizard</field>
         <field name="view_mode">form</field>
         <field name="binding_model_id" ref="account.model_account_account"/>
         <field name="target">new</field>
     </record>
 
-    <record id="action_reporte_inventario" model="ir.actions.report">
+    <record id="reporte_inventario_wizard_report" model="ir.actions.report">
         <field name="name">l10n_gt_extra.reporte_inventario</field>
-        <field name="model">l10n_gt_extra.asistente_reporte_inventario</field>
+        <field name="model">l10n_gt_extra.reporte_inventario.wizard</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">l10n_gt_extra.reporte_inventario</field>
         <field name="report_file">l10n_gt_extra.reporte_inventario</field>
     </record>
     
-    <menuitem action="window_reporte_inventario" id="menu_asistente_reporte_inventario" parent="menu_informes"/>
+    <menuitem id="reporte_inventario_wizard_menu" action="window_reporte_inventario" parent="menu_informes"/>
 
 </odoo>
