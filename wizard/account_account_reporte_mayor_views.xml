@@ -46,6 +46,6 @@
         <field name="report_file">l10n_gt_extra.reporte_mayor</field>
     </record>
 
-    <menuitem id="reporte_mayor_wizard_menu" action="window_reporte_mayor" parent="menu_informes"/>
+    <menuitem id="reporte_mayor_wizard_menu" action="reporte_mayor_wizard_action" parent="menu_informes"/>
 
 </odoo>

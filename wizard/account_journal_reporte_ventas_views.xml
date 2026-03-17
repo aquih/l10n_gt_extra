@@ -46,6 +46,6 @@
         <field name="report_file">l10n_gt_extra.reporte_ventas</field>
     </record>
 
-    <menuitem id="ventas_reporte_wizard_menu" action="window_reporte_ventas" parent="menu_informes"/>
+    <menuitem id="ventas_reporte_wizard_menu" action="ventas_reporte_wizard_action" parent="menu_informes"/>
 
 </odoo>

@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 {
     'name': 'Guatemala - reportes y funcionalidad extra',
-    'version': '5.30',
+    'version': '5.31',
     'category': 'Accounting/Localizations/Reporting',
     'description': """ Reportes requeridos por la SAT y otra funcionalidad extra para llevar un contabilidad en Guatemala. """,
     'author': 'aquíH',
-    'website': 'http://aquih.com/',
+    'website': 'http://www.aquih.com/',
     'depends': ['l10n_gt', 'account_tax_python', 'product'],
     'data': [
         'views/account_views.xml',
