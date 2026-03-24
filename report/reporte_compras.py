@@ -12,11 +12,13 @@ class ReporteCompras(models.AbstractModel):
         totales = {}
 
         totales['num_facturas'] = 0
-        totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        totales['combustible'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        totales['pequeño'] = {'exento':0,'neto':0,'iva':0,'total':0}
+        totales['bien_local'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['bien_extranjero'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['servicio_local'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['servicio_extranjero'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['combustible_local'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['combustible_extranjero'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['pequeño'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
 
         journal_ids = [x for x in datos['diarios_id']]
         filtro = [
@@ -80,14 +82,18 @@ class ReporteCompras(models.AbstractModel):
                 'fecha': f.invoice_date,
                 'numero': numero,
                 'proveedor': f.partner_id,
-                'compra': 0,
-                'compra_exento': 0,
-                'servicio': 0,
-                'servicio_exento': 0,
-                'combustible': 0,
-                'combustible_exento': 0,
-                'importacion': 0,
-                'importacion_exento': 0,
+                'bien_local': 0,
+                'bien_local_exento': 0,
+                'bien_extranjero': 0,
+                'bien_extranjero_exento': 0,
+                'servicio_local': 0,
+                'servicio_local_exento': 0,
+                'servicio_extranjero': 0,
+                'servicio_extranjero_exento': 0,
+                'combustible_local': 0,
+                'combustible_local_exento': 0,
+                'combustible_extranjero': 0,
+                'combustible_extranjero_exento': 0,
                 'pequeño': 0,
                 'pequeño_exento': 0,
                 'base': 0,
@@ -100,12 +106,25 @@ class ReporteCompras(models.AbstractModel):
                 if tipo == 'NC':
                     precio = precio * -1
 
+                # Vieja forma de calcular tipo de producto
                 tipo_linea = f.tipo_gasto or 'mixto'
                 if tipo_linea == 'mixto':
                     if l.product_id.type != 'service':
-                        tipo_linea = 'compra'
+                        tipo_linea = 'bien_local'
                     else:
-                        tipo_linea = 'servicio'
+                        tipo_linea = 'servicio_local'
+
+                # Nueva forma de calcular tipo de producto
+                if f.tipo_para_iva != False:
+                    if l.product_id.type != 'service':
+                        tipo_linea = 'bien_local' if f.tipo_para_iva == 'bien_servicio_local' else 'bien_extranjero'
+                    else:
+                        tipo_linea = 'servicio_local' if f.tipo_para_iva == 'bien_servicio_local' else 'servicio_extranjero'
+                    
+                    if f.tipo_para_iva == 'combustible_local':
+                        tipo_linea = 'combustible_local'
+                    elif f.tipo_para_iva == 'combustible_extranjero':
+                        tipo_linea = 'combustible_extranjero'
 
                 if f.partner_id.pequenio_contribuyente:
                     tipo_linea = 'pequeño'
@@ -133,7 +152,10 @@ class ReporteCompras(models.AbstractModel):
                     linea[tipo_linea+'_exento'] += r['total_excluded']
                     totales[tipo_linea]['exento'] += r['total_excluded']
 
-            linea['total'] += linea['compra'] + linea['compra_exento'] + linea['servicio'] + linea['servicio_exento'] + linea['combustible'] + linea['combustible_exento'] + linea['importacion'] + linea['importacion_exento'] + linea['pequeño'] + linea['pequeño_exento'] + linea['iva']
+            linea['total'] += linea['bien_local'] + linea['bien_local_exento'] + linea['bien_extranjero'] + linea['bien_extranjero_exento']
+            linea['total'] += linea['servicio_local'] + linea['servicio_local_exento'] + linea['servicio_extranjero'] + linea['servicio_extranjero_exento']
+            linea['total'] += linea['combustible_local'] + linea['combustible_local_exento'] + linea['combustible_extranjero'] + linea['combustible_extranjero_exento']
+            linea['total'] += linea['pequeño'] + linea['pequeño_exento'] + linea['iva']
 
             lineas.append(linea)
             

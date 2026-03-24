@@ -12,6 +12,7 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     tipo_gasto = fields.Selection([("mixto", "Mixto"), ("compra", "Compra/Bien"), ("servicio", "Servicio"), ("importacion", "Importación/Exportación"), ("combustible", "Combustible")], string="Tipo de Gasto", default="mixto")
+    tipo_para_iva = fields.Selection([("bien_servicio_local", "Bien/Servicio Local"), ("bien_servicio_extranjero", "Bien/Servicio Extranjero"), ("combustible_local", "Combustible Local"), ("combustible_extranjero", "Combustible Extranjero")], string="Tipo para libros de IVA")
     serie_rango = fields.Char(string="Serie Rango")
     inicial_rango = fields.Integer(string="Inicial Rango")
     final_rango = fields.Integer(string="Final Rango")
@@ -89,7 +90,7 @@ class AccountJournal(models.Model):
     direccion = fields.Many2one('res.partner', string='Dirección')
     codigo_establecimiento = fields.Integer(string='Código de establecimiento')
     facturas_por_rangos = fields.Boolean(string='Las facturas se ingresan por rango', help='Cada factura realmente es un rango de factura y el rango se ingresa en Referencia/Descripción')
-    usar_referencia = fields.Boolean(string='Usar referencia para libro de ventas', help='El número de la factua se ingresa en Referencia/Descripción')
+    usar_referencia = fields.Boolean(string='Usar referencia para libro de ventas', help='El número de la factura se ingresa en Referencia/Descripción')
 
 class AccountTax(models.Model):
     _inherit = "account.tax"

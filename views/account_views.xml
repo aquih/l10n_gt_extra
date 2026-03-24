@@ -10,14 +10,21 @@
                 <button name="agregar_linea_impuesto_global" context="{'tipo_impuesto': 'isr', 'nombre_linea': 'Retención ISR'}" id="agregar_linea_isr" string="Retención ISR" type="object"/>
                 <button name="agregar_linea_impuesto_global" context="{'tipo_impuesto': 'iva', 'nombre_linea': 'Retención IVA'}" id="agregar_linea_iva" string="Retención IVA" type="object"/>
             </button>
-            <field name="fiscal_position_id" position="after">
-                <field name="tipo_gasto"/>
-                <field name="nota_debito"/>
-                <field name="diario_facturas_por_rangos" invisible="1"/>
-                <field name="serie_rango" invisible="not diario_facturas_por_rangos"/>
-                <field name="inicial_rango" invisible="not diario_facturas_por_rangos"/>
-                <field name="final_rango" invisible="not diario_facturas_por_rangos"/>
-            </field>
+            <notebook position="inside">
+                <page string="Guatemala">
+                    <group>
+                        <group>
+                            <field name="tipo_para_iva"/>
+                            <field name="nota_debito"/>
+                            <field name="tipo_gasto"/>
+                            <field name="diario_facturas_por_rangos" invisible="1"/>
+                            <field name="serie_rango" invisible="not diario_facturas_por_rangos"/>
+                            <field name="inicial_rango" invisible="not diario_facturas_por_rangos"/>
+                            <field name="final_rango" invisible="not diario_facturas_por_rangos"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
         </field>
     </record>
     
