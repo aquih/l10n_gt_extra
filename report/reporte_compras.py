@@ -107,15 +107,27 @@ class ReporteCompras(models.AbstractModel):
                     precio = precio * -1
 
                 # Vieja forma de calcular tipo de producto
-                tipo_linea = f.tipo_gasto or 'mixto'
-                if tipo_linea == 'mixto':
-                    if l.product_id.type != 'service':
+                if f.tipo_para_iva == False:
+                    tipo_linea = f.tipo_gasto or 'mixto'
+                    if tipo_linea == 'mixto':
+                        if l.product_id.type != 'service':
+                            tipo_linea = 'bien_local'
+                        else:
+                            tipo_linea = 'servicio_local'
+                    elif f.tipo_gasto == 'compra'
                         tipo_linea = 'bien_local'
-                    else:
+                    elif f.tipo_gasto == 'servicio'
                         tipo_linea = 'servicio_local'
+                    elif f.tipo_gasto == 'importacion'
+                        if l.product_id.type != 'service':
+                            tipo_linea = 'bien_extranjero'
+                        else:
+                            tipo_linea = 'servicio_extranjero'
+                    elif f.tipo_gasto == 'combustible'
+                        tipo_linea = 'combustible_local'
 
                 # Nueva forma de calcular tipo de producto
-                if f.tipo_para_iva != False:
+                else:
                     if l.product_id.type != 'service':
                         tipo_linea = 'bien_local' if f.tipo_para_iva == 'bien_servicio_local' else 'bien_extranjero'
                     else:
