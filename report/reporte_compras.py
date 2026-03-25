@@ -114,16 +114,16 @@ class ReporteCompras(models.AbstractModel):
                             tipo_linea = 'bien_local'
                         else:
                             tipo_linea = 'servicio_local'
-                    elif f.tipo_gasto == 'compra'
+                    elif f.tipo_gasto == 'compra':
                         tipo_linea = 'bien_local'
-                    elif f.tipo_gasto == 'servicio'
+                    elif f.tipo_gasto == 'servicio':
                         tipo_linea = 'servicio_local'
-                    elif f.tipo_gasto == 'importacion'
+                    elif f.tipo_gasto == 'importacion':
                         if l.product_id.type != 'service':
                             tipo_linea = 'bien_extranjero'
                         else:
                             tipo_linea = 'servicio_extranjero'
-                    elif f.tipo_gasto == 'combustible'
+                    elif f.tipo_gasto == 'combustible':
                         tipo_linea = 'combustible_local'
 
                 # Nueva forma de calcular tipo de producto
