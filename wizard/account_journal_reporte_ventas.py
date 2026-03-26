@@ -108,8 +108,8 @@ class AsistenteReporteVentas(models.TransientModel):
             hoja.write(y, 11, totales['combustible_local']['neto'], formato_numero)
             hoja.write(y, 12, totales['combustible_local']['exento'], formato_numero)
             hoja.write(y, 13, totales['combustible_extranjero']['neto'] + totales['combustible_extranjero']['exento'], formato_numero)
-            hoja.write(y, 14, totales['bien_local']['iva'] + totales['bien_extranjero']['iva'] + totales['servicio_local']['iva'] + totales['servicio_extranjero']['iva'] + totales['combustible_local']['iva'] + totales['combustible_extranjero']['iva'] + totales['pequeño']['iva'], formato_numero)
-            hoja.write(y, 15, totales['bien_local']['total'] + totales['bien_extranjero']['total'] + totales['servicio_local']['total'] + totales['servicio_extranjero']['total'] + totales['combustible_local']['total'] + totales['combustible_extranjero']['total'] + totales['pequeño']['total'], formato_numero)
+            hoja.write(y, 14, totales['bien_local']['iva'] + totales['bien_extranjero']['iva'] + totales['servicio_local']['iva'] + totales['servicio_extranjero']['iva'] + totales['combustible_local']['iva'] + totales['combustible_extranjero']['iva'], formato_numero)
+            hoja.write(y, 15, totales['bien_local']['total'] + totales['bien_extranjero']['total'] + totales['servicio_local']['total'] + totales['servicio_extranjero']['total'] + totales['combustible_local']['total'] + totales['combustible_extranjero']['total'], formato_numero)
 
             y += 2
             hoja.write(y, 0, 'Cantidad de facturas')
@@ -161,10 +161,10 @@ class AsistenteReporteVentas(models.TransientModel):
             hoja.write(y, 6, totales['combustible_extranjero']['total'], formato_numero)
             y += 1
             hoja.write(y, 1, 'Totales')
-            hoja.write(y, 3, totales['bien_local']['exento'] + totales['bien_extranjero']['exento'] + totales['servicio_local']['exento'] + totales['servicio_extranjero']['exento'] + totales['combustible_local']['exento'] + totales['combustible_extranjero']['exento'] + totales['pequeño']['exento'], formato_numero)
-            hoja.write(y, 4, totales['bien_local']['neto'] + totales['bien_extranjero']['neto'] + totales['servicio_local']['neto'] + totales['servicio_extranjero']['neto'] + totales['combustible_local']['neto'] + totales['combustible_extranjero']['neto'] + totales['pequeño']['neto'], formato_numero)
-            hoja.write(y, 5, totales['bien_local']['iva'] + totales['bien_extranjero']['iva'] + totales['servicio_local']['iva'] + totales['servicio_extranjero']['iva'] + totales['combustible_local']['iva'] + totales['combustible_extranjero']['iva'] + totales['pequeño']['iva'], formato_numero)
-            hoja.write(y, 6, totales['bien_local']['total'] + totales['bien_extranjero']['total'] + totales['servicio_local']['total'] + totales['servicio_extranjero']['total'] + totales['combustible_local']['total'] + totales['combustible_extranjero']['total'] + totales['pequeño']['total'], formato_numero)
+            hoja.write(y, 3, totales['bien_local']['exento'] + totales['bien_extranjero']['exento'] + totales['servicio_local']['exento'] + totales['servicio_extranjero']['exento'] + totales['combustible_local']['exento'] + totales['combustible_extranjero']['exento'], formato_numero)
+            hoja.write(y, 4, totales['bien_local']['neto'] + totales['bien_extranjero']['neto'] + totales['servicio_local']['neto'] + totales['servicio_extranjero']['neto'] + totales['combustible_local']['neto'] + totales['combustible_extranjero']['neto'], formato_numero)
+            hoja.write(y, 5, totales['bien_local']['iva'] + totales['bien_extranjero']['iva'] + totales['servicio_local']['iva'] + totales['servicio_extranjero']['iva'] + totales['combustible_local']['iva'] + totales['combustible_extranjero']['iva'], formato_numero)
+            hoja.write(y, 6, totales['bien_local']['total'] + totales['bien_extranjero']['total'] + totales['servicio_local']['total'] + totales['servicio_extranjero']['total'] + totales['combustible_local']['total'] + totales['combustible_extranjero']['total'], formato_numero)
 
             libro.close()
             datos = base64.b64encode(f.getvalue())
