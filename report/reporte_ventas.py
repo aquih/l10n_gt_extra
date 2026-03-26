@@ -12,10 +12,12 @@ class ReporteVentas(models.AbstractModel):
         totales = {}
 
         totales['num_facturas'] = 0
-        totales['compra'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        totales['servicio'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        totales['importacion'] = {'exento':0,'neto':0,'iva':0,'total':0}
-        totales['combustible'] = {'exento':0,'neto':0,'iva':0,'total':0}
+        totales['bien_local'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['bien_extranjero'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['servicio_local'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['servicio_extranjero'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['combustible_local'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
+        totales['combustible_extranjero'] = {'exento': 0, 'neto': 0, 'iva': 0, 'total': 0}
         
         journal_ids = [x for x in datos['diarios_id']]
         filtro = [
@@ -72,30 +74,27 @@ class ReporteVentas(models.AbstractModel):
                 numero = f.ref
 
             # Por si usa factura electrónica
-            if 'firma_gface' in f.fields_get() and f.firma_gface:
-                numero = str(f.ref)
             if 'firma_fel' in f.fields_get() and f.firma_fel:
                 numero = str(f.serie_fel) + '-' + str(f.numero_fel)
-
-            # Por si usa tickets
-            if 'requiere_resolucion' in f.journal_id.fields_get() and f.journal_id.requiere_resolucion:
-                numero = f.ref
 
             linea = {
                 'estado': f.state,
                 'tipo': tipo,
                 'fecha': f.date,
                 'numero': numero,
-                'cliente': f.partner_id.name,
-                'nit': f.partner_id.vat,
-                'compra': 0,
-                'compra_exento': 0,
-                'servicio': 0,
-                'servicio_exento': 0,
-                'combustible': 0,
-                'combustible_exento': 0,
-                'importacion': 0,
-                'importacion_exento': 0,
+                'cliente': f.partner_id,
+                'bien_local': 0,
+                'bien_local_exento': 0,
+                'bien_extranjero': 0,
+                'bien_extranjero_exento': 0,
+                'servicio_local': 0,
+                'servicio_local_exento': 0,
+                'servicio_extranjero': 0,
+                'servicio_extranjero_exento': 0,
+                'combustible_local': 0,
+                'combustible_local_exento': 0,
+                'combustible_extranjero': 0,
+                'combustible_extranjero_exento': 0,
                 'base': 0,
                 'iva': 0,
                 'total': 0
@@ -110,12 +109,37 @@ class ReporteVentas(models.AbstractModel):
                 if tipo == 'NC':
                     precio = precio * -1
 
-                tipo_linea = f.tipo_gasto or 'mixto'
-                if tipo_linea == 'mixto':
+                # Vieja forma de calcular tipo de producto
+                if f.tipo_para_iva == False:
+                    tipo_linea = f.tipo_gasto or 'mixto'
+                    if tipo_linea == 'mixto':
+                        if l.product_id.type != 'service':
+                            tipo_linea = 'bien_local'
+                        else:
+                            tipo_linea = 'servicio_local'
+                    elif f.tipo_gasto == 'compra':
+                        tipo_linea = 'bien_local'
+                    elif f.tipo_gasto == 'servicio':
+                        tipo_linea = 'servicio_local'
+                    elif f.tipo_gasto == 'importacion':
+                        if l.product_id.type != 'service':
+                            tipo_linea = 'bien_extranjero'
+                        else:
+                            tipo_linea = 'servicio_extranjero'
+                    elif f.tipo_gasto == 'combustible':
+                        tipo_linea = 'combustible_local'
+
+                # Nueva forma de calcular tipo de producto
+                else:
                     if l.product_id.type != 'service':
-                        tipo_linea = 'compra'
+                        tipo_linea = 'bien_local' if f.tipo_para_iva == 'bien_servicio_local' else 'bien_extranjero'
                     else:
-                        tipo_linea = 'servicio'
+                        tipo_linea = 'servicio_local' if f.tipo_para_iva == 'bien_servicio_local' else 'servicio_extranjero'
+                    
+                    if f.tipo_para_iva == 'combustible_local':
+                        tipo_linea = 'combustible_local'
+                    elif f.tipo_para_iva == 'combustible_extranjero':
+                        tipo_linea = 'combustible_extranjero'
 
                 # Siempre enviar cantidad y precio correctos. Por qué algunos impuestos se calculan por cantidades.
                 r = l.tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
@@ -140,7 +164,10 @@ class ReporteVentas(models.AbstractModel):
                     linea[tipo_linea+'_exento'] += r['total_excluded']
                     totales[tipo_linea]['exento'] += r['total_excluded']
 
-            linea['total'] += linea['compra'] + linea['compra_exento'] + linea['servicio'] + linea['servicio_exento'] + linea['combustible'] + linea['combustible_exento'] + linea['importacion'] + linea['importacion_exento'] + linea['iva']
+            linea['total'] += linea['bien_local'] + linea['bien_local_exento'] + linea['bien_extranjero'] + linea['bien_extranjero_exento']
+            linea['total'] += linea['servicio_local'] + linea['servicio_local_exento'] + linea['servicio_extranjero'] + linea['servicio_extranjero_exento']
+            linea['total'] += linea['combustible_local'] + linea['combustible_local_exento'] + linea['combustible_extranjero'] + linea['combustible_extranjero_exento']
+            linea['total'] += linea['iva']
 
             lineas.append(linea)
 

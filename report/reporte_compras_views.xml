@@ -155,12 +155,12 @@
                     </table>
 
                     <div class="mt-2">
-                        <strong>Cantidad de facturas:</strong>
-                        <span t-esc="'{0:,.0f}'.format(result['totales']['num_facturas'])"/>
+                        <span>Cantidad de facturas:</span>
+                        <strong t-esc="'{0:,.0f}'.format(result['totales']['num_facturas'])"/>
                     </div>
                     <div class="mb-2">
-                        <strong>Total crédito fiscal:</strong>
-                        <span t-esc="result['totales']['bien_local']['iva'] + result['totales']['bien_extranjero']['iva'] + result['totales']['servicio_local']['iva'] + result['totales']['servicio_extranjero']['iva'] + result['totales']['combustible_local']['iva'] + result['totales']['combustible_extranjero']['iva'] + result['totales']['pequeño']['iva']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                        <span>Total crédito fiscal:</span>
+                        <strong t-esc="result['totales']['bien_local']['iva'] + result['totales']['bien_extranjero']['iva'] + result['totales']['servicio_local']['iva'] + result['totales']['servicio_extranjero']['iva'] + result['totales']['combustible_local']['iva'] + result['totales']['combustible_extranjero']['iva'] + result['totales']['pequeño']['iva']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                     </div>
 
                     <div><strong>Resumen:</strong></div>

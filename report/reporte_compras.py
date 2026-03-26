@@ -167,7 +167,8 @@ class ReporteCompras(models.AbstractModel):
             linea['total'] += linea['bien_local'] + linea['bien_local_exento'] + linea['bien_extranjero'] + linea['bien_extranjero_exento']
             linea['total'] += linea['servicio_local'] + linea['servicio_local_exento'] + linea['servicio_extranjero'] + linea['servicio_extranjero_exento']
             linea['total'] += linea['combustible_local'] + linea['combustible_local_exento'] + linea['combustible_extranjero'] + linea['combustible_extranjero_exento']
-            linea['total'] += linea['pequeño'] + linea['pequeño_exento'] + linea['iva']
+            linea['total'] += linea['pequeño'] + linea['pequeño_exento']
+            linea['total'] += linea['iva']
 
             lineas.append(linea)
             

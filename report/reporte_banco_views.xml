@@ -27,9 +27,9 @@
                                 <th>Doc</th>
                                 <th>Nombre</th>
                                 <th>Concepto</th>
-                                <th class="text-right">Credito</th>
-                                <th class="text-right">Debito</th>
-                                <th class="text-right">Balance</th>
+                                <th class="text-end">Credito</th>
+                                <th class="text-end">Debito</th>
+                                <th class="text-end">Balance</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,11 +43,11 @@
                                 </td>
                                 <td>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                     <span t-esc="balance_inicial['balance_moneda'] if balance_inicial['usar_balance_moneda'] else balance_inicial['balance']" t-options="{'widget': 'monetary', 'display_currency': moneda}"/>
                                 </td>
                             </tr>
@@ -64,13 +64,13 @@
                                 <td>
                                     <div style="overflow-wrap: break-word; max-width: 20em"><span t-esc="l['concepto']"/></div>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                      <span t-esc="l['debito']" t-options="{'widget': 'monetary', 'display_currency': l['moneda']}"/>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                     <span t-esc="l['credito']" t-options="{'widget': 'monetary', 'display_currency': l['moneda']}"/>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                     <span t-esc="l['balance']" t-options="{'widget': 'monetary', 'display_currency': l['moneda']}"/>
                                 </td>
                             </tr>

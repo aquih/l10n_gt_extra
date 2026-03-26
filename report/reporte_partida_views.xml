@@ -32,8 +32,8 @@
                                         <th>Código</th>
                                         <th>Cuenta</th>
                                         <th>Analítica</th>
-                                        <th class="text-right">Debe</th>
-                                        <th class="text-right">Haber</th>
+                                        <th class="text-end">Debe</th>
+                                        <th class="text-end">Haber</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -49,10 +49,10 @@
                                         <td>
                                             <span t-esc="', '.join(l.analytic_line_ids.account_id.mapped('name'))"/>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-end">
                                              <span t-field="l.debit" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-end">
                                             <span t-field="l.credit" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                         </td>
                                     </tr>
@@ -64,10 +64,10 @@
                                         </td>
                                         <td>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-end">
                                              <span t-esc="total_debe" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-end">
                                             <span t-esc="total_haber" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                         </td>
                                     </tr>
