@@ -187,23 +187,6 @@
                             </tr>
                             <tr>
                                 <td>
-                                    Bienes extranjeros
-                                </td>
-                                <td class="text-end">
-                                    <span t-esc="result['totales']['bien_extranjero']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
-                                </td>
-                                <td class="text-end">
-                                    <span t-esc="result['totales']['bien_extranjero']['neto']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
-                                </td>
-                                <td class="text-end">
-                                    <span t-esc="result['totales']['bien_extranjero']['iva']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
-                                </td>
-                                <td class="text-end">
-                                    <span t-esc="result['totales']['bien_extranjero']['total']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
                                     Servicios locales
                                 </td>
                                 <td class="text-end">
@@ -221,23 +204,6 @@
                             </tr>
                             <tr>
                                 <td>
-                                    Servicios extranjeros
-                                </td>
-                                <td class="text-end">
-                                    <span t-esc="result['totales']['servicio_extranjero']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
-                                </td>
-                                <td class="text-end">
-                                    <span t-esc="result['totales']['servicio_extranjero']['neto']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
-                                </td>
-                                <td class="text-end">
-                                    <span t-esc="result['totales']['servicio_extranjero']['iva']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
-                                </td>
-                                <td class="text-end">
-                                    <span t-esc="result['totales']['servicio_extranjero']['total']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
                                     Combustibles locales
                                 </td>
                                 <td class="text-end">
@@ -251,6 +217,40 @@
                                 </td>
                                 <td class="text-end">
                                     <span t-esc="result['totales']['combustible_local']['total']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Bienes extranjeros
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="result['totales']['bien_extranjero']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="result['totales']['bien_extranjero']['neto']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="result['totales']['bien_extranjero']['iva']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="result['totales']['bien_extranjero']['total']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Servicios extranjeros
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="result['totales']['servicio_extranjero']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="result['totales']['servicio_extranjero']['neto']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="result['totales']['servicio_extranjero']['iva']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="result['totales']['servicio_extranjero']['total']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
                             </tr>
                             <tr>
