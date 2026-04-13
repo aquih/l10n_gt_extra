@@ -8,6 +8,16 @@ class ReporteVentas(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_ventas'
     _description = 'Libro de Ventas'
 
+    def columnas_mostrar(self):
+        columnas_totales = {'bl', 'ble', 'be', 'sl', 'sle', 'se', 'cl', 'cle', 'ce', 'p'}
+        columnas_ocultar = set()
+
+        param = self.env['ir.config_parameter'].get_param('libro_ventas_columnas_ocultar')
+        if param:
+            columnas_ocultar = set(param.split(','))
+
+        return columnas_totales - columnas_ocultar
+
     def lineas(self, datos):
         totales = {}
 
@@ -223,4 +233,5 @@ class ReporteVentas(models.AbstractModel):
             'lineas': self.lineas,
             'direccion_diario': diario.direccion,
             'current_company_id': self.env.company,
+            'columnas_mostrar': self.columnas_mostrar()
         }

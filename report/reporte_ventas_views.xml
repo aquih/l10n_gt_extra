@@ -34,15 +34,15 @@
                                 <th>Doc</th>
                                 <th>Cliente</th>
                                 <th>NIT</th>
-                                <th class="text-end">Bien. loc.</th>
-                                <th class="text-end">Bien. loc. exe.</th>
-                                <th class="text-end">Bien. ext.</th>
-                                <th class="text-end">Serv. loc.</th>
-                                <th class="text-end">Serv. loc. exe.</th>
-                                <th class="text-end">Serv. ext.</th>
-                                <th class="text-end">Comb. loc.</th>
-                                <th class="text-end">Comb. loc. exe.</th>
-                                <th class="text-end">Comb. ext.</th>
+                                <th t-if="'bl' in columnas_mostrar" class="text-end">Bien. loc.</th>
+                                <th t-if="'ble' in columnas_mostrar" class="text-end">Bien. loc. exe.</th>
+                                <th t-if="'be' in columnas_mostrar" class="text-end">Bien. ext.</th>
+                                <th t-if="'sl' in columnas_mostrar" class="text-end">Serv. loc.</th>
+                                <th t-if="'sle' in columnas_mostrar" class="text-end">Serv. loc. exe.</th>
+                                <th t-if="'se' in columnas_mostrar" class="text-end">Serv. ext.</th>
+                                <th t-if="'cl' in columnas_mostrar" class="text-end">Comb. loc.</th>
+                                <th t-if="'cle' in columnas_mostrar" class="text-end">Comb. loc. exe.</th>
+                                <th t-if="'ce' in columnas_mostrar" class="text-end">Comb. ext.</th>
                                 <th class="text-end">IVA</th>
                                 <th class="text-end">Total</th>
                             </tr>
@@ -64,31 +64,31 @@
                                 <td>
                                     <span t-esc="l['cliente'].vat or l['cliente'].cui"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'bl' in columnas_mostrar" class="text-end">
                                      <span t-esc="l['bien_local']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'ble' in columnas_mostrar" class="text-end">
                                     <span t-esc="l['bien_local_exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'be' in columnas_mostrar" class="text-end">
                                     <span t-esc="l['bien_extranjero']+l['bien_extranjero_exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'sl' in columnas_mostrar" class="text-end">
                                     <span t-esc="l['servicio_local']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'sle' in columnas_mostrar" class="text-end">
                                     <span t-esc="l['servicio_local_exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'se' in columnas_mostrar" class="text-end">
                                     <span t-esc="l['servicio_extranjero']+l['servicio_extranjero_exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'cl' in columnas_mostrar" class="text-end">
                                     <span t-esc="l['combustible_local']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'cle' in columnas_mostrar" class="text-end">
                                     <span t-esc="l['combustible_local_exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'ce' in columnas_mostrar" class="text-end">
                                     <span t-esc="l['combustible_extranjero']+l['combustible_extranjero_exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
                                 <td class="text-end">
@@ -110,31 +110,31 @@
                                 </td>
                                 <td>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'bl' in columnas_mostrar" class="text-end">
                                      <span t-esc="result['totales']['bien_local']['neto']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'ble' in columnas_mostrar" class="text-end">
                                     <span t-esc="result['totales']['bien_local']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'be' in columnas_mostrar" class="text-end">
                                     <span t-esc="result['totales']['bien_extranjero']['neto'] + result['totales']['bien_extranjero']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'sl' in columnas_mostrar" class="text-end">
                                     <span t-esc="result['totales']['servicio_local']['neto']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'sle' in columnas_mostrar" class="text-end">
                                     <span t-esc="result['totales']['servicio_local']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'se' in columnas_mostrar" class="text-end">
                                     <span t-esc="result['totales']['servicio_extranjero']['neto'] + result['totales']['servicio_extranjero']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'cl' in columnas_mostrar" class="text-end">
                                     <span t-esc="result['totales']['combustible_local']['neto']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'cle' in columnas_mostrar" class="text-end">
                                     <span t-esc="result['totales']['combustible_local']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
-                                <td class="text-end">
+                                <td t-if="'ce' in columnas_mostrar" class="text-end">
                                     <span t-esc="result['totales']['combustible_extranjero']['neto'] + result['totales']['combustible_extranjero']['exento']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                                 </td>
                                 <td class="text-end">
