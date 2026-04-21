@@ -50,26 +50,6 @@ class ReporteVentas(models.AbstractModel):
         for f in facturas:
             totales['num_facturas'] += 1
 
-            tipo_cambio = 1
-            if f.currency_id.id != f.company_id.currency_id.id:
-                # Probar con impuesto inicialmente
-                for l in f.invoice_line_ids:
-                    if any(impuesto in l.tax_ids for impuesto in impuestos):
-                        if l.amount_currency != 0:
-                            tipo_cambio = l.balance/l.amount_currency
-                
-                # Si la factura no tiene impuesto, entonces usar cuenta por cobrar/pagar
-                if tipo_cambio == 1:
-                    total = 0
-                    for l in f.line_ids:
-                        if l.account_id.reconcile:
-                            total += l.debit - l.credit
-                    if f.amount_total != 0:
-                        tipo_cambio = abs(total / f.amount_total)
-
-            if f.company_id.id != self.env.company.id:
-                tipo_cambio = self.env['res.currency']._get_conversion_rate(f.company_id.currency_id, self.env.company.currency_id)
-
             tipo = 'FACT'
             tipo_interno_factura = f.type if 'type' in f.fields_get() else f.move_type
             if tipo_interno_factura != 'out_invoice':
@@ -115,7 +95,14 @@ class ReporteVentas(models.AbstractModel):
                 continue
 
             for l in f.invoice_line_ids:
-                precio = ( l.price_unit * (1-(l.discount or 0.0)/100.0) ) * tipo_cambio
+                tipo_cambio = 1
+                if f.company_id.id != self.env.company.id:
+                    tipo_cambio = self.env['res.currency']._get_conversion_rate(f.company_id.currency_id, self.env.company.currency_id)
+                elif f.currency_id.id != f.company_id.currency_id.id and l.amount_currency:
+                    tipo_cambio = l.balance / l.amount_currency
+
+                precio = ( l.price_unit * ( 1 - ( l.discount or 0.0 ) / 100.0 ) )
+
                 if tipo == 'NC':
                     precio = precio * -1
 
@@ -154,25 +141,25 @@ class ReporteVentas(models.AbstractModel):
                 # Siempre enviar cantidad y precio correctos. Por qué algunos impuestos se calculan por cantidades.
                 r = l.tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
-                linea['base'] += r['total_excluded']
-                totales[tipo_linea]['total'] += r['total_excluded']
+                linea['base'] += r['total_excluded'] * tipo_cambio
+                totales[tipo_linea]['total'] += r['total_excluded'] * tipo_cambio
                 
                 # No es exenta si trae el impuesto seleccionado en el wizard
                 if any(impuesto in l.tax_ids for impuesto in impuestos):
-                    linea[tipo_linea] += r['total_excluded']
-                    totales[tipo_linea]['neto'] += r['total_excluded']
+                    linea[tipo_linea] += r['total_excluded'] * tipo_cambio
+                    totales[tipo_linea]['neto'] += r['total_excluded'] * tipo_cambio
                     for i in r['taxes']:
                         if i['id'] in [impuesto.id for impuesto in impuestos]:
-                            linea['iva'] += i['amount']
-                            totales[tipo_linea]['iva'] += i['amount']
-                            totales[tipo_linea]['total'] += i['amount']
+                            linea['iva'] += i['amount'] * tipo_cambio
+                            totales[tipo_linea]['iva'] += i['amount'] * tipo_cambio
+                            totales[tipo_linea]['total'] += i['amount'] * tipo_cambio
                         elif (i['amount'] > 0 and tipo != 'NC') or (i['amount'] < 0 and tipo == 'NC'):
-                            linea[tipo_linea+'_exento'] += i['amount']
-                            totales[tipo_linea]['exento'] += i['amount']
-                            totales[tipo_linea]['total'] += i['amount']
+                            linea[tipo_linea+'_exento'] += i['amount'] * tipo_cambio
+                            totales[tipo_linea]['exento'] += i['amount'] * tipo_cambio
+                            totales[tipo_linea]['total'] += i['amount'] * tipo_cambio
                 else:
-                    linea[tipo_linea+'_exento'] += r['total_excluded']
-                    totales[tipo_linea]['exento'] += r['total_excluded']
+                    linea[tipo_linea+'_exento'] += r['total_excluded'] * tipo_cambio
+                    totales[tipo_linea]['exento'] += r['total_excluded'] * tipo_cambio
 
             linea['total'] += linea['bien_local'] + linea['bien_local_exento'] + linea['bien_extranjero'] + linea['bien_extranjero_exento']
             linea['total'] += linea['servicio_local'] + linea['servicio_local_exento'] + linea['servicio_extranjero'] + linea['servicio_extranjero_exento']
