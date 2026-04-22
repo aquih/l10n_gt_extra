@@ -165,11 +165,8 @@ class AsistenteReporteVentas(models.TransientModel):
             if 'ce' in columnas_mostrar:
                 hoja.write(y, x, totales['combustible_extranjero']['neto'] + totales['combustible_extranjero']['exento'], formato_numero)
                 x += 1
-            if 'p' in columnas_mostrar:
-                hoja.write(y, x, totales['pequeño']['neto'] + totales['pequeño']['exento'], formato_numero)
-                x += 1
-            hoja.write(y, x, totales['bien_local']['iva'] + totales['bien_extranjero']['iva'] + totales['servicio_local']['iva'] + totales['servicio_extranjero']['iva'] + totales['combustible_local']['iva'] + totales['combustible_extranjero']['iva'] + totales['pequeño']['iva'], formato_numero)
-            hoja.write(y, x+1, totales['bien_local']['total'] + totales['bien_extranjero']['total'] + totales['servicio_local']['total'] + totales['servicio_extranjero']['total'] + totales['combustible_local']['total'] + totales['combustible_extranjero']['total'] + totales['pequeño']['total'], formato_numero)
+            hoja.write(y, x, totales['bien_local']['iva'] + totales['bien_extranjero']['iva'] + totales['servicio_local']['iva'] + totales['servicio_extranjero']['iva'] + totales['combustible_local']['iva'] + totales['combustible_extranjero']['iva'], formato_numero)
+            hoja.write(y, x+1, totales['bien_local']['total'] + totales['bien_extranjero']['total'] + totales['servicio_local']['total'] + totales['servicio_extranjero']['total'] + totales['combustible_local']['total'] + totales['combustible_extranjero']['total'], formato_numero)
 
             y += 2
             hoja.write(y, 0, 'Cantidad de facturas')

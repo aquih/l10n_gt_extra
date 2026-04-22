@@ -12,7 +12,7 @@ class ReporteCompras(models.AbstractModel):
         columnas_totales = {'bl', 'ble', 'be', 'sl', 'sle', 'se', 'cl', 'cle', 'ce', 'p'}
         columnas_ocultar = set()
 
-        param = self.env['ir.config_parameter'].get_param('libro_compras_columnas_ocultar')
+        param = self.env['ir.config_parameter'].sudo().get_param('libro_compras_columnas_ocultar')
         if param:
             columnas_ocultar = set(param.split(','))
 
