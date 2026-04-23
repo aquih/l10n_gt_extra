@@ -39,7 +39,7 @@ class AsistenteReporteVentas(models.TransientModel):
             dict['resumido'] = w['resumido']
 
             res = self.env['report.l10n_gt_extra.reporte_ventas'].lineas(dict)
-            columnas_mostrar = self.env['report.l10n_gt_extra.reporte_compras'].columnas_mostrar()
+            columnas_mostrar = self.env['report.l10n_gt_extra.reporte_ventas'].columnas_mostrar()
             lineas = res['lineas']
             totales = res['totales']
 
