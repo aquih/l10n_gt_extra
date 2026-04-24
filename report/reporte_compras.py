@@ -139,7 +139,8 @@ class ReporteCompras(models.AbstractModel):
                     tipo_linea = 'pequeño'
 
                 # Siempre enviar cantidad y precio correctos. Por qué algunos impuestos se calculan por cantidades.
-                r = l.tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
+                # También pasar contexto para que tome el tipo de cambio correcto al calcular impuestos.
+                r = l.with_context(moneda_impuesto_id=f.currency_id, fecha_factura=f.invoice_date).tax_ids.compute_all(precio, currency=f.currency_id, quantity=l.quantity, product=l.product_id, partner=f.partner_id)
 
                 linea['base'] += r['total_excluded'] * tipo_cambio
                 totales[tipo_linea]['total'] += r['total_excluded'] * tipo_cambio
