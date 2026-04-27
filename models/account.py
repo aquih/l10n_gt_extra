@@ -105,6 +105,8 @@ class AccountTax(models.Model):
             tasa = self.env['res.currency']._get_conversion_rate(self.env.company.currency_id, self.moneda_id, date=fecha_factura)
         elif self.env.context.get('moneda_impuesto_id'):
             tasa = self.env['res.currency']._get_conversion_rate(self.env.company.currency_id, self.env.context.get('moneda_impuesto_id'), date=fecha_factura)
+        elif self.env.context.get('tasa_de_conversion'):
+            tasa = self.env.context.get('tasa_de_conversion')
 
         if evaluation_context['product']:
             evaluation_context['product']['tasa_de_conversion'] = tasa
