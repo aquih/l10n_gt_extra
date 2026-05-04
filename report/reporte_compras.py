@@ -67,6 +67,7 @@ class ReporteCompras(models.AbstractModel):
                 numero = str(f.serie_fel) + '-' + str(f.numero_fel)
 
             linea = {
+                'account_move_id': f.id,
                 'estado': f.state,
                 'tipo': tipo,
                 'fecha': f.invoice_date,
