@@ -211,8 +211,6 @@ class AsistenteReporteVentas(models.TransientModel):
         hoja.write(y, 5, totales['bien_local']['iva'] + totales['bien_extranjero']['iva'] + totales['servicio_local']['iva'] + totales['servicio_extranjero']['iva'] + totales['combustible_local']['iva'] + totales['combustible_extranjero']['iva'], formato_numero)
         hoja.write(y, 6, totales['bien_local']['total'] + totales['bien_extranjero']['total'] + totales['servicio_local']['total'] + totales['servicio_extranjero']['total'] + totales['combustible_local']['total'] + totales['combustible_extranjero']['total'], formato_numero)
 
-        libro.close()
-
         return archivo
 
     def print_report_excel(self):
@@ -231,6 +229,7 @@ class AsistenteReporteVentas(models.TransientModel):
 
             libro = self.generar_libro(columnas_mostrar, {'diario': w.diarios_id[0], 'fecha_desde': dict['fecha_desde'], 'fecha_hasta': dict['fecha_hasta']}, lineas, totales)
             datos = base64.b64encode(libro.getvalue())
+            libro.close()
 
             self.write({'archivo':datos, 'name':'libro_de_ventas.xlsx'})
 
