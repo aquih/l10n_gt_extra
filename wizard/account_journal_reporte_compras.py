@@ -242,8 +242,8 @@ class AsistenteReporteCompras(models.TransientModel):
             totales = res['totales']
 
             libro = self.generar_libro(columnas_mostrar, {'diario': w.diarios_id[0], 'fecha_desde': dict['fecha_desde'], 'fecha_hasta': dict['fecha_hasta']}, lineas, totales)
-            datos = base64.b64encode(libro.getvalue())
             libro.close()
+            datos = base64.b64encode(libro.getvalue())
 
             self.write({'archivo':datos, 'name':'libro_de_compras.xlsx'})
 
