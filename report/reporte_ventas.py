@@ -9,7 +9,7 @@ class ReporteVentas(models.AbstractModel):
     _description = 'Libro de Ventas'
 
     def columnas_mostrar(self):
-        columnas_totales = {'bl', 'ble', 'be', 'sl', 'sle', 'se', 'cl', 'cle', 'ce', 'p'}
+        columnas_totales = {'bl', 'ble', 'be', 'bee', 'sl', 'sle', 'se', 'see', 'cl', 'cle', 'ce', 'cee', 'p'}
         columnas_ocultar = set()
 
         param = self.env['ir.config_parameter'].sudo().get_param('libro_ventas_columnas_ocultar')

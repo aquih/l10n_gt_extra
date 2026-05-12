@@ -65,6 +65,9 @@ class AsistenteReporteVentas(models.TransientModel):
         if 'be' in columnas_mostrar:
             hoja.write(y, x, 'Bienes extranjero')
             x += 1
+        if 'bee' in columnas_mostrar:
+            hoja.write(y, x, 'Bienes extranjero exento')
+            x += 1
         if 'sl' in columnas_mostrar:
             hoja.write(y, x, 'Servicios local')
             x += 1
@@ -74,6 +77,9 @@ class AsistenteReporteVentas(models.TransientModel):
         if 'se' in columnas_mostrar:
             hoja.write(y, x, 'Servicios extranjero')
             x += 1
+        if 'see' in columnas_mostrar:
+            hoja.write(y, x, 'Servicios extranjero exento')
+            x += 1
         if 'cl' in columnas_mostrar:
             hoja.write(y, x, 'Combustibles local')
             x += 1
@@ -82,6 +88,9 @@ class AsistenteReporteVentas(models.TransientModel):
             x += 1
         if 'ce' in columnas_mostrar:
             hoja.write(y, x, 'Combustibles extranjero')
+            x += 1
+        if 'cee' in columnas_mostrar:
+            hoja.write(y, x, 'Combustibles extranjero exento')
             x += 1
         hoja.write(y, x, 'IVA')
         hoja.write(y, x+1, 'Total')
@@ -100,7 +109,10 @@ class AsistenteReporteVentas(models.TransientModel):
                 hoja.write(y, x, linea['bien_local_exento'], formato_numero)
                 x += 1
             if 'be' in columnas_mostrar:
-                hoja.write(y, x, linea['bien_extranjero'] + linea['bien_extranjero_exento'], formato_numero)
+                hoja.write(y, x, linea['bien_extranjero'], formato_numero)
+                x += 1
+            if 'bee' in columnas_mostrar:
+                hoja.write(y, x, linea['bien_extranjero_exento'], formato_numero)
                 x += 1
             if 'sl' in columnas_mostrar:
                 hoja.write(y, x, linea['servicio_local'], formato_numero)
@@ -109,7 +121,10 @@ class AsistenteReporteVentas(models.TransientModel):
                 hoja.write(y, x, linea['servicio_local_exento'], formato_numero)
                 x += 1
             if 'se' in columnas_mostrar:
-                hoja.write(y, x, linea['servicio_extranjero'] + linea['servicio_extranjero_exento'], formato_numero)
+                hoja.write(y, x, linea['servicio_extranjero'], formato_numero)
+                x += 1
+            if 'se' in columnas_mostrar:
+                hoja.write(y, x, linea['servicio_extranjero_exento'], formato_numero)
                 x += 1
             if 'cl' in columnas_mostrar:
                 hoja.write(y, x, linea['combustible_local'], formato_numero)
@@ -118,7 +133,10 @@ class AsistenteReporteVentas(models.TransientModel):
                 hoja.write(y, x, linea['combustible_local_exento'], formato_numero)
                 x += 1
             if 'ce' in columnas_mostrar:
-                hoja.write(y, x, linea['combustible_extranjero'] + linea['combustible_extranjero_exento'], formato_numero)
+                hoja.write(y, x, linea['combustible_extranjero'], formato_numero)
+                x += 1
+            if 'cee' in columnas_mostrar:
+                hoja.write(y, x, linea['combustible_extranjero_exento'], formato_numero)
                 x += 1
             hoja.write(y, x, linea['iva'], formato_numero)
             hoja.write(y, x+1, linea['total'], formato_numero)
@@ -133,7 +151,10 @@ class AsistenteReporteVentas(models.TransientModel):
             hoja.write(y, x, totales['bien_local']['exento'], formato_numero)
             x += 1
         if 'be' in columnas_mostrar:
-            hoja.write(y, x, totales['bien_extranjero']['neto'] + totales['bien_extranjero']['exento'], formato_numero)
+            hoja.write(y, x, totales['bien_extranjero']['neto'], formato_numero)
+            x += 1
+        if 'bee' in columnas_mostrar:
+            hoja.write(y, x, totales['bien_extranjero']['exento'], formato_numero)
             x += 1
         if 'sl' in columnas_mostrar:
             hoja.write(y, x, totales['servicio_local']['neto'], formato_numero)
@@ -142,7 +163,10 @@ class AsistenteReporteVentas(models.TransientModel):
             hoja.write(y, x, totales['servicio_local']['exento'], formato_numero)
             x += 1
         if 'se' in columnas_mostrar:
-            hoja.write(y, x, totales['servicio_extranjero']['neto'] + totales['servicio_extranjero']['exento'], formato_numero)
+            hoja.write(y, x, totales['servicio_extranjero']['neto'], formato_numero)
+            x += 1
+        if 'see' in columnas_mostrar:
+            hoja.write(y, x, totales['servicio_extranjero']['exento'], formato_numero)
             x += 1
         if 'cl' in columnas_mostrar:
             hoja.write(y, x, totales['combustible_local']['neto'], formato_numero)
@@ -151,7 +175,10 @@ class AsistenteReporteVentas(models.TransientModel):
             hoja.write(y, x, totales['combustible_local']['exento'], formato_numero)
             x += 1
         if 'ce' in columnas_mostrar:
-            hoja.write(y, x, totales['combustible_extranjero']['neto'] + totales['combustible_extranjero']['exento'], formato_numero)
+            hoja.write(y, x, totales['combustible_extranjero']['neto'], formato_numero)
+            x += 1
+        if 'cee' in columnas_mostrar:
+            hoja.write(y, x, totales['combustible_extranjero']['exento'], formato_numero)
             x += 1
         hoja.write(y, x, totales['bien_local']['iva'] + totales['bien_extranjero']['iva'] + totales['servicio_local']['iva'] + totales['servicio_extranjero']['iva'] + totales['combustible_local']['iva'] + totales['combustible_extranjero']['iva'], formato_numero)
         hoja.write(y, x+1, totales['bien_local']['total'] + totales['bien_extranjero']['total'] + totales['servicio_local']['total'] + totales['servicio_extranjero']['total'] + totales['combustible_local']['total'] + totales['combustible_extranjero']['total'], formato_numero)
