@@ -29,11 +29,10 @@ class AsistenteReporteVentas(models.TransientModel):
         }
         return self.env.ref('l10n_gt_extra.ventas_reporte_wizard_report').with_context(landscape=True).report_action(self, data=data)
 
-    def generar_libro(self, columnas_mostrar, encabezado, lineas, totales):
-        archivo = io.BytesIO()
-
+    def generar_libro(self, archivo, columnas_mostrar, encabezado, lineas, totales):
         libro = xlsxwriter.Workbook(archivo)
         hoja = libro.add_worksheet('Reporte')
+
         formato_fecha = libro.add_format({'num_format': 'dd/mm/yy'})
         formato_numero = libro.add_format({'num_format': '#,##0.00'})
 
@@ -123,7 +122,7 @@ class AsistenteReporteVentas(models.TransientModel):
             if 'se' in columnas_mostrar:
                 hoja.write(y, x, linea['servicio_extranjero'], formato_numero)
                 x += 1
-            if 'se' in columnas_mostrar:
+            if 'see' in columnas_mostrar:
                 hoja.write(y, x, linea['servicio_extranjero_exento'], formato_numero)
                 x += 1
             if 'cl' in columnas_mostrar:
@@ -238,7 +237,7 @@ class AsistenteReporteVentas(models.TransientModel):
         hoja.write(y, 5, totales['bien_local']['iva'] + totales['bien_extranjero']['iva'] + totales['servicio_local']['iva'] + totales['servicio_extranjero']['iva'] + totales['combustible_local']['iva'] + totales['combustible_extranjero']['iva'], formato_numero)
         hoja.write(y, 6, totales['bien_local']['total'] + totales['bien_extranjero']['total'] + totales['servicio_local']['total'] + totales['servicio_extranjero']['total'] + totales['combustible_local']['total'] + totales['combustible_extranjero']['total'], formato_numero)
 
-        return archivo
+        return libro
 
     def print_report_excel(self):
         for w in self:
@@ -254,9 +253,10 @@ class AsistenteReporteVentas(models.TransientModel):
             lineas = res['lineas']
             totales = res['totales']
 
-            libro = self.generar_libro(columnas_mostrar, {'diario': w.diarios_id[0], 'fecha_desde': dict['fecha_desde'], 'fecha_hasta': dict['fecha_hasta']}, lineas, totales)
+            archivo = io.BytesIO()
+            libro = self.generar_libro(archivo, columnas_mostrar, {'diario': w.diarios_id[0], 'fecha_desde': dict['fecha_desde'], 'fecha_hasta': dict['fecha_hasta']}, lineas, totales)
             libro.close()
-            datos = base64.b64encode(libro.getvalue())
+            datos = base64.b64encode(archivo.getvalue())
 
             self.write({'archivo':datos, 'name':'libro_de_ventas.xlsx'})
 
