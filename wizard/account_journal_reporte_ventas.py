@@ -28,7 +28,7 @@ class AsistenteReporteVentas(models.TransientModel):
         formato_fecha = libro.add_format({'num_format': 'dd/mm/yy'})
         formato_numero = libro.add_format({'num_format': '#,##0.00'})
 
-        res = self.env['report.l10n_gt_extra.reporte_ventas'].lineas(dict)
+        res = self.env['report.l10n_gt_extra.reporte_ventas'].lineas(data)
         lineas = res['lineas']
         totales = res['totales']
 
