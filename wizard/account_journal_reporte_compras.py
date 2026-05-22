@@ -20,32 +20,31 @@ class AsistenteReporteCompras(models.TransientModel):
     name = fields.Char('Nombre archivo')
     archivo = fields.Binary('Archivo')
 
-    def print_report(self):
-        data = {
-             'ids': [],
-             'model': 'l10n_gt_extra.reporte_compras.wizard',
-             'form': self.read()[0]
-        }
-        return self.env.ref('l10n_gt_extra.reporte_compras_wizard_report').with_context(landscape=True).report_action(self, data=data)
-
-    def generar_libro(self, archivo, columnas_mostrar, encabezado, lineas, totales):
+    def generar_libro(self, archivo, data):
         libro = xlsxwriter.Workbook(archivo)
         hoja = libro.add_worksheet('Reporte')
 
         formato_fecha = libro.add_format({'num_format': 'dd/mm/yy'})
         formato_numero = libro.add_format({'num_format': '#,##0.00'})
 
+        res = self.env['report.l10n_gt_extra.reporte_compras'].lineas(data)
+        lineas = res['lineas']
+        totales = res['totales']
+
+        columnas_mostrar = self.env['report.l10n_gt_extra.reporte_compras'].columnas_mostrar()
+        diario = self.env['account.journal'].browse(data['diarios_id'][0])
+
         hoja.write(0, 0, 'Libro de compras y servicios')
         hoja.write(2, 0, 'Número de identificación tributaria')
-        hoja.write(2, 1, encabezado['diario'].company_id.partner_id.vat)
+        hoja.write(2, 1, self.env.company.partner_id.vat)
         hoja.write(3, 0, 'Nombre comercial')
-        hoja.write(3, 1, encabezado['diario'].direccion.name if encabezado['diario'].direccion else encabezado['diario'].company_id.partner_id.name)
+        hoja.write(3, 1, diario.direccion.name if diario.direccion else diario.company_id.partner_id.name)
         hoja.write(2, 3, 'Domicilio fiscal')
-        hoja.write(2, 4, encabezado['diario'].direccion.contact_address if encabezado['diario'].direccion else encabezado['diario'].company_id.partner_id.contact_address)
+        hoja.write(2, 4, diario.direccion.contact_address if diario.direccion else diario.company_id.partner_id.contact_address)
         hoja.write(3, 3, 'Registro del')
-        hoja.write(3, 4, encabezado['fecha_desde'], formato_fecha)
+        hoja.write(3, 4, data['fecha_desde'], formato_fecha)
         hoja.write(3, 5, 'al')
-        hoja.write(3, 6, encabezado['fecha_hasta'], formato_fecha)
+        hoja.write(3, 6, data['fecha_hasta'], formato_fecha)
 
         y = 5
         hoja.write(y, 0, 'Tipo')
@@ -254,24 +253,23 @@ class AsistenteReporteCompras(models.TransientModel):
 
         return libro
 
+    def print_report(self):
+        data = {
+             'ids': [],
+             'model': 'l10n_gt_extra.reporte_compras.wizard',
+             'form': self.read()[0]
+        }
+        return self.env.ref('l10n_gt_extra.reporte_compras_wizard_report').with_context(landscape=True).report_action(self, data=data)
+
     def print_report_excel(self):
         for w in self:
-            dict = {}
-            dict['fecha_hasta'] = w['fecha_hasta']
-            dict['fecha_desde'] = w['fecha_desde']
-            dict['impuestos_id'] = [i.id for i in w.impuestos_id]
-            dict['diarios_id'] =[x.id for x in w.diarios_id]
-
-            res = self.env['report.l10n_gt_extra.reporte_compras'].lineas(dict)
-            columnas_mostrar = self.env['report.l10n_gt_extra.reporte_compras'].columnas_mostrar()
-            lineas = res['lineas']
-            totales = res['totales']
+            data = self.read()[0]
 
             archivo = io.BytesIO()
-            libro = self.generar_libro(archivo, columnas_mostrar, {'diario': w.diarios_id[0], 'fecha_desde': dict['fecha_desde'], 'fecha_hasta': dict['fecha_hasta']}, lineas, totales)
+            libro = self.generar_libro(archivo, data)
             libro.close()
-            datos = base64.b64encode(archivo.getvalue())
 
+            datos = base64.b64encode(archivo.getvalue())
             self.write({'archivo':datos, 'name':'libro_de_compras.xlsx'})
 
         return {
