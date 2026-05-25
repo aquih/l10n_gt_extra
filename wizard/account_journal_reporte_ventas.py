@@ -21,19 +21,18 @@ class AsistenteReporteVentas(models.TransientModel):
     name = fields.Char('Nombre archivo')
     archivo = fields.Binary('Archivo')
 
-    def generar_libro(self, archivo, data):
+    def generar_libro(self, archivo, datos_wizard, datos_lineas):
         libro = xlsxwriter.Workbook(archivo)
         hoja = libro.add_worksheet('Reporte')
 
         formato_fecha = libro.add_format({'num_format': 'dd/mm/yy'})
         formato_numero = libro.add_format({'num_format': '#,##0.00'})
 
-        res = self.env['report.l10n_gt_extra.reporte_ventas'].lineas(data)
-        lineas = res['lineas']
-        totales = res['totales']
+        lineas = datos_lineas['lineas']
+        totales = datos_lineas['totales']
 
         columnas_mostrar = self.env['report.l10n_gt_extra.reporte_ventas'].columnas_mostrar()
-        diario = self.env['account.journal'].browse(data['diarios_id'][0])
+        diario = self.env['account.journal'].browse(datos_wizard['diarios_id'][0])
 
         hoja.write(0, 0, 'Libro de ventas y servicios')
         hoja.write(2, 0, 'Número de identificación tributaria')
@@ -43,9 +42,9 @@ class AsistenteReporteVentas(models.TransientModel):
         hoja.write(2, 3, 'Domicilio fiscal')
         hoja.write(2, 4, diario.direccion.contact_address if diario.direccion else diario.company_id.partner_id.contact_address)
         hoja.write(3, 3, 'Registro del')
-        hoja.write(3, 4, data['fecha_desde'], formato_fecha)
+        hoja.write(3, 4, datos_wizard['fecha_desde'], formato_fecha)
         hoja.write(3, 5, 'al')
-        hoja.write(3, 6, data['fecha_hasta'], formato_fecha)
+        hoja.write(3, 6, datos_wizard['fecha_hasta'], formato_fecha)
 
         y = 5
         hoja.write(y, 0, 'Tipo')
@@ -239,19 +238,21 @@ class AsistenteReporteVentas(models.TransientModel):
         return libro
 
     def print_report(self):
-        data = {
+        datos_wizard = {
              'ids': [],
              'model': 'l10n_gt_extra.reporte_ventas.wizard',
              'form': self.read()[0]
         }
-        return self.env.ref('l10n_gt_extra.ventas_reporte_wizard_report').with_context(landscape=True).report_action(self, data=data)
+        return self.env.ref('l10n_gt_extra.ventas_reporte_wizard_report').with_context(landscape=True).report_action(self, data=datos_wizard)
 
     def print_report_excel(self):
         for w in self:
-            data = self.read()[0]
+            datos_wizard = self.read()[0]
+
+            datos_lineas = self.env['report.l10n_gt_extra.reporte_ventas'].lineas(datos_wizard)
 
             archivo = io.BytesIO()
-            libro = self.generar_libro(archivo, data)
+            libro = self.generar_libro(archivo, datos_wizard, datos_lineas)
             libro.close()
 
             datos = base64.b64encode(archivo.getvalue())
