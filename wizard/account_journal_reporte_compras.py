@@ -39,7 +39,7 @@ class AsistenteReporteCompras(models.TransientModel):
         hoja.write(3, 0, 'Nombre comercial')
         hoja.write(3, 1, diario.direccion.name if diario.direccion else diario.company_id.partner_id.name)
         hoja.write(2, 3, 'Domicilio fiscal')
-        hoja.write(2, 4, diario.direccion.contact_address if diario.direccion else diario.company_id.partner_id.contact_address)
+        hoja.write(2, 4, diario.direccion._display_address(without_company=True) if diario.direccion else diario.company_id.partner_id._display_address(without_company=True))
         hoja.write(3, 3, 'Registro del')
         hoja.write(3, 4, datos_wizard['fecha_desde'], formato_fecha)
         hoja.write(3, 5, 'al')
