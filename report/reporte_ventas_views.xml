@@ -173,7 +173,7 @@
                         <strong t-esc="'{0:,.0f}'.format(result['totales']['num_facturas'])"/>
                     </div>
                     <div class="row mb-2">
-                        <span>Total crédito fiscal:</span>
+                        <span>Total débito fiscal:</span>
                         <strong t-esc="result['totales']['bien_local']['iva'] + result['totales']['bien_extranjero']['iva'] + result['totales']['servicio_local']['iva'] + result['totales']['servicio_extranjero']['iva'] + result['totales']['combustible_local']['iva'] + result['totales']['combustible_extranjero']['iva']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
                     </div>
 
