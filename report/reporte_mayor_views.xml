@@ -9,16 +9,16 @@
             </div>
             <t t-call="web.external_layout">
                 <div class="page">
-                    <h2><span t-field="current_company_id.name"/>: Libro Mayor</h2>
+                    <h2><span t-field="current_company_id.name"/>: Libro mayor</h2>
 
                     <div class="row my-2">
                         <div class="col-6">
                             <strong>Número de identificación tributaria:</strong> <span t-field="current_company_id.vat"/><br/>
-                            <strong>Nombre comercial:</strong> <span t-field="current_company_id.partner_id.name"/><br/>
+                            <strong>Nombre comercial:</strong> <span t-esc="direccion_diario.name if direccion_diario else current_company_id.partner_id.name"/><br/>
                         </div>
                         <div class="col-6">
-                            <strong>Domicilio fiscal:</strong> <span t-field="current_company_id.partner_id.contact_address"/><br/>
-                            <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-options="{'widget': 'date'}"/> al: <span t-esc="data['fecha_hasta']" t-options="{'widget': 'date'}"/><br/>
+                            <strong>Domicilio fiscal:</strong> <span t-esc="direccion_diario._display_address(without_company=True) if direccion_diario else current_company_id.partner_id._display_address(without_company=True)"/><br/>
+                            <strong>Registro del:</strong> <span t-esc="data['fecha_desde']" t-options='{"widget": "date"}'/> al: <span t-esc="data['fecha_hasta']" t-options='{"widget": "date"}'/><br/>
                         </div>
                     </div>
 
