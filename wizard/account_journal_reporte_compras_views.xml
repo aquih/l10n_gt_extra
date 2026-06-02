@@ -10,8 +10,7 @@
                 <group>
                     <group>
                         <field name="folio_inicial"/>
-                        <field name="fecha_desde"/>
-                        <field name="fecha_hasta"/>
+                        <field name="fecha_desde" string="Fechas" widget="daterange" options="{'end_date_field': 'fecha_hasta'}"/>
                     </group>
                     <group>
                         <field name="impuestos_id" domain="[('type_tax_use','in',['purchase'])]" widget="many2many_tags"/>

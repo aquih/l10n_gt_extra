@@ -10,6 +10,7 @@
                 <group>
                     <group>
                         <field name="folio_inicial"/>
+                        <field name="contacto_encabezado"/>                        
                     </group>
                     <group>
                         <field name="fecha_hasta"/>

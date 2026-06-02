@@ -82,7 +82,7 @@ class AsistenteReporteBanco(models.TransientModel):
 
             libro.close()
             datos = base64.b64encode(f.getvalue())
-            self.write({'archivo':datos, 'name':'libro_de_banco.xlsx'})
+            w.write({'archivo':datos, 'name':'libro_de_banco.xlsx'})
 
         return {
             'view_type': 'form',

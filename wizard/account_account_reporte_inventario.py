@@ -18,9 +18,10 @@ class AsistenteReporteInventario(models.TransientModel):
         else:
             return []
 
-    cuentas_id = fields.Many2many("account.account", string="Diario", required=True, default=_default_cuenta)
     folio_inicial = fields.Integer(string="Folio Inicial", required=True, default=1)
+    contacto_encabezado = fields.Many2one('res.partner', string='Contacto para encabezado', help='El contacto se usará para nombre comercial y domicilio fiscal.')
     fecha_hasta = fields.Date(string="Fecha Final", required=True, default=lambda self: time.strftime('%Y-%m-%d'))
+    cuentas_id = fields.Many2many("account.account", string="Diario", required=True, default=_default_cuenta)
 
     def print_report(self):
         if not self.cuentas_id:

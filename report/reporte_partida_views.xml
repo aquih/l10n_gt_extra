@@ -17,7 +17,7 @@
                                     <strong>Ref:</strong> <span t-field="o.ref"/><br/>
                                 </div>
                                 <div class="col-3">
-                                    <strong>Fecha:</strong> <span t-field="o.date"/>
+                                    <strong>Fecha:</strong> <span t-field="o.date" t-options="{'widget': 'date'}"/>
                                 </div>
                                 <div class="col-3">
                                     <strong>Diario:</strong> <span t-field="o.journal_id.name"/>

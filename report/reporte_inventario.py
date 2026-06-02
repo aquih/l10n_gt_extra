@@ -119,6 +119,8 @@ class ReporteInventario(models.AbstractModel):
         model = self.env.context.get('active_model')
         docs = self.env[model].browse(self.env.context.get('active_ids', []))
 
+        contacto_encabezado = self.env['res.partner'].browse(data['form']['contacto_encabezado'])
+
         return {
             'doc_ids': self.ids,
             'doc_model': model,
@@ -127,6 +129,7 @@ class ReporteInventario(models.AbstractModel):
             'lineas': self.lineas,
             'fecha_desde': self.fecha_desde,
             'current_company_id': self.env.company,
+            'contacto_encabezado': contacto_encabezado[0] if contacto_encabezado else self.env['res.partner']
         }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

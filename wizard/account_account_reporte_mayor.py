@@ -22,11 +22,12 @@ class AsistenteReporteMayor(models.TransientModel):
         else:
             return []
 
-    cuentas_id = fields.Many2many("account.account", string="Cuentas", required=True, default=_default_cuenta)
     folio_inicial = fields.Integer(string="Folio Inicial", required=True, default=1)
+    contacto_encabezado = fields.Many2one('res.partner', string='Contacto para encabezado', help='El contacto se usará para nombre comercial y domicilio fiscal.')
     agrupado_por_dia = fields.Boolean(string="Agrupado por dia")
     fecha_desde = fields.Date(string="Fecha Inicial", required=True, default=lambda self: time.strftime('%Y-%m-01'))
     fecha_hasta = fields.Date(string="Fecha Final", required=True, default=lambda self: time.strftime('%Y-%m-%d'))
+    cuentas_id = fields.Many2many("account.account", string="Cuentas", required=True, default=_default_cuenta)
     name = fields.Char('Nombre archivo', size=32)
     archivo = fields.Binary('Archivo')
 
@@ -63,13 +64,13 @@ class AsistenteReporteMayor(models.TransientModel):
             hoja.write(2, 0, 'Número de identificación tributaria')
             hoja.write(2, 1, self.env.company.partner_id.vat)
             hoja.write(3, 0, 'Nombre comercial')
-            hoja.write(3, 1, diario.direccion.name if diario.direccion else diario.company_id.partner_id.name)
+            hoja.write(3, 1, self.contacto_encabezado.name if self.contacto_encabezado else self.env.company.partner_id.name)
             hoja.write(2, 3, 'Domicilio fiscal')
-            hoja.write(2, 4, diario.direccion._display_address(without_company=True) if diario.direccion else diario.company_id.partner_id._display_address(without_company=True))
+            hoja.write(2, 4, self.contacto_encabezado._display_address(without_company=True) if self.contacto_encabezado else self.env.company.partner_id._display_address(without_company=True))
             hoja.write(3, 3, 'Registro del')
-            hoja.write(3, 4, datos_wizard['fecha_desde'], formato_fecha)
+            hoja.write(3, 4, w.fecha_desde, formato_fecha)
             hoja.write(3, 5, 'al')
-            hoja.write(3, 6, datos_wizard['fecha_hasta'], formato_fecha)
+            hoja.write(3, 6, w.fecha_hasta, formato_fecha)
 
             y = 5
             if w['agrupado_por_dia']:
@@ -125,7 +126,7 @@ class AsistenteReporteMayor(models.TransientModel):
 
             libro.close()
             datos = base64.b64encode(f.getvalue())
-            self.write({'archivo':datos, 'name':'libro_mayor.xlsx'})
+            w.write({'archivo':datos, 'name':'libro_mayor.xlsx'})
 
         return {
             'view_type': 'form',

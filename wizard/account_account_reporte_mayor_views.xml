@@ -10,8 +10,8 @@
                 <group>
                     <group>
                         <field name="folio_inicial"/>
-                        <field name="fecha_desde"/>
-                        <field name="fecha_hasta"/>
+                        <field name="contacto_encabezado"/>
+                        <field name="fecha_desde" string="Fechas" widget="daterange" options="{'end_date_field': 'fecha_hasta'}"/>
                     </group>
                     <group>
                         <field name="agrupado_por_dia"/>

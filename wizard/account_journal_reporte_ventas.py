@@ -32,7 +32,7 @@ class AsistenteReporteVentas(models.TransientModel):
         totales = datos_lineas['totales']
 
         columnas_mostrar = self.env['report.l10n_gt_extra.reporte_ventas'].columnas_mostrar()
-        diario = self.env['account.journal'].browse(datos_wizard['diarios_id'][0])
+        diario = self.diarios_id[0]
 
         hoja.write(0, 0, 'Libro de ventas y servicios')
         hoja.write(2, 0, 'Número de identificación tributaria')
@@ -42,9 +42,9 @@ class AsistenteReporteVentas(models.TransientModel):
         hoja.write(2, 3, 'Domicilio fiscal')
         hoja.write(2, 4, diario.direccion._display_address(without_company=True) if diario.direccion else diario.company_id.partner_id._display_address(without_company=True))
         hoja.write(3, 3, 'Registro del')
-        hoja.write(3, 4, datos_wizard['fecha_desde'], formato_fecha)
+        hoja.write(3, 4, self.fecha_desde, formato_fecha)
         hoja.write(3, 5, 'al')
-        hoja.write(3, 6, datos_wizard['fecha_hasta'], formato_fecha)
+        hoja.write(3, 6, self.fecha_hasta, formato_fecha)
 
         y = 5
         hoja.write(y, 0, 'Tipo')
@@ -247,16 +247,15 @@ class AsistenteReporteVentas(models.TransientModel):
 
     def print_report_excel(self):
         for w in self:
-            datos_wizard = self.read()[0]
-
+            datos_wizard = w.read()[0]
             datos_lineas = self.env['report.l10n_gt_extra.reporte_ventas'].lineas(datos_wizard)
 
             archivo = io.BytesIO()
-            libro = self.generar_libro(archivo, datos_wizard, datos_lineas)
+            libro = w.generar_libro(archivo, datos_wizard, datos_lineas)
             libro.close()
 
             datos = base64.b64encode(archivo.getvalue())
-            self.write({'archivo':datos, 'name':'libro_de_ventas.xlsx'})
+            w.write({'archivo':datos, 'name':'libro_de_ventas.xlsx'})
 
         return {
             'view_type': 'form',

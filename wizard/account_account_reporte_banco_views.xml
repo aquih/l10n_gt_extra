@@ -14,8 +14,7 @@
                         <field name="archivo" readonly="1" filename="name"/>
                     </group>
                     <group>
-                        <field name="fecha_desde"/>
-                        <field name="fecha_hasta"/>
+                        <field name="fecha_desde" string="Fechas" widget="daterange" options="{'end_date_field': 'fecha_hasta'}"/>
                     </group>
                 </group>
                 <footer>
