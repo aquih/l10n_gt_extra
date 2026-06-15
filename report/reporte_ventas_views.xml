@@ -4,8 +4,8 @@
     <template id="reporte_ventas">
         <t t-call="web.html_container">
             <t t-set="data_report_page_offset" t-value="data['folio_inicial']+1"/>
-            <t t-set="data_report_margin_top" t-value="30"/>
-            <t t-set="data_report_header_spacing" t-value="20"/>
+            <t t-set="data_report_margin_top" t-value="20"/>
+            <t t-set="data_report_header_spacing" t-value="10"/>
             <div class="header">
                 Folio: <span class="page" t-esc="data['folio_inicial']-1"></span>
             </div>
@@ -26,7 +26,7 @@
 
                     <t t-set="result" t-value="lineas(data)"/>
 
-                    <table class="table table-condensed">
+                    <table class="table table-sm" style="font-size: 90%">
                         <thead>
                             <tr>
                                 <th>Tipo</th>
@@ -56,7 +56,7 @@
                                     <span t-esc="l['tipo']"/>
                                 </td>
                                 <td>
-                                    <span t-esc="l['fecha']" t-options='{"widget": "date"}'/>
+                                    <span t-esc="l['fecha']" t-options="{'widget': 'date'}"/>
                                 </td>
                                 <td>
                                     <span t-esc="l['numero']"/>

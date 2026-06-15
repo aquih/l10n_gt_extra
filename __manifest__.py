@@ -1,7 +1,6 @@
-# -*- encoding: utf-8 -*-
 {
     'name': 'Guatemala - reportes y funcionalidad extra',
-    'version': '6.2',
+    'version': '6.3',
     'category': 'Accounting/Localizations/Reporting',
     'description': """ Reportes requeridos por la SAT y otra funcionalidad extra para llevar un contabilidad en Guatemala. """,
     'author': 'aquíH',
@@ -36,4 +35,3 @@
     'license': 'Other OSI approved licence',
     'post_init_hook': '_update_gt_taxes',
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
