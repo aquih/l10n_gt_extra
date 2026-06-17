@@ -7,6 +7,13 @@ class ReportePartida(models.AbstractModel):
     _name = 'report.l10n_gt_extra.reporte_partida'
     _description = 'Partida'
 
+    def analiticas(self, distribucion):
+        nombres = ''
+        if distribucion:
+            cuentas_ids = [int(k) for k in distribucion.keys()]
+            nombres = ', '.join(self.env['account.analytic.account'].browse(cuentas_ids).mapped('display_name'))
+        return nombres
+
     @api.model
     def _get_report_values(self, docids, data=None):
         return self.get_report_values(docids, data)

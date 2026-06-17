@@ -47,7 +47,7 @@
                                             <span t-field="l.account_id.name"/>
                                         </td>
                                         <td>
-                                            <span t-esc="', '.join(l.analytic_line_ids.account_id.mapped('name'))"/>
+                                            <span t-esc="analiticas(l.analytic_distribution)"/>
                                         </td>
                                         <td class="text-end">
                                              <span t-field="l.debit" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
