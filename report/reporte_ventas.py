@@ -12,9 +12,9 @@ class ReporteVentas(models.AbstractModel):
         columnas_totales = {'bl', 'ble', 'be', 'bee', 'sl', 'sle', 'se', 'see', 'cl', 'cle', 'ce', 'cee', 'p'}
         columnas_ocultar = set()
 
-        param = self.env['ir.config_parameter'].sudo().get_param('libro_ventas_columnas_ocultar')
-        if param:
-            columnas_ocultar = set(param.split(','))
+        param_columnas_ocultar = self.env['ir.config_parameter'].sudo().get_param('l10n_gt_extra.libro_ventas_columnas_ocultar')
+        if param_columnas_ocultar:
+            columnas_ocultar = set(param_columnas_ocultar.split(','))
 
         return columnas_totales - columnas_ocultar
 
