@@ -108,7 +108,7 @@ class ReporteCompras(models.AbstractModel):
                 if f.tipo_para_iva == False:
                     tipo_linea = f.tipo_gasto or 'mixto'
                     if tipo_linea == 'mixto':
-                        if l.product_id.type != 'service':
+                        if l.tipo_producto_sat != 'servicio':
                             tipo_linea = 'bien_local'
                         else:
                             tipo_linea = 'servicio_local'
@@ -117,7 +117,7 @@ class ReporteCompras(models.AbstractModel):
                     elif f.tipo_gasto == 'servicio':
                         tipo_linea = 'servicio_local'
                     elif f.tipo_gasto == 'importacion':
-                        if l.product_id.type != 'service':
+                        if l.tipo_producto_sat != 'servicio':
                             tipo_linea = 'bien_extranjero'
                         else:
                             tipo_linea = 'servicio_extranjero'
@@ -126,7 +126,7 @@ class ReporteCompras(models.AbstractModel):
 
                 # Nueva forma de calcular tipo de producto
                 else:
-                    if l.product_id.type != 'service':
+                    if l.tipo_producto_sat != 'servicio':
                         tipo_linea = 'bien_local' if f.tipo_para_iva == 'bien_servicio_local' else 'bien_extranjero'
                     else:
                         tipo_linea = 'servicio_local' if f.tipo_para_iva == 'bien_servicio_local' else 'servicio_extranjero'
