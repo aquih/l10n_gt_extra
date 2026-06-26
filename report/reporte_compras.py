@@ -102,7 +102,7 @@ class ReporteCompras(models.AbstractModel):
 
                 tipo_linea = f.tipo_gasto or 'mixto'
                 if tipo_linea == 'mixto':
-                    if l.product_id.type != 'service':
+                    if l.tipo_producto_sat != 'servicio':
                         tipo_linea = 'compra'
                     else:
                         tipo_linea = 'servicio'

@@ -67,6 +67,20 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+    tipo_producto_sat = fields.Char(string='Tipo de producto para SAT', compute='_tipo_producto_sat')
+
+    def _tipo_producto_sat(self):
+        tipo_producto_sat_default = self.env['ir.config_parameter'].sudo().get_param('l10n_gt_extra.tipo_producto_sat_default', 'bien')
+
+        for linea in self:
+            if linea.product_id:
+                if linea.product_id.type == 'service':
+                    linea.tipo_producto_sat = 'servicio'
+                else:
+                    linea.tipo_producto_sat = 'bien'
+            else:
+                linea.tipo_producto_sat = tipo_producto_sat_default            
+
     # Son tres los lugares desde donde se llama el calculo de impuestos (que yo sepa). Por lo cual es
     # necesario, en estos tres lugares, pasar los datos para obtener la tasa.
     def _compute_totals(self):
