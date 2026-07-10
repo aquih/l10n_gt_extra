@@ -53,10 +53,10 @@
         <field name="arch" type="xml">
             <notebook position="inside">
                 <page string="Extra" name="extra">
-                    <group string="Configuración GT">
+                    <group string="Libros de ventas y compras Guatemala" invisible="type not in ['sale', 'purchase']">
                         <group>
-                            <field name="direccion" invisible="type not in ['sale', 'purchase']"/>
-                            <field name="codigo_establecimiento" invisible="type not in ['sale', 'purchase']"/>
+                            <field name="direccion"/>
+                            <field name="codigo_establecimiento"/>
                         </group>
                         <group>
                             <field name="facturas_por_rangos" invisible="type not in ['sale']"/>
