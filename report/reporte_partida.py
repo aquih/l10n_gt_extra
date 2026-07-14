@@ -28,6 +28,7 @@ class ReportePartida(models.AbstractModel):
             'doc_model': model,
             'docs': docs,
             'current_company_id': self.env.company,
+            'analiticas': self.analiticas,
         }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
