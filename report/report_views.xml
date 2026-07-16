@@ -11,25 +11,33 @@
                         var z = x[i].split('=', 2);
                         vars[z[0]] = unescape(z[1]);
                     }
-                    var fromPage = document.getElementsByClassName('page');
-                    for(var j = 0; j&lt;fromPage.length; j++) {
-                        var offset = fromPage[j].textContent || 0;
-                        fromPage[j].textContent = parseInt(vars['sitepage']) + parseInt(offset);
+
+                    // Inicia cambio de l10n_gt_extra
+                    var pageElement = document.getElementsByClassName('page');
+                    var offset = pageElement[0].textContent || 0; // siempre toma el primer elemento con class='page' para asignar el offset
+                    vars['page'] = parseInt(vars['page']) + parseInt(offset);
+                    vars['sitepage'] = parseInt(vars['sitepage']) + parseInt(offset);
+                    vars['topage'] = parseInt(vars['topage']) + parseInt(offset);
+                    vars['sitepages'] = parseInt(vars['sitepages']) + parseInt(offset);
+                    // Finaliza cambio de l10n_gt_extra
+
+                    var x = ['sitepage', 'sitepages', 'section', 'subsection', 'subsubsection'];
+                    var z = {'sitepage': 'page', 'sitepages': 'topage'};
+                    for (var i in x) {
+                        var y = document.getElementsByClassName(z[x[i]] || x[i])
+                        for (var j=0; j&lt;y.length; ++j)
+                            y[j].textContent = vars[x[i]];
                     }
-                    var toPage = document.getElementsByClassName('topage');
-                    for(var j = 0; j&lt;toPage.length; j++) {
-                        var offset = fromPage[j].textContent || 0;
-                        toPage[j].textContent = vars['sitepages'];
-                    }
-                    var index = vars['webpage'].split('.', 4)[3]
+
+                    var index = vars['webpage'].split('.', 4)[3];
                     var header = document.getElementById('minimal_layout_report_headers');
-                    if(header !== null){
+                    if(header){
                         var companyHeader = header.children[index];
                         header.textContent = '';
                         header.appendChild(companyHeader);
                     }
                     var footer = document.getElementById('minimal_layout_report_footers');
-                    if(footer !== null){
+                    if(footer){
                         var companyFooter = footer.children[index];
                         footer.textContent = '';
                         footer.appendChild(companyFooter);
