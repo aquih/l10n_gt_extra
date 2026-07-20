@@ -15,12 +15,18 @@
         </field>
     </record>
 
-    <record id="product_variant_easy_edit_view" model="ir.ui.view">
-        <field name="name">product.product.view.form.easy.inherit.l10n_gt_extra</field>
+    <record id="product_product_tree_view" model="ir.ui.view">
+        <field name="name">product.product.tree.inherit.l10n_gt_extra</field>
         <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
         <field name="arch" type="xml">
             <field name="standard_price" position="attributes">
+                <attribute name="groups">account.group_account_manager</attribute>
+            </field>
+            <field name="avg_cost" position="attributes">
+                <attribute name="groups">account.group_account_manager</attribute>
+            </field>
+            <field name="total_value" position="attributes">
                 <attribute name="groups">account.group_account_manager</attribute>
             </field>
       </field>
