@@ -10,7 +10,13 @@ class ReportePartida(models.AbstractModel):
     def analiticas(self, distribucion):
         nombres = ''
         if distribucion:
-            cuentas_ids = [int(k) for k in distribucion.keys()]
+            llaves = [k for k in distribucion.keys()]
+
+            cuentas_ids = []
+            for llave in llaves:
+                for cuenta_id in llave.split(','):
+                    cuentas_ids.append(int(cuenta_id))
+            
             nombres = ', '.join(self.env['account.analytic.account'].browse(cuentas_ids).mapped('display_name'))
         return nombres
 
