@@ -51,11 +51,13 @@ class ReporteVentas(models.AbstractModel):
             totales['num_facturas'] += 1
 
             tipo = 'FACT'
-            tipo_interno_factura = f.type if 'type' in f.fields_get() else f.move_type
-            if tipo_interno_factura != 'out_invoice':
-                tipo = 'NC'
-            if f.nota_debito:
-                tipo = 'ND'
+            if 'tipo_documento_fel' in f.journal_id.fields_get() and f.journal_id.tipo_documento_fel:
+                tipo = f.journal_id.tipo_documento_fel
+            else:
+                if f.move_type != 'out_invoice':
+                    tipo = 'NC'
+                if f.nota_debito:
+                    tipo = 'ND'
 
             numero = f.name or '-'
 
