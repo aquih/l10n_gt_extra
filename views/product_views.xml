@@ -23,12 +23,15 @@
             <field name="standard_price" position="attributes">
                 <attribute name="groups">account.group_account_manager</attribute>
             </field>
+            <!-- Estos campos pertenecen a stock_account. Ese módulo no necesariamente va a estar instalado.
+                 Y por eso puede dar error.
             <field name="avg_cost" position="attributes">
                 <attribute name="groups">account.group_account_manager</attribute>
             </field>
             <field name="total_value" position="attributes">
                 <attribute name="groups">account.group_account_manager</attribute>
             </field>
+            -->
       </field>
     </record>
 
