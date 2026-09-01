@@ -6,7 +6,6 @@
         <field name="model_id" ref="base.model_res_company"/>
         <field name="binding_model_id" ref="base.model_res_company"/>
         <field name="binding_view_types">list,form</field>
-        <field name="group_ids" eval="[Command.link(ref('account.group_account_manager'))]"/>
         <field name="state">code</field>
         <field name="code">
             action = record.cargar_impuestos()
@@ -18,7 +17,6 @@
         <field name="model_id" ref="base.model_res_company"/>
         <field name="binding_model_id" ref="base.model_res_company"/>
         <field name="binding_view_types">list,form</field>
-        <field name="group_ids" eval="[Command.link(ref('account.group_account_manager'))]"/>
         <field name="state">code</field>
         <field name="code">
             action = record.cargar_impuestos_globales()
