@@ -33,7 +33,6 @@ class ReportePartida(models.AbstractModel):
             'doc_ids': docids,
             'doc_model': model,
             'docs': docs,
-            'current_company_id': self.env.company,
             'analiticas': self.analiticas,
         }
 

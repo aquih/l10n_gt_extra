@@ -144,7 +144,6 @@ class ReporteDiario(models.AbstractModel):
             'data': data['form'],
             'docs': docs,
             'lineas': self.lineas,
-            'current_company_id': self.env.company,
             'contacto_encabezado': contacto_encabezado[0] if contacto_encabezado else self.env['res.partner']
         }
 

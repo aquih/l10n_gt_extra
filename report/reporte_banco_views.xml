@@ -8,7 +8,7 @@
             </div>
             <t t-call="web.external_layout">
                 <div class="page">
-                    <h2><span t-esc="current_company_id.name"/>: Libro de banco</h2>
+                    <h2><span t-esc="res_company.name"/>: Libro de banco</h2>
 
                     <div class="row my-2">
                         <div class="col-6">

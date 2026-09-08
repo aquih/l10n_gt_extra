@@ -89,7 +89,6 @@ class ReporteBanco(models.AbstractModel):
             'moneda': docs[0].cuenta_bancaria_id.currency_id or self.env.company.currency_id,
             'lineas': self.lineas,
             'balance_inicial': self.balance_inicial(data['form']),
-            'current_company_id': self.env.company,
         }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

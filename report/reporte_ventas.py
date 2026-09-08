@@ -224,6 +224,5 @@ class ReporteVentas(models.AbstractModel):
             'docs': docs,
             'lineas': self.lineas,
             'direccion_diario': diario.direccion,
-            'current_company_id': self.env.company,
             'columnas_mostrar': self.columnas_mostrar()
         }

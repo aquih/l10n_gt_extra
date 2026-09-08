@@ -128,7 +128,6 @@ class ReporteInventario(models.AbstractModel):
             'docs': docs,
             'lineas': self.lineas,
             'fecha_desde': self.fecha_desde,
-            'current_company_id': self.env.company,
             'contacto_encabezado': contacto_encabezado[0] if contacto_encabezado else self.env['res.partner']
         }
 

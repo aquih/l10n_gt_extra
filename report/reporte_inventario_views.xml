@@ -9,15 +9,15 @@
             </div>
             <t t-call="web.external_layout">
                 <div class="page">
-                    <h2><span t-field="current_company_id.name"/>: Libro Inventario</h2>
+                    <h2><span t-field="res_company.name"/>: Libro Inventario</h2>
 
                     <div class="row my-2">
                         <div class="col-6">
-                            <strong>Número de identificación tributaria:</strong> <span t-field="current_company_id.vat"/><br/>
-                            <strong>Nombre comercial:</strong> <span t-esc="contacto_encabezado.name if contacto_encabezado else current_company_id.partner_id.name"/>
+                            <strong>Número de identificación tributaria:</strong> <span t-field="res_company.vat"/><br/>
+                            <strong>Nombre comercial:</strong> <span t-esc="contacto_encabezado.name if contacto_encabezado else res_company.partner_id.name"/>
                         </div>
                         <div class="col-6">
-                            <strong>Domicilio fiscal:</strong> <span t-esc="contacto_encabezado._display_address(without_company=True) if contacto_encabezado else current_company_id.partner_id._display_address(without_company=True)"/><br/>
+                            <strong>Domicilio fiscal:</strong> <span t-esc="contacto_encabezado._display_address(without_company=True) if contacto_encabezado else res_company.partner_id._display_address(without_company=True)"/><br/>
                             <strong>Registro del:</strong> <span t-esc="fecha_desde(data)" t-options="{'widget': 'date'}"/> al: <span t-esc="data['fecha_hasta']" t-options="{'widget': 'date'}"/><br/>
                         </div>
                     </div>
@@ -48,14 +48,14 @@
                                     <span t-esc="activo['cuenta']"/>
                                 </td>
                                 <td class="text-end">
-                                    <span t-esc="activo['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                    <span t-esc="activo['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
                                 </td>
                                 <t t-set="total_activo" t-value="total_activo + activo['saldo_final']"/>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td><b>Total activo</b></td>
-                                <td class="text-end"><b><span t-esc="total_activo" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b></td>
+                                <td class="text-end"><b><span t-esc="total_activo" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></b></td>
                             </tr>
                             <thead>
                                 <tr>
@@ -76,14 +76,14 @@
                                     <span t-esc="pasivo['cuenta']"/>
                                 </td>
                                 <td class="text-end">
-                                    <span t-esc="pasivo['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                    <span t-esc="pasivo['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
                                 </td>
                                 <t t-set="total_pasivo" t-value="total_pasivo + pasivo['saldo_final']"/>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td><b>Total pasivo</b></td>
-                                <td class="text-end"><b><span t-esc="total_pasivo" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b></td>
+                                <td class="text-end"><b><span t-esc="total_pasivo" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></b></td>
                             </tr>
                             <thead>
                                 <tr>
@@ -104,14 +104,14 @@
                                     <span t-esc="capital['cuenta']"/>
                                 </td>
                                 <td class="text-end">
-                                    <span t-esc="capital['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/>
+                                    <span t-esc="capital['saldo_final']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
                                 </td>
                                 <t t-set="total_capital" t-value="total_capital + capital['saldo_final']"/>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td><b>Total capital</b></td>
-                                <td class="text-end"><b><span t-esc="total_capital" t-options="{'widget': 'monetary', 'display_currency': current_company_id.currency_id}"/></b></td>
+                                <td class="text-end"><b><span t-esc="total_capital" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></b></td>
                             </tr>
                         </tbody>
                     </table>
