@@ -58,14 +58,14 @@ class ReporteVentas(models.AbstractModel):
             if f.company_id.id != self.env.company.id:
                 tipo_cambio = self.env['res.currency']._get_conversion_rate(f.company_id.currency_id, self.env.company.currency_id)
 
-            tipo = 'FACT'
+            tipo_documento = 'FACT'
             if 'tipo_documento_fel' in f.journal_id.fields_get() and f.journal_id.tipo_documento_fel:
-                tipo = f.journal_id.tipo_documento_fel
+                tipo_documento = f.journal_id.tipo_documento_fel
             else:
                 if f.move_type != 'out_invoice':
-                    tipo = 'NC'
+                    tipo_documento = 'NC'
                 if f.nota_debito:
-                    tipo = 'ND'
+                    tipo_documento = 'ND'
 
             numero = f.name or '-'
 
@@ -85,7 +85,7 @@ class ReporteVentas(models.AbstractModel):
 
             linea = {
                 'estado': f.state,
-                'tipo': tipo,
+                'tipo': tipo_documento,
                 'fecha': f.date,
                 'numero': numero,
                 'cliente': f.partner_id.name,
@@ -109,7 +109,7 @@ class ReporteVentas(models.AbstractModel):
 
             for l in f.invoice_line_ids:
                 precio = ( l.price_unit * (1-(l.discount or 0.0)/100.0) ) * tipo_cambio
-                if tipo == 'NC':
+                if f.move_type != 'out_invoice':
                     precio = precio * -1
 
                 tipo_linea = f.tipo_gasto or 'mixto'
@@ -134,7 +134,9 @@ class ReporteVentas(models.AbstractModel):
                             linea['iva'] += i['amount']
                             totales[tipo_linea]['iva'] += i['amount']
                             totales[tipo_linea]['total'] += i['amount']
-                        elif (i['amount'] > 0 and tipo != 'NC') or (i['amount'] < 0 and tipo == 'NC'):
+                        
+                        # Si es exenta, solo tomar en cuenta los impuestos positivos
+                        elif (i['amount'] > 0 and f.move_type == 'out_invoice') or (i['amount'] < 0 and f.move_type != 'out_invoice'):
                             linea[tipo_linea+'_exento'] += i['amount']
                             totales[tipo_linea]['exento'] += i['amount']
                             totales[tipo_linea]['total'] += i['amount']

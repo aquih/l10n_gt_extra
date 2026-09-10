@@ -59,14 +59,17 @@ class ReporteCompras(models.AbstractModel):
             if f.company_id.id != self.env.company.id:
                 tipo_cambio = self.env['res.currency']._get_conversion_rate(f.company_id.currency_id, self.env.company.currency_id)
 
-            tipo = 'FACT'
-            tipo_interno_factura = f.type if 'type' in f.fields_get() else f.move_type
-            if tipo_interno_factura != 'in_invoice':
-                tipo = 'NC'
-            if f.nota_debito:
-                tipo = 'ND'
+            tipo_documento = 'FACT'
+            if 'tipo_documento_fel' in f.journal_id.fields_get() and f.journal_id.tipo_documento_fel:
+                tipo_documento = f.journal_id.tipo_documento_fel
+            else:
+                if f.move_type != 'in_invoice':
+                    tipo_documento = 'NC'
+                if f.nota_debito:
+                    tipo_documento = 'ND'
+            
             if f.partner_id.pequenio_contribuyente:
-                tipo += ' PEQ'
+                tipo_documento += ' PEQ'
            
             numero = f.ref or ''
             
@@ -76,7 +79,7 @@ class ReporteCompras(models.AbstractModel):
 
             linea = {
                 'estado': f.state,
-                'tipo': tipo,
+                'tipo': tipo_documento,
                 'fecha': f.invoice_date,
                 'numero': numero,
                 'proveedor': f.partner_id,
@@ -97,7 +100,7 @@ class ReporteCompras(models.AbstractModel):
 
             for l in f.invoice_line_ids:
                 precio = ( l.price_unit * (1-(l.discount or 0.0)/100.0) ) * tipo_cambio
-                if tipo == 'NC':
+                if f.move_type != 'in_invoice':
                     precio = precio * -1
 
                 tipo_linea = f.tipo_gasto or 'mixto'
@@ -125,7 +128,9 @@ class ReporteCompras(models.AbstractModel):
                             linea['iva'] += i['amount']
                             totales[tipo_linea]['iva'] += i['amount']
                             totales[tipo_linea]['total'] += i['amount']
-                        elif (i['amount'] > 0 and tipo != 'NC') or (i['amount'] < 0 and tipo == 'NC'):
+
+                        # Si es exenta, solo tomar en cuenta los impuestos positivos
+                        elif (i['amount'] > 0 and f.move_type == 'in_invoice') or (i['amount'] < 0 and f.move_type != 'in_invoice'):
                             linea[tipo_linea+'_exento'] += i['amount']
                             totales[tipo_linea]['exento'] += i['amount']
                             totales[tipo_linea]['total'] += i['amount']
