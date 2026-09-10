@@ -51,14 +51,18 @@ class ReporteCompras(models.AbstractModel):
         for f in facturas:
             totales['num_facturas'] += 1
 
-            tipo = 'FACT'
-            tipo_interno_factura = f.type if 'type' in f.fields_get() else f.move_type
-            if tipo_interno_factura != 'in_invoice':
-                tipo = 'NC'
-            if f.nota_debito:
-                tipo = 'ND'
+            tipo_documento = 'FACT'
+            if 'tipo_documento_fel' in f.journal_id.fields_get() and f.journal_id.tipo_documento_fel:
+                tipo_documento = f.journal_id.tipo_documento_fel
+            else:
+                if f.move_type != 'in_invoice':
+                    tipo_documento = 'NC'
+                if f.nota_debito:
+                    tipo_documento = 'ND'
+            
             if f.partner_id.pequenio_contribuyente:
                 tipo += ' PEQ'
+                tipo_documento += ' PEQ'
            
             numero = f.ref or ''
             
@@ -69,7 +73,7 @@ class ReporteCompras(models.AbstractModel):
             linea = {
                 'account_move_id': f,
                 'estado': f.state,
-                'tipo': tipo,
+                'tipo': tipo_documento,
                 'fecha': f.invoice_date,
                 'numero': numero,
                 'proveedor': f.partner_id,
@@ -101,7 +105,7 @@ class ReporteCompras(models.AbstractModel):
 
                 precio = ( l.price_unit * ( 1 - ( l.discount or 0.0 ) / 100.0 ) )
 
-                if tipo == 'NC':
+                if f.move_type != 'in_invoice':
                     precio = precio * -1
 
                 # Vieja forma de calcular tipo de producto
@@ -159,7 +163,9 @@ class ReporteCompras(models.AbstractModel):
                         linea['iva'] += i['amount'] * tipo_cambio
                         totales[tipo_linea]['iva'] += i['amount'] * tipo_cambio
                         totales[tipo_linea]['total'] += i['amount'] * tipo_cambio
-                    elif (i['amount'] > 0 and tipo != 'NC') or (i['amount'] < 0 and tipo == 'NC'):
+                    
+                    # Si es exenta, solo tomar en cuenta los impuestos positivos
+                    elif (i['amount'] > 0 and f.move_type == 'in_invoice') or (i['amount'] < 0 and f.move_type != 'in_invoice'):
                         linea[tipo_linea+'_exento'] += i['amount'] * tipo_cambio
                         totales[tipo_linea]['exento'] += i['amount'] * tipo_cambio
                         totales[tipo_linea]['total'] += i['amount'] * tipo_cambio

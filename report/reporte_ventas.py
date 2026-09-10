@@ -50,14 +50,14 @@ class ReporteVentas(models.AbstractModel):
         for f in facturas:
             totales['num_facturas'] += 1
 
-            tipo = 'FACT'
+            tipo_documento = 'FACT'
             if 'tipo_documento_fel' in f.journal_id.fields_get() and f.journal_id.tipo_documento_fel:
-                tipo = f.journal_id.tipo_documento_fel
+                tipo_documento = f.journal_id.tipo_documento_fel
             else:
                 if f.move_type != 'out_invoice':
-                    tipo = 'NC'
+                    tipo_documento = 'NC'
                 if f.nota_debito:
-                    tipo = 'ND'
+                    tipo_documento = 'ND'
 
             numero = f.name or '-'
 
@@ -72,7 +72,7 @@ class ReporteVentas(models.AbstractModel):
             linea = {
                 'account_move_id': f,
                 'estado': f.state,
-                'tipo': tipo,
+                'tipo': tipo_documento,
                 'fecha': f.date,
                 'numero': numero,
                 'cliente': f.partner_id,
@@ -106,7 +106,7 @@ class ReporteVentas(models.AbstractModel):
 
                 precio = ( l.price_unit * ( 1 - ( l.discount or 0.0 ) / 100.0 ) )
 
-                if tipo == 'NC':
+                if f.move_type != 'out_invoice'::
                     precio = precio * -1
 
                 # Vieja forma de calcular tipo de producto
@@ -161,7 +161,9 @@ class ReporteVentas(models.AbstractModel):
                         linea['iva'] += i['amount'] * tipo_cambio
                         totales[tipo_linea]['iva'] += i['amount'] * tipo_cambio
                         totales[tipo_linea]['total'] += i['amount'] * tipo_cambio
-                    elif (i['amount'] > 0 and tipo != 'NC') or (i['amount'] < 0 and tipo == 'NC'):
+                    
+                    # Si es exenta, solo tomar en cuenta los impuestos positivos
+                    elif (i['amount'] > 0 and f.move_type == 'out_invoice') or (i['amount'] < 0 and f.move_type != 'out_invoice'):
                         linea[tipo_linea+'_exento'] += i['amount'] * tipo_cambio
                         totales[tipo_linea]['exento'] += i['amount'] * tipo_cambio
                         totales[tipo_linea]['total'] += i['amount'] * tipo_cambio
