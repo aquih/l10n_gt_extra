@@ -106,7 +106,7 @@ class ReporteVentas(models.AbstractModel):
 
                 precio = ( l.price_unit * ( 1 - ( l.discount or 0.0 ) / 100.0 ) )
 
-                if f.move_type != 'out_invoice'::
+                if f.move_type != 'out_invoice':
                     precio = precio * -1
 
                 # Vieja forma de calcular tipo de producto
