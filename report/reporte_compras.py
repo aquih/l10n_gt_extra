@@ -67,7 +67,7 @@ class ReporteCompras(models.AbstractModel):
             numero = f.ref or ''
             
             # Por si usa factura electrónica
-            if 'firma_fel' in f.fields_get() and f.firma_fel:
+            if ('serie_fel' in f.fields_get() and f.serie_fel) or ('numero_fel' in f.fields_get() and f.numero_fel):
                 numero = str(f.serie_fel) + '-' + str(f.numero_fel)
 
             linea = {
