@@ -39,7 +39,6 @@
         <field name="model">l10n_gt_extra.reporte_banco.wizard</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">l10n_gt_extra.reporte_banco</field>
-        <field name="report_file">l10n_gt_extra.reporte_banco</field>
     </record>
 
     <menuitem id="reporte_banco_wizard_menu" action="reporte_banco_wizard_action" parent="menu_informes"/>
