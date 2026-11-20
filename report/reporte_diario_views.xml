@@ -14,7 +14,7 @@
                     <div class="row my-2">
                         <div class="col-6">
                             <strong>Número de identificación tributaria:</strong> <span t-field="res_company.vat"/><br/>
-                            <strong>Nombre comercial:</strong> <span t-esc="contacto_encabezado.name if contacto_encabezado else res_company.partner_id.name"/>
+                            <!--<strong>Nombre comercial:</strong> <span t-esc="contacto_encabezado.name if contacto_encabezado else res_company.partner_id.name"/>-->
                         </div>
                         <div class="col-6">
                             <strong>Domicilio fiscal:</strong> <span t-esc="contacto_encabezado._display_address(without_company=True) if contacto_encabezado else res_company.partner_id._display_address(without_company=True)"/><br/>
