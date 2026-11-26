@@ -61,7 +61,6 @@ class ReporteCompras(models.AbstractModel):
                     tipo_documento = 'ND'
             
             if f.partner_id.pequenio_contribuyente:
-                tipo += ' PEQ'
                 tipo_documento += ' PEQ'
            
             numero = f.ref or ''
